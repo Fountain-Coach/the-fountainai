@@ -73,6 +73,13 @@ public final class Supervisor: @unchecked Sendable {
             terminate(serviceName: name)
         }
     }
+
+    /// Indicates whether the named service process is currently running.
+    /// - Parameter serviceName: Name of the service to inspect.
+    /// - Returns: `true` if the process is alive.
+    public func isRunning(serviceName: String) -> Bool {
+        processes[serviceName]?.isRunning == true
+    }
 }
 
 // © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
