@@ -1,8 +1,34 @@
 import XCTest
 import NIOCore
 import NIOEmbedded
+import NIOConcurrencyHelpers
 import Crypto
+import Logging
 @testable import FountainRuntime
+
+private final class TestLogHandler: LogHandler {
+    static let shared = TestLogHandler()
+    private let storage = NIOLockedValueBox<[String]>([])
+    var metadata: Logger.Metadata = [:]
+    var logLevel: Logger.Level = .trace
+
+    subscript(metadataKey key: String) -> Logger.Metadata.Value? {
+        get { metadata[key] }
+        set { metadata[key] = newValue }
+    }
+
+    func log(level: Logger.Level, message: Logger.Message, metadata: Logger.Metadata?, source: String, file: String, function: String, line: UInt) {
+        storage.withLockedValue { $0.append(message.description) }
+    }
+
+    func reset() { storage.withLockedValue { $0.removeAll() } }
+
+    func messages() -> [String] { storage.withLockedValue { $0 } }
+}
+
+private let _ = {
+    LoggingSystem.bootstrap { _ in TestLogHandler.shared }
+}()
 
 final class DNSEngineTests: XCTestCase {
     func makeQuery(name: String, type: UInt16) -> ByteBuffer {
@@ -157,6 +183,16 @@ final class DNSEngineTests: XCTestCase {
         let text = await DNSMetrics.shared.exposition()
         XCTAssertTrue(text.contains("dns_queries_type_invalid_total 1"))
         XCTAssertTrue(text.contains("dns_misses_total 1"))
+    }
+
+    func testInvalidQueryLogsWarning() {
+        TestLogHandler.shared.reset()
+        var buf = ByteBufferAllocator().buffer(capacity: 2)
+        buf.writeInteger(UInt16(0x1234), as: UInt16.self)
+        let engine = DNSEngine(records: [])
+        XCTAssertNil(engine.handleQuery(buffer: &buf))
+        let logs = TestLogHandler.shared.messages()
+        XCTAssertTrue(logs.contains { $0.contains("Failed to parse query") })
     }
 
     func testSignZoneAndVerify() throws {
