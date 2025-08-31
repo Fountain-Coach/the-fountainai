@@ -1,92 +1,187 @@
-# 🧠 FountainAI Root Agent Manifest
+# 🧠 FountainAI Root Agent Manifest — “Fully Tested Code”
 
-Last Updated: August 26, 2025
+**Scope:** Whole repository (Swift 6), CI, launcher, and plugins  
+**Intent:** Make every change land with comprehensive tests and enforced coverage, automatically.
 
-Scope: Repository self-improvement, spec→code alignment, and runtime orchestration.  
-Identity: Swift 6 transparent reasoning engine; OpenAPI is the constitutional source of truth; MIDI‑CI is the discovery/observability fabric.
-
----
-
-## Why The Previous Manifest Was Outdated
-
-- Over-claimed status: Marked many services as ✅ that do not exist as code (e.g., Function Caller, Persistence, Planner, Baseline Awareness, Semantic Browser).
-- Incorrect paths: Referenced files under non-existent trees (e.g., `Sources/openapi/Generated/...`). This repo uses `libs/*`, `apps/*`, and `openapi/*`.
-- Drift from reality: Claimed DNS HTTP CRUD and multiple CI features not present in the current codebase.
-- Corrupted content: A stray table row leaked to the top and bottom of the document.
-- Conflated concerns: Mixed product identity, long task matrix, and per-run instructions in one place without machine-verifiable links to code/tests.
+_Last updated:_ 31.08.2035
 
 ---
 
-## Repository Topography (Current)
+## 🎯 Mission
 
-- Apps: `gateway-server`, `publishing-frontend`, `flexctl`, `clientgen-service`, `tools-factory-server`
-- Gateway Plugins (code): Auth, LLM, RateLimiter, BudgetBreaker, PayloadInspection, DestructiveGuardian, SecuritySentinel
-- Libraries: `FountainCodex` (OpenAPI loader, model/server generators, DNS engine, HTTP runtime), `PublishingFrontend`, `MIDI2*`, `ToolServer`, `ResourceLoader`
-- OpenAPI: `openapi/v1/*`, `openapi/v2/llm-gateway.yml`, `openapi/typesense.yml`
-- Tests: DNS, MIDI2, Gateway app integration, ToolServer, client generation, SSE over MIDI
+1) Generate **production-quality Swift code** _with tests first mindset_.  
+2) **Enforce coverage** per target (default ≥ `MIN_COVERAGE`, see CI).  
+3) Keep this file as a **machine-actionable contract** for Codex runs.
 
 ---
 
-## Spec → Code Status Snapshot
+## ✅ Hard Rules (non-negotiable)
 
-| Service/Plugin | Spec | Code | Status |
-| --- | --- | --- | --- |
-| Gateway (mgmt, health, routes) | `openapi/v1/gateway.yml` | `apps/GatewayServer` | Implemented (core + routing) |
-| LLM Gateway | `openapi/v2/llm-gateway.yml` | `libs/GatewayPlugins/LLMGatewayPlugin` | Partial (some handlers exist) |
-| Auth Plugin | `openapi/v1/auth-gateway.yml` | `libs/GatewayPlugins/AuthGatewayPlugin` | Implemented |
-| Rate Limiter Plugin | `openapi/v1/rate-limiter-gateway.yml` | `libs/GatewayPlugins/RateLimiterGatewayPlugin` | Implemented |
-| Budget Breaker Plugin | `openapi/v1/budget-breaker-gateway.yml` | `libs/GatewayPlugins/BudgetBreakerGatewayPlugin` | Implemented |
-| Payload Inspection Plugin | `openapi/v1/payload-inspection-gateway.yml` | `libs/GatewayPlugins/PayloadInspectionGatewayPlugin` | Implemented |
-| Destructive Guardian Plugin | `openapi/v1/destructive-guardian-gateway.yml` | `libs/GatewayPlugins/DestructiveGuardianGatewayPlugin` | Implemented |
-| Security Sentinel Plugin | `openapi/v1/security-sentinel-gateway.yml` | `libs/GatewayPlugins/SecuritySentinelGatewayPlugin` | Implemented |
-| Role Health Check Plugin | `openapi/v1/role-health-check-gateway.yml` | — | Missing (spec only) |
-| Tools Factory | `openapi/v1/tools-factory.yml` | `libs/ToolServer`, `apps/ToolsFactoryServer` | Implemented |
-| Function Caller Service | `openapi/v1/function-caller.yml` | — | Missing (no target) |
-| Persistence Service | `openapi/v1/persist.yml` | — | Missing (no target) |
-| Planner Service | `openapi/v1/planner.yml`, `openapi/v0/planner.yml` | — | Missing (no target) |
-| Baseline Awareness | `openapi/v1/baseline-awareness.yml` | — | Missing (no target) |
-| DNS API | `openapi/v1/dns.yml` | `FountainCodex/DNS/*`, optional DNS runtime in gateway | Partial (DNS runtime present; HTTP API not wired) |
-| Semantic Browser | `openapi/v1/semantic-browser.yml` | — | Missing (no target) |
-| Typesense API (3rd‑party) | `openapi/typesense.yml` | — | Reference spec only |
+- **Build + Test + Coverage** must run green on macOS & Linux:  
+  - `swift build -c release -Xswiftc -O -Xswiftc -warnings-as-errors`
+  - `swift test -c release --enable-code-coverage`
+- Use the repository script: `Scripts/coverage.sh $MIN_COVERAGE`  
+  - Emits: `coverage-summary.txt`, `coverage.lcov`, `coverage-targets.txt`
+- **Per-target coverage** is enforced (see `coverage.sh` targets list).  
+- All PRs must add/adjust tests to keep coverage ≥ threshold for touched targets.
+- Public APIs: add **golden tests** and **failure-path tests**.
 
 ---
 
-## Root Agent Mission
+## 🤝 Soft Rules (defaults Codex should assume)
 
-Keep OpenAPI, code, and tests in lockstep; surface drift early; drive incremental, verifiable delivery of missing services and endpoints.
-
-### Operating Procedure (Per Cycle)
-
-1) Scan `openapi/*` and enumerate operationIds per spec.  
-2) Map specs to Swift targets: plugins under `libs/GatewayPlugins/*`, services under `apps/*` or `libs/*`.  
-3) Check handler stubs exist for every operationId; flag missing or mismatched routes.  
-4) Implement or scaffold gaps (code + minimal tests).  
-5) Run `swift build && swift test`; record outcomes.  
-6) Update this manifest’s status snapshot and the backlog.
+- **Thresholds:** If not set by the PR, assume `MIN_COVERAGE = 90`.  
+- **Coverage matrix:** Maintain a “What’s still uncovered?” matrix in this file (see below).  
+- **Test taxonomy:**  
+  - **Unit:** Pure logic, 1 module, no I/O.  
+  - **Integration:** Multiple modules; start minimal HTTP servers if needed.  
+  - **E2E:** Launch via `FountainAiLauncher` and verify outcomes.
 
 ---
 
-## Immediate Needs (Backlog, Prioritized)
+## 🔍 Validation Rules (what Codex must verify)
 
-1. Ship minimal Role Health Check Gateway plugin to satisfy `openapi/v1/role-health-check-gateway.yml` and register it in `apps/GatewayServer`.
-2. Implement a skeleton Function Caller service matching `openapi/v1/function-caller.yml` (map operationIds to registered functions; start with in‑memory registry).
-3. Stand up Persistence service scaffolding for `openapi/v1/persist.yml` (Typesense client stub or proxy decision; CRUD for corpora/baselines).
-4. Add Planner service skeleton for `openapi/v1/planner.yml` (reason/execute with simple rule‑based placeholder).
-5. Add Baseline Awareness stub service for streaming analytics per spec.
-6. Wire DNS HTTP endpoints from `openapi/v1/dns.yml` to existing DNS runtime (zone CRUD + record list).
-7. Audit LLM Gateway against v2 spec; fill missing endpoints and error handling.
-8. Create a spec–route linter (script) to enforce opId→route/handler coverage in CI.
+- `Scripts/coverage.sh` exits **non-zero** if any tracked target is below threshold.  
+- CI (`.github/workflows/ci.yml`) uses `MIN_COVERAGE` env; do not lower it without justification.  
+- `coverage-targets.txt` contains **all key modules/plugins** touched by the PR.
+- New code paths (error branches, edge conditions) have **explicit tests**.
 
 ---
 
-## Helpful Commands
+## 🛟 Correction Logic (what to do if validation fails)
 
-- Build all: `swift build -v`
-- Run gateway: `swift run gateway-server [--dns]`
-- Run publishing frontend: `swift run publishing-frontend`
-- Run tools factory: `swift run tools-factory-server`
-- Run tests: `swift test -v`
+1) Parse `coverage-summary.txt` / JSON export and find **gaps**.  
+2) Generate tests for missed branches/lines; prefer **small, focused** cases.  
+3) Re-run coverage; if still below, add **integration/E2E** exercises.  
+4) Update **matrix** and **commit**.
 
 ---
 
-© 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
+## ⚙️ Operation Cycle
+
+> Codex must execute these steps for every iteration.
+
+### 1. **Build & Test with Coverage**
+
+   ```bash
+   swift build -c release -Xswiftc -O -Xswiftc -warnings-as-errors
+   Scripts/coverage.sh ${MIN_COVERAGE:-90}
+   ```
+
+### 2.    Export JSON (optional for fine-grained prompts)
+
+```bash
+CODECOV_DIR=$(dirname "$(swift test --show-codecov-path)")
+TEST_BIN=$(find .build -name '*.xctest' | head -n 1)
+llvm-cov export "$TEST_BIN" -instr-profile "$CODECOV_DIR/default.profdata" -format=json > coverage.json
+```
+
+### 3.    Regenerate Coverage Matrix (below) from coverage.json.
+    
+    
+### 4.    Write artifacts: coverage-summary.txt, coverage.lcov, coverage-targets.txt.
+    
+### 5.    If touching runtime paths, run E2E through the Launcher:
+```bash
+swift run FountainAiLauncher --dry-run
+```
+or full supervised launch in CI sandbox, then hit health endpoints
+
+### 6.    Commit: source + tests + updated agent.md matrix.
+
+---
+
+## 📦 Per-Target Coverage Policy
+
+Coverage is enforced for these exemplars (Codex: keep in sync with Scripts/coverage.sh):
+
+- libs/FountainRuntime
+- apps/GatewayServer
+- libs/GatewayPlugins/LLMGatewayPlugin
+- libs/GatewayPlugins/AuthGatewayPlugin
+- libs/GatewayPlugins/RateLimiterGatewayPlugin
+- libs/GatewayPlugins/BudgetBreakerGatewayPlugin
+- libs/GatewayPlugins/PayloadInspectionGatewayPlugin
+- libs/GatewayPlugins/DestructiveGuardianGatewayPlugin
+- libs/GatewayPlugins/SecuritySentinelGatewayPlugin
+
+CI fails if any of the above dip below MIN_COVERAGE.
+
+---
+
+## 🧪 Test Types & Minimums
+
+- **Unit:** Each new public function ⇒ ≥ 2 tests (happy path + 1 edge/failure).  
+- **Integration:** For every new cross-module behavior ⇒ ≥ 1 scenario test.  
+- **E2E:** For any new executable, command, or major flow ⇒ ≥ 1 scenario under the launcher.
+
+---
+
+## 🧭 Coverage Matrix (machine-readable)
+
+Codex: regenerate this table each run by parsing coverage.json. Keep rows atomic.
+
+| Feature / Path        | File(s) / Target                    | Action (what test to add)                          | Status | Blockers                  | Tags         |
+|------------------------|-------------------------------------|---------------------------------------------------|--------|---------------------------|--------------|
+| Example: rate limit hit | GatewayServer / RateLimiterPlugin   | Simulate over-budget burst, assert 429 + headers   | ⏳      | test clock helper missing | test, plugin |
+| Example: parse failure  | FountainRuntime/Parser.swift        | Feed invalid token stream, assert error enum case  | ⏳      | —                         | test, parser |
+| Example: launch failure | FountainAiLauncher                 | Corrupt binary hash → expect refusal + log         | ⏳      | fixture for hash mismatch | test, launcher |
+
+Status: ✅ done · ⏳ todo · ⚠️ partial · ❌ missing
+
+---
+
+## 🧰 Prompt Snippets Codex Can Use
+
+### Generate matrix from coverage JSON
+
+You have coverage.json from llvm-cov export.  
+List all functions/files with <100% coverage and propose ONE specific test per gap.  
+Output rows for the Coverage Matrix table (no prose), grouped by target.
+
+### Create edge/failure tests
+
+For `<File.swift:LineRange>`, write a SwiftPM test that triggers the failure branch.  
+No network or external processes unless explicitly mocked.
+
+### E2E via Launcher
+
+Launch FountainAiLauncher in a test harness, assert health/control-plane responses,  
+and verify logs include request_id + exit_code. Fail fast on any stderr.
+
+---
+
+## 🧪 Acceptance Checklist (PR must satisfy)
+
+- All tests pass on CI (Linux) and locally (macOS)  
+- `Scripts/coverage.sh $MIN_COVERAGE` passes; coverage-targets.txt updated  
+- Coverage Matrix updated in this file (no stale rows)  
+- New behaviors include unit + (if applicable) integration/E2E tests  
+- No warnings; -warnings-as-errors holds  
+- Launcher flows tested when touching runtime orchestration
+
+---
+
+## 🗂 Artifacts & Locations
+
+- **Coverage artifacts:** coverage-summary.txt, coverage.lcov, coverage-targets.txt  
+- **Optional analysis:** coverage.json (for Codex parsing)  
+- **Logs:** /logs/ (build/test summaries), feedback: /feedback/ (planning hints)
+
+---
+
+## 📓 Notes for Maintainers
+
+- Prefer small PRs that complete vertical slices: code + tests + docs + matrix.  
+- If you must lower MIN_COVERAGE, pin the reason and a follow-up matrix row.  
+- Keep Scripts/coverage.sh authoritative for target list and measurements.
+
+---
+
+**Why this aligns with the repo today**
+
+- CI already runs a **coverage script** and enforces thresholds; this draft formalizes how Codex uses it (and per-target enforcement you added).  
+- The initial **coverage baseline and action plan** establish the gap; the matrix + prompts operationalize closing it.  
+- The **operation cycle** matches the optimized build/test flow and the **Launcher-centric** run model.  
+- The “**make the repo Codex-compatible**” matrix convention is preserved so agents can plan and act iteratively.  
+- The JSON-driven **coverage-matrix** prompt matches your tutorial for LLVM coverage export + Codex loops.  
