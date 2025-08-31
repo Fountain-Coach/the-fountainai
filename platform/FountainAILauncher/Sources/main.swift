@@ -18,6 +18,7 @@ if let url = Bundle.module.url(forResource: "services", withExtension: "json") {
 
 let supervisor = Supervisor()
 let monitor = HealthMonitor(supervisor: supervisor)
+let controlPlane = ControlPlane(supervisor: supervisor, services: services)
 
 do {
     try Diagnostics.run()
@@ -28,6 +29,9 @@ do {
     try supervisor.verify(services: services, manifestURL: manifestURL)
     try supervisor.start(services: services)
     monitor.startMonitoring(services: services)
+    Task {
+        try await controlPlane.start(port: 9090)
+    }
     dispatchMain()
 } catch {
     let message = "Failed to launch services: \(error)\n"

@@ -1,4 +1,8 @@
 import XCTest
+import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 @testable import FountainAiLauncher
 
 final class FountainAiLauncherTests: XCTestCase {
@@ -69,6 +73,41 @@ final class FountainAiLauncherTests: XCTestCase {
         try JSONEncoder().encode(entries).write(to: url)
         let supervisor = Supervisor()
         XCTAssertThrowsError(try supervisor.verify(services: [service], manifestURL: url))
+    }
+
+    /// Control plane status endpoint lists running services.
+    func testControlPlaneStatus() async throws {
+        let supervisor = Supervisor()
+        let service = Service(name: "Sleep", binaryPath: "/bin/sleep", arguments: ["10"])
+        _ = try supervisor.start(service: service)
+        let cp = ControlPlane(supervisor: supervisor, services: [service])
+        let port = try await cp.start(port: 0)
+        defer {
+            supervisor.terminateAll()
+            Task { try? await cp.stop() }
+        }
+        let url = URL(string: "http://127.0.0.1:\(port)/status")!
+        let (data, _) = try await URLSession.shared.data(from: url)
+        let statuses = try JSONDecoder().decode([ServiceStatus].self, from: data)
+        XCTAssertEqual(statuses.first?.name, service.name)
+        XCTAssertEqual(statuses.first?.running, true)
+    }
+
+    /// Restart endpoint returns 200 for known service.
+    func testControlPlaneRestart() async throws {
+        let supervisor = Supervisor()
+        let service = Service(name: "Sleep", binaryPath: "/bin/sleep", arguments: ["10"])
+        _ = try supervisor.start(service: service)
+        let cp = ControlPlane(supervisor: supervisor, services: [service])
+        let port = try await cp.start(port: 0)
+        defer {
+            supervisor.terminateAll()
+            Task { try? await cp.stop() }
+        }
+        var request = URLRequest(url: URL(string: "http://127.0.0.1:\(port)/restart/\(service.name)")!)
+        request.httpMethod = "POST"
+        let (_, response) = try await URLSession.shared.data(for: request)
+        XCTAssertEqual((response as? HTTPURLResponse)?.statusCode, 200)
     }
 }
 
