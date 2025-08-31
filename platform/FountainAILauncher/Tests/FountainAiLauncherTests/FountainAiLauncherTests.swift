@@ -49,6 +49,27 @@ final class FountainAiLauncherTests: XCTestCase {
         XCTAssertEqual(decoded.count, 1)
         XCTAssertTrue(decoded[0].shouldRestart)
     }
+
+    /// Manifest generation and verification succeed for a valid binary.
+    func testManifestGenerationAndVerification() throws {
+        let service = Service(name: "Echo", binaryPath: "/bin/echo")
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("manifest.json")
+        try ManifestGenerator.generate(services: [service], url: url)
+        let supervisor = Supervisor()
+        XCTAssertNoThrow(try supervisor.verify(services: [service], manifestURL: url))
+    }
+
+    /// Verification fails if the manifest is tampered with.
+    func testManifestVerificationFailsOnTamper() throws {
+        let service = Service(name: "Echo", binaryPath: "/bin/echo")
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("tamper.json")
+        try ManifestGenerator.generate(services: [service], url: url)
+        var entries = try JSONDecoder().decode([ServiceManifestEntry].self, from: Data(contentsOf: url))
+        entries[0] = ServiceManifestEntry(name: entries[0].name, binaryPath: entries[0].binaryPath, sha256: "0", permissions: entries[0].permissions)
+        try JSONEncoder().encode(entries).write(to: url)
+        let supervisor = Supervisor()
+        XCTAssertThrowsError(try supervisor.verify(services: [service], manifestURL: url))
+    }
 }
 
 // © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
