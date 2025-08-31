@@ -11,7 +11,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-crypto.git", from: "3.0.0"),
-        .package(url: "https://github.com/apple/swift-nio.git", from: "2.63.0")
+        .package(url: "https://github.com/apple/swift-nio.git", from: "2.63.0"),
+        .package(url: "https://github.com/Fountain-Coach/Teatro.git", branch: "main")
     ],
     targets: [
         .executableTarget(
@@ -19,7 +20,9 @@ let package = Package(
             dependencies: [
                 .product(name: "Crypto", package: "swift-crypto"),
                 .product(name: "NIO", package: "swift-nio"),
-                .product(name: "NIOHTTP1", package: "swift-nio")
+                .product(name: "NIOHTTP1", package: "swift-nio"),
+                .product(name: "Teatro", package: "teatro"),
+                .product(name: "TeatroRenderAPI", package: "teatro")
             ],
             path: "Sources",
             resources: [
