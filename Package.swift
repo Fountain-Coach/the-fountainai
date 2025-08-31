@@ -341,6 +341,31 @@ let fullTargets: [Target] = [
         path: "Tests/ToolServerTests"
     ),
     .testTarget(
+        name: "FountainCodexTests",
+        dependencies: ["FountainCodex", .product(name: "NIOHTTP1", package: "swift-nio")],
+        path: "Tests/FountainCodexTests"
+    ),
+    .testTarget(
+        name: "FountainRuntimeTests",
+        dependencies: ["FountainRuntime", .product(name: "NIOHTTP1", package: "swift-nio")],
+        path: "Tests/FountainRuntimeTests"
+    ),
+    .testTarget(
+        name: "GatewayPluginsTests",
+        dependencies: ["RateLimiterGatewayPlugin", "FountainRuntime"],
+        path: "Tests/GatewayPluginsTests"
+    ),
+    .testTarget(
+        name: "LauncherSignatureTests",
+        dependencies: ["LauncherSignature"],
+        path: "Tests/LauncherSignatureTests"
+    ),
+    .testTarget(
+        name: "MIDI2Tests",
+        dependencies: ["MIDI2Models"],
+        path: "Tests/MIDI2Tests"
+    ),
+    .testTarget(
         name: "OpenAPICuratorTests",
         dependencies: [.product(name: "OpenAPICurator", package: "OpenAPICurator")],
         path: "Tests/OpenAPICuratorTests",
@@ -451,6 +476,12 @@ let leanTargets: [Target] = [
     ),
     .target(name: "ResourceLoader", path: "libs/ResourceLoader"),
     .target(
+        name: "MIDI2Models",
+        dependencies: ["ResourceLoader"],
+        path: "libs/MIDI2/MIDI2Models",
+        resources: [.process("MIDI2Models/Resources")]
+    ),
+    .target(
         name: "ToolServer",
         dependencies: [
             .product(name: "Crypto", package: "swift-crypto"),
@@ -476,6 +507,31 @@ let leanTargets: [Target] = [
         resources: [.process("Fixtures")]
     ),
     .testTarget(
+        name: "FountainCodexTests",
+        dependencies: ["FountainCodex", .product(name: "NIOHTTP1", package: "swift-nio")],
+        path: "Tests/FountainCodexTests"
+    ),
+    .testTarget(
+        name: "FountainRuntimeTests",
+        dependencies: ["FountainRuntime", .product(name: "NIOHTTP1", package: "swift-nio")],
+        path: "Tests/FountainRuntimeTests"
+    ),
+    .testTarget(
+        name: "GatewayPluginsTests",
+        dependencies: ["RateLimiterGatewayPlugin", "FountainRuntime"],
+        path: "Tests/GatewayPluginsTests"
+    ),
+    .testTarget(
+        name: "LauncherSignatureTests",
+        dependencies: ["LauncherSignature"],
+        path: "Tests/LauncherSignatureTests"
+    ),
+    .testTarget(
+        name: "MIDI2Tests",
+        dependencies: ["MIDI2Models"],
+        path: "Tests/MIDI2Tests"
+    ),
+    .testTarget(
         name: "ResourceLoaderTests",
         dependencies: ["ResourceLoader"],
         path: "Tests/ResourceLoaderTests"
@@ -498,6 +554,10 @@ var targets: [Target] = LEAN ? leanTargets : fullTargets
 #if os(Linux)
 products.append(.library(name: "PDFiumExtractor", targets: ["PDFiumExtractor"]))
 targets.append(.target(name: "PDFiumExtractor", dependencies: [], path: "libs/PDFiumExtractor"))
+#endif
+// After appending core targets, include Linux-specific tests.
+#if os(Linux)
+targets.append(.testTarget(name: "PDFiumExtractorTests", dependencies: ["PDFiumExtractor"], path: "Tests/PDFiumExtractorTests"))
 #endif
 
 let package = Package(
