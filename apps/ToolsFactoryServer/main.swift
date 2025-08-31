@@ -2,6 +2,9 @@ import Foundation
 import TypesensePersistence
 import ToolsFactoryService
 import FountainRuntime
+import LauncherSignature
+
+verifyLauncherSignature()
 
 let adapters: [String: ToolAdapter] = [
     "imagemagick": ImageMagickAdapter(),

@@ -1,6 +1,9 @@
 import Foundation
 import Dispatch
 import FountainRuntime
+import LauncherSignature
+
+verifyLauncherSignature()
 
 let server = NIOHTTPServer(kernel: makeOpenAPICuratorKernel())
 Task {

@@ -68,6 +68,10 @@ let fullTargets: [Target] = [
         exclude: ["DNS/README.md"]
     ),
     .target(
+        name: "LauncherSignature",
+        path: "libs/LauncherSignature"
+    ),
+    .target(
         name: "TypesensePersistence",
         dependencies: [
             .product(name: "Typesense", package: "typesense-swift"),
@@ -88,10 +92,10 @@ let fullTargets: [Target] = [
     ),
     .executableTarget(
         name: "openapi-curator-service",
-        dependencies: ["FountainRuntime", "OpenAPICurator", "Yams"],
+        dependencies: ["FountainRuntime", "OpenAPICurator", "Yams", "LauncherSignature"],
         path: "apps/OpenAPICuratorService"
     ),
-    .executableTarget(
+        .executableTarget(
         name: "gateway-server",
         dependencies: [
             "FountainRuntime",
@@ -104,8 +108,7 @@ let fullTargets: [Target] = [
             "DestructiveGuardianGatewayPlugin",
             "SecuritySentinelGatewayPlugin",
             "RoleHealthCheckGatewayPlugin",
-                        "RoleHealthCheckGatewayPlugin",
-            "RoleHealthCheckGatewayPlugin",
+            "LauncherSignature",
             .product(name: "Crypto", package: "swift-crypto"),
             .product(name: "X509", package: "swift-certificates"),
             "Yams"
@@ -232,32 +235,32 @@ let fullTargets: [Target] = [
     ),
     .executableTarget(
         name: "tools-factory-server",
-        dependencies: ["FountainRuntime", "ToolsFactoryService", "TypesensePersistence"],
+        dependencies: ["FountainRuntime", "ToolsFactoryService", "TypesensePersistence", "LauncherSignature"],
         path: "apps/ToolsFactoryServer"
     ),
     .executableTarget(
         name: "planner-server",
-        dependencies: ["FountainRuntime", "TypesensePersistence", "PlannerService", "Yams"],
+        dependencies: ["FountainRuntime", "TypesensePersistence", "PlannerService", "Yams", "LauncherSignature"],
         path: "apps/PlannerServer"
     ),
     .executableTarget(
         name: "function-caller-server",
-        dependencies: ["FountainRuntime", "TypesensePersistence", "FunctionCallerService", "Yams"],
+        dependencies: ["FountainRuntime", "TypesensePersistence", "FunctionCallerService", "Yams", "LauncherSignature"],
         path: "apps/FunctionCallerServer"
     ),
     .executableTarget(
         name: "persist-server",
-        dependencies: ["FountainRuntime", "TypesensePersistence", "Yams"],
+        dependencies: ["FountainRuntime", "TypesensePersistence", "Yams", "LauncherSignature"],
         path: "apps/PersistServer"
     ),
     .executableTarget(
         name: "baseline-awareness-server",
-        dependencies: ["TypesensePersistence", "AwarenessService"],
+        dependencies: ["TypesensePersistence", "AwarenessService", "LauncherSignature"],
         path: "apps/BaselineAwarenessServer"
     ),
     .executableTarget(
         name: "bootstrap-server",
-        dependencies: ["TypesensePersistence", "BootstrapService"],
+        dependencies: ["TypesensePersistence", "BootstrapService", "LauncherSignature"],
         path: "apps/BootstrapServer"
     ),
     .testTarget(name: "ClientGeneratorTests", dependencies: ["FountainRuntime"], path: "Tests/ClientGeneratorTests"),
@@ -369,6 +372,10 @@ let leanTargets: [Target] = [
         exclude: ["DNS/README.md"]
     ),
     .target(
+        name: "LauncherSignature",
+        path: "libs/LauncherSignature"
+    ),
+    .target(
         name: "TypesensePersistence",
         dependencies: [
             .product(name: "Typesense", package: "typesense-swift"),
@@ -390,6 +397,7 @@ let leanTargets: [Target] = [
             "DestructiveGuardianGatewayPlugin",
             "SecuritySentinelGatewayPlugin",
             "RoleHealthCheckGatewayPlugin",
+            "LauncherSignature",
             .product(name: "Crypto", package: "swift-crypto"),
             .product(name: "X509", package: "swift-certificates"),
             "Yams"

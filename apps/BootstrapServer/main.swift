@@ -2,6 +2,9 @@ import Foundation
 import TypesensePersistence
 import BootstrapService
 import FountainRuntime
+import LauncherSignature
+
+verifyLauncherSignature()
 
 // Bootstrap server using the shared NIOHTTPServer for consistent HTTP handling
 do {

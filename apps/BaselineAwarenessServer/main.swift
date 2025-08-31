@@ -2,6 +2,9 @@ import Foundation
 import TypesensePersistence
 import AwarenessService
 import FountainRuntime
+import LauncherSignature
+
+verifyLauncherSignature()
 
 // Awareness server using the shared NIOHTTPServer for consistent HTTP handling
 do {

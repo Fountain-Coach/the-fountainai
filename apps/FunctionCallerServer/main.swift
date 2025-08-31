@@ -4,6 +4,9 @@ import FountainRuntime
 import Yams
 import TypesensePersistence
 import FunctionCallerService
+import LauncherSignature
+
+verifyLauncherSignature()
 
 struct FunctionCallerConfig: Codable {
     var typesenseURLs: [String]

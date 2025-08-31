@@ -4,6 +4,9 @@ import FountainRuntime
 import Yams
 import TypesensePersistence
 import PlannerService
+import LauncherSignature
+
+verifyLauncherSignature()
 
 struct PlannerConfig: Codable {
     var typesenseURLs: [String]
