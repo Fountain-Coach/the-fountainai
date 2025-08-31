@@ -6,8 +6,10 @@ public struct PayloadInspectionGatewayPlugin: Sendable {
     public let router: Router
     private let handlers: Handlers
 
-    public init() {
-        let h = Handlers()
+    /// Creates a new plugin instance.
+    /// - Parameter maxPayloadBytes: Maximum payload size accepted by the inspector.
+    public init(maxPayloadBytes: Int = 1024) {
+        let h = Handlers(maxSize: maxPayloadBytes)
         self.handlers = h
         self.router = Router(handlers: h)
     }
