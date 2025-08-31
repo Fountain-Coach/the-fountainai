@@ -15,8 +15,8 @@
 4. **DNSServer**
    - Implement integration tests that start the server, send UDP/TCP queries, and verify responses, covering `start` and `stop` paths
 
-5. **DNSMetrics**
-   - Add async tests for `wait(forQueries:timeout:)` ensuring it resolves after expected query counts or times out correctly
+5. ~~**DNSMetrics**~~
+   - ~~Add async tests for `wait(forQueries:timeout:)` ensuring it resolves after expected query counts or times out correctly~~
 
 6. **ZoneManager**
    - Write tests for `updateRecord`, `record`, and persistence with optional signer, including file reload behavior when the YAML source changes
