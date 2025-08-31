@@ -12,7 +12,7 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "FountainAiLauncher",
-            path: "Sources/FountainAiLauncher",
+            path: "Sources",
             resources: [
                 .copy("services.json")
             ]

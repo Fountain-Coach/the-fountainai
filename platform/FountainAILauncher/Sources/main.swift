@@ -20,6 +20,9 @@ let supervisor = Supervisor()
 let monitor = HealthMonitor(supervisor: supervisor)
 
 do {
+    try Diagnostics.run()
+    try Builder.build(services: services)
+    try Installer.install(services: services)
     try supervisor.start(services: services)
     monitor.startMonitoring(services: services)
     dispatchMain()
