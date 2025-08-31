@@ -9,8 +9,8 @@
 2. **DNSHandler**
    - Write NIO pipeline tests verifying that `channelRead` forwards responses and `channelReadComplete` flushes writes
 
-3. **DNSSECSigner**
-   - Create tests for `sign(zone:)` and `verify(zone:signature:)` using generated key pairs to validate signing correctness
+3. ~~**DNSSECSigner**~~
+   - ~~Create tests for `sign(zone:)` and `verify(zone:signature:)` using generated key pairs to validate signing correctness~~
 
 4. **DNSServer**
    - Implement integration tests that start the server, send UDP/TCP queries, and verify responses, covering `start` and `stop` paths
