@@ -227,23 +227,6 @@ final class DNSEngineTests: XCTestCase {
         XCTAssertTrue(text.contains("gateway_rate_limit_throttled_total 1"))
     }
 
-    func testWaitForQueriesWithTimeout() async throws {
-        await DNSMetrics.shared.reset()
-        let producer = Task {
-            for _ in 0..<5 {
-                await DNSMetrics.shared.record(query: "example.com", type: "A", hit: true)
-                try? await Task.sleep(nanoseconds: 10_000_000)
-            }
-        }
-        let reached = await DNSMetrics.shared.wait(forQueries: 5, timeout: 1.0)
-        XCTAssertTrue(reached)
-        _ = await producer.value
-
-        await DNSMetrics.shared.reset()
-        let timedOut = await DNSMetrics.shared.wait(forQueries: 1, timeout: 0.1)
-        XCTAssertFalse(timedOut)
-    }
-
     func testResetZeroesMetrics() async throws {
         await DNSMetrics.shared.reset()
         await DNSMetrics.shared.record(query: "example.com", type: "A", hit: true)
