@@ -1,5 +1,5 @@
 import XCTest
-import LauncherSignature
+@testable import LauncherSignature
 
 final class LauncherSignatureTests: XCTestCase {
     func testEmbeddedSignatureConstant() {
@@ -9,11 +9,19 @@ final class LauncherSignatureTests: XCTestCase {
     func testVerifyLauncherSignaturePassesWhenEnvMatches() {
         setenv("LAUNCHER_SIGNATURE", embeddedLauncherSignature, 1)
         verifyLauncherSignature()
-        XCTAssertEqual(ProcessInfo.processInfo.environment["LAUNCHER_SIGNATURE"], embeddedLauncherSignature)
+        XCTAssertEqual(
+            ProcessInfo.processInfo.environment["LAUNCHER_SIGNATURE"],
+            embeddedLauncherSignature
+        )
     }
 
-    func testMissingSignatureDetected() {
+    func testMissingSignatureFailsValidation() {
         unsetenv("LAUNCHER_SIGNATURE")
-        XCTAssertNotEqual(ProcessInfo.processInfo.environment["LAUNCHER_SIGNATURE"], embeddedLauncherSignature)
+        XCTAssertFalse(isLauncherSignatureValid())
+    }
+
+    func testInvalidSignatureFailsValidation() {
+        setenv("LAUNCHER_SIGNATURE", "bogus", 1)
+        XCTAssertFalse(isLauncherSignatureValid())
     }
 }
