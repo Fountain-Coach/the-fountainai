@@ -16,13 +16,14 @@ if let url = Bundle.module.url(forResource: "services", withExtension: "json") {
     exit(1)
 }
 
-let supervisor = Supervisor()
+let launcherSignature = UUID().uuidString
+let supervisor = Supervisor(launcherSignature: launcherSignature)
 let monitor = HealthMonitor(supervisor: supervisor)
 let controlPlane = ControlPlane(supervisor: supervisor, services: services)
 
 do {
     try Diagnostics.run()
-    try Builder.build(services: services)
+    try Builder.build(services: services, signature: launcherSignature)
     try Installer.install(services: services)
     let manifestURL = URL(fileURLWithPath: "service-manifest.json")
     try ManifestGenerator.generate(services: services, url: manifestURL)

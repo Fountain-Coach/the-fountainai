@@ -5,6 +5,9 @@ import FountainRuntime
 import LLMGatewayPlugin
 import AuthGatewayPlugin
 import RateLimiterGatewayPlugin
+import LauncherSignature
+
+verifyLauncherSignature()
 // Role guard plugin in this target
 // Loaded from config if present
 

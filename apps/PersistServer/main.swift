@@ -3,6 +3,9 @@ import Dispatch
 import FountainRuntime
 import Yams
 import TypesensePersistence
+import LauncherSignature
+
+verifyLauncherSignature()
 
 struct PersistConfig: Codable {
     var typesenseURLs: [String]

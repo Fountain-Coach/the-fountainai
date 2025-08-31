@@ -8,11 +8,21 @@ public final class Supervisor: @unchecked Sendable {
     private var serviceConfigs: [String: Service] = [:]
     /// Directory where logs will be written.
     private let logDirectory: URL
+    /// Environment variables propagated to child processes.
+    private let environment: [String: String]
+    /// Compile-time launcher signature each service must validate.
+    private let launcherSignature: String
 
     /// Creates a new supervisor writing logs to the given directory.
     /// - Parameter logDirectory: Directory where service logs are stored.
-    public init(logDirectory: URL = URL(fileURLWithPath: "logs", isDirectory: true)) {
+    public init(
+        logDirectory: URL = URL(fileURLWithPath: "logs", isDirectory: true),
+        environment: [String: String] = ProcessInfo.processInfo.environment,
+        launcherSignature: String
+    ) {
         self.logDirectory = logDirectory
+        self.environment = environment
+        self.launcherSignature = launcherSignature
         try? FileManager.default.createDirectory(at: logDirectory, withIntermediateDirectories: true)
     }
 
@@ -24,6 +34,9 @@ public final class Supervisor: @unchecked Sendable {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: service.binaryPath)
         process.arguments = service.arguments
+        var env = environment
+        env["LAUNCHER_SIGNATURE"] = launcherSignature
+        process.environment = env
 
         let sanitizedName = service.name.replacingOccurrences(of: " ", with: "_")
         let logURL = logDirectory.appendingPathComponent("\(sanitizedName).log")

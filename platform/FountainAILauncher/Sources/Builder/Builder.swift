@@ -12,7 +12,13 @@ enum BuilderError: Error, CustomStringConvertible {
 }
 
 struct Builder {
-    static func build(services: [Service]) throws {
+    static func build(services: [Service], signature: String) throws {
+        // Embed launcher signature into shared library so each service
+        // binary includes a compile-time token.
+        let sigURL = URL(fileURLWithPath: "libs/LauncherSignature/Signature.swift")
+        let sigContent = "public let embeddedLauncherSignature = \"\(signature)\"\n"
+        try sigContent.write(to: sigURL, atomically: true, encoding: .utf8)
+
         for service in services {
             let product = service.productName
             let process = Process()

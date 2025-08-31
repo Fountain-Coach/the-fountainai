@@ -1,5 +1,8 @@
 import Foundation
 import SemanticBrowser
+import LauncherSignature
+
+verifyLauncherSignature()
 
 func buildService() -> SemanticMemoryService {
     let env = ProcessInfo.processInfo.environment

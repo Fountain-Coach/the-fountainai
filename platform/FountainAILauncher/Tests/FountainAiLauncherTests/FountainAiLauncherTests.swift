@@ -7,7 +7,7 @@ import FoundationNetworking
 
 final class FountainAiLauncherTests: XCTestCase {
     func testServiceLaunch() throws {
-        let supervisor = Supervisor()
+        let supervisor = Supervisor(launcherSignature: "test")
         let service = Service(name: "Echo", binaryPath: "/usr/bin/env", arguments: ["true"])
         let process = try supervisor.start(service: service)
         process.waitUntilExit()
@@ -15,7 +15,7 @@ final class FountainAiLauncherTests: XCTestCase {
     }
 
     func testTerminateAllStopsProcesses() throws {
-        let supervisor = Supervisor()
+        let supervisor = Supervisor(launcherSignature: "test")
         let service = Service(name: "Sleep", binaryPath: "/bin/sleep", arguments: ["5"])
         let process = try supervisor.start(service: service)
         XCTAssertTrue(process.isRunning)
@@ -59,7 +59,7 @@ final class FountainAiLauncherTests: XCTestCase {
         let service = Service(name: "Echo", binaryPath: "/bin/echo")
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("manifest.json")
         try ManifestGenerator.generate(services: [service], url: url)
-        let supervisor = Supervisor()
+        let supervisor = Supervisor(launcherSignature: "test")
         XCTAssertNoThrow(try supervisor.verify(services: [service], manifestURL: url))
     }
 
@@ -71,13 +71,13 @@ final class FountainAiLauncherTests: XCTestCase {
         var entries = try JSONDecoder().decode([ServiceManifestEntry].self, from: Data(contentsOf: url))
         entries[0] = ServiceManifestEntry(name: entries[0].name, binaryPath: entries[0].binaryPath, sha256: "0", permissions: entries[0].permissions)
         try JSONEncoder().encode(entries).write(to: url)
-        let supervisor = Supervisor()
+        let supervisor = Supervisor(launcherSignature: "test")
         XCTAssertThrowsError(try supervisor.verify(services: [service], manifestURL: url))
     }
 
     /// Control plane status endpoint lists running services.
     func testControlPlaneStatus() async throws {
-        let supervisor = Supervisor()
+        let supervisor = Supervisor(launcherSignature: "test")
         let service = Service(name: "Sleep", binaryPath: "/bin/sleep", arguments: ["10"])
         _ = try supervisor.start(service: service)
         let cp = ControlPlane(supervisor: supervisor, services: [service])
@@ -95,7 +95,7 @@ final class FountainAiLauncherTests: XCTestCase {
 
     /// Restart endpoint returns 200 for known service.
     func testControlPlaneRestart() async throws {
-        let supervisor = Supervisor()
+        let supervisor = Supervisor(launcherSignature: "test")
         let service = Service(name: "Sleep", binaryPath: "/bin/sleep", arguments: ["10"])
         _ = try supervisor.start(service: service)
         let cp = ControlPlane(supervisor: supervisor, services: [service])
