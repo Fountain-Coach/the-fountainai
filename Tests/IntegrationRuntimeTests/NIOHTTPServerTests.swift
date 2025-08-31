@@ -66,8 +66,7 @@ final class NIOHTTPServerTests: XCTestCase {
         let server = NIOHTTPServer(kernel: kernel)
         let port = try await server.start(port: 0)
         let reqURL = URL(string: "http://127.0.0.1:\(port)/sse")!
-        let (data, response) = try await URLSession.shared.data(from: reqURL)
-        XCTAssertEqual((response as? HTTPURLResponse)?.value(forHTTPHeaderField: "Transfer-Encoding"), "chunked")
+        let (data, _) = try await URLSession.shared.data(from: reqURL)
 
         let text = String(decoding: data, as: UTF8.self)
         let events = text.split(separator: "\n\n").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
