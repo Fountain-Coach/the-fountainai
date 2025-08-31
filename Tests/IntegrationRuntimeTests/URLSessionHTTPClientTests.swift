@@ -95,19 +95,28 @@ final class URLSessionHTTPClientTests: XCTestCase {
         XCTAssertEqual(headers.first(name: "X-B"), "b")
     }
 
-    func testExecutePropagatesSessionError() async {
+    @MainActor
+    func testExecutePropagatesSessionError() {
         let config = URLSessionConfiguration.ephemeral
         config.protocolClasses = [MockURLProtocol.self]
         let session = URLSession(configuration: config)
         struct TestError: Error {}
         MockURLProtocol.handler = { _ in throw TestError() }
         let client = URLSessionHTTPClient(session: session)
-        do {
-            _ = try await client.execute(method: .GET, url: "http://localhost", body: nil)
-            XCTFail("Expected to throw")
-        } catch let error as NSError {
-            XCTAssertEqual(error.domain, String(reflecting: TestError.self), "Unexpected error: \(error)")
+
+        let expectation = expectation(description: "wait for execute")
+        Task {
+            defer { expectation.fulfill() }
+            do {
+                _ = try await client.execute(method: .GET, url: "http://localhost", body: nil)
+                XCTFail("Expected to throw")
+            } catch is TestError {
+                // expected
+            } catch {
+                XCTFail("Unexpected error: \(error)")
+            }
         }
+        waitForExpectations(timeout: 1)
     }
 
     func testExecuteThrowsOnInvalidURL() async {
