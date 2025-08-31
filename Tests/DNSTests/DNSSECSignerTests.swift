@@ -27,6 +27,14 @@ final class DNSSECSignerTests: XCTestCase {
         let sig = try signer1.sign(zone: zone)
         XCTAssertFalse(signer2.verify(zone: zone, signature: sig))
     }
+
+    func testPublicKeyValidatesSignature() throws {
+        let key = Curve25519.Signing.PrivateKey()
+        let signer = DNSSECSigner(privateKey: key)
+        let zone = "example.com: 1.2.3.4"
+        let sig = try signer.sign(zone: zone)
+        XCTAssertTrue(signer.publicKey.isValidSignature(sig, for: Data(zone.utf8)))
+    }
 }
 
 // © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
