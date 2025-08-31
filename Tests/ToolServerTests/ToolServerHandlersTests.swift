@@ -61,7 +61,10 @@ final class ToolServerHandlersTests: XCTestCase {
     }
 
     func testOpenAPISpecLoads() throws {
-        let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+        let root = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent() // ToolServerHandlersTests.swift
+            .deletingLastPathComponent() // ToolServerTests
+            .deletingLastPathComponent() // Tests
         let url = root.appendingPathComponent("openapi/v1/tool-server.yml")
         let text = try String(contentsOf: url)
         let obj = try Yams.load(yaml: text)
