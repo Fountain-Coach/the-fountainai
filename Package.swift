@@ -412,7 +412,13 @@ let fullTargets: [Target] = [
     ),
     .testTarget(
         name: "GatewayPluginsTests",
-        dependencies: ["RateLimiterGatewayPlugin", "FountainRuntime"],
+        dependencies: [
+            "RateLimiterGatewayPlugin",
+            "AuthGatewayPlugin",
+            "PayloadInspectionGatewayPlugin",
+            "FountainRuntime",
+            .product(name: "Crypto", package: "swift-crypto")
+        ],
         path: "Tests/GatewayPluginsTests"
     ),
     .testTarget(
@@ -578,7 +584,13 @@ let leanTargets: [Target] = [
     ),
     .testTarget(
         name: "GatewayPluginsTests",
-        dependencies: ["RateLimiterGatewayPlugin", "FountainRuntime"],
+        dependencies: [
+            "RateLimiterGatewayPlugin",
+            "AuthGatewayPlugin",
+            "PayloadInspectionGatewayPlugin",
+            "FountainRuntime",
+            .product(name: "Crypto", package: "swift-crypto")
+        ],
         path: "Tests/GatewayPluginsTests"
     ),
     .testTarget(
