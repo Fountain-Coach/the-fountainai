@@ -263,6 +263,66 @@ let fullTargets: [Target] = [
         dependencies: ["TypesensePersistence", "BootstrapService", "LauncherSignature"],
         path: "apps/BootstrapServer"
     ),
+    .testTarget(
+        name: "SSEClientIntegrationTests",
+        dependencies: ["sse-client"],
+        path: "Tests/SSEClientIntegrationTests"
+    ),
+    .testTarget(
+        name: "OpenAPICuratorCLIIntegrationTests",
+        dependencies: ["openapi-curator-cli"],
+        path: "Tests/OpenAPICuratorCLIIntegrationTests"
+    ),
+    .testTarget(
+        name: "OpenAPICuratorServiceIntegrationTests",
+        dependencies: ["openapi-curator-service"],
+        path: "Tests/OpenAPICuratorServiceIntegrationTests"
+    ),
+    .testTarget(
+        name: "GatewayServerIntegrationTests",
+        dependencies: ["gateway-server"],
+        path: "Tests/GatewayServerIntegrationTests"
+    ),
+    .testTarget(
+        name: "PublishingFrontendIntegrationTests",
+        dependencies: ["publishing-frontend"],
+        path: "Tests/PublishingFrontendIntegrationTests"
+    ),
+    .testTarget(
+        name: "FlexctlIntegrationTests",
+        dependencies: ["flexctl"],
+        path: "Tests/FlexctlIntegrationTests"
+    ),
+    .testTarget(
+        name: "ToolsFactoryServerIntegrationTests",
+        dependencies: ["tools-factory-server"],
+        path: "Tests/ToolsFactoryServerIntegrationTests"
+    ),
+    .testTarget(
+        name: "PlannerServerIntegrationTests",
+        dependencies: ["planner-server"],
+        path: "Tests/PlannerServerIntegrationTests"
+    ),
+    .testTarget(
+        name: "FunctionCallerServerIntegrationTests",
+        dependencies: ["function-caller-server"],
+        path: "Tests/FunctionCallerServerIntegrationTests"
+    ),
+    .testTarget(
+        name: "PersistServerIntegrationTests",
+        dependencies: ["persist-server"],
+        path: "Tests/PersistServerIntegrationTests"
+    ),
+    .testTarget(
+        name: "BaselineAwarenessServerIntegrationTests",
+        dependencies: ["baseline-awareness-server"],
+        path: "Tests/BaselineAwarenessServerIntegrationTests"
+    ),
+    .testTarget(
+        name: "BootstrapServerIntegrationTests",
+        dependencies: ["bootstrap-server"],
+        path: "Tests/BootstrapServerIntegrationTests"
+    ),
     .testTarget(name: "ClientGeneratorTests", dependencies: ["FountainRuntime"], path: "Tests/ClientGeneratorTests"),
     .testTarget(name: "PublishingFrontendTests", dependencies: ["PublishingFrontend"], path: "Tests/PublishingFrontendTests"),
     .testTarget(name: "DNSTests", dependencies: ["PublishingFrontend", "FountainRuntime", .product(name: "Crypto", package: "swift-crypto"), .product(name: "NIOEmbedded", package: "swift-nio"), .product(name: "NIO", package: "swift-nio")], path: "Tests/DNSTests"),
