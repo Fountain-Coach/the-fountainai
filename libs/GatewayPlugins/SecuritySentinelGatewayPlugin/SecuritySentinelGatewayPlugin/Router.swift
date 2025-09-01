@@ -10,6 +10,11 @@ public struct Router: Sendable {
         switch (request.method, request.path) {
         case ("POST", "/sentinel/consult"):
             if let body = try? JSONDecoder().decode(ConsultRequest.self, from: request.body) {
+                do {
+                    try body.validate()
+                } catch {
+                    return HTTPResponse(status: 400)
+                }
                 return try await handlers.sentinelConsult(request, body: body)
             } else {
                 return HTTPResponse(status: 400)

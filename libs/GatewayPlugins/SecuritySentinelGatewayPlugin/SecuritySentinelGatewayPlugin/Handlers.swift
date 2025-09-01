@@ -3,15 +3,13 @@ import FountainRuntime
 
 /// Actor housing Security Sentinel handlers.
 public actor Handlers {
-    private let client: SecuritySentinelClient
-
-    public init(client: SecuritySentinelClient = SentinelClientFactory.make()) {
-        self.client = client
-    }
+    public init() {}
 
     /// Consults the security sentinel and returns a detailed decision.
     public func sentinelConsult(_ request: HTTPRequest, body: ConsultRequest) async throws -> HTTPResponse {
+        let client = SentinelClientFactory.make()
         let decision = try await client.consult(summary: body.summary, context: ["context": body.context])
+        AuditLogger.logConsult(inputSummary: body.summary, decision: decision)
         let respBody = try JSONEncoder().encode(decision)
         return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: respBody)
     }
