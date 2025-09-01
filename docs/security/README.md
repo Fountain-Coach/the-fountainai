@@ -13,20 +13,14 @@ This document outlines the current security posture of FountainAi and highlights
 ### Authentication & authorization
 The authentication gateway plugin validates OAuth2/OIDC bearer tokens and enforces role‑based access on administrative routes, returning `401` or `403` when credentials or scopes are insufficient.
 
-### Security sentinel
-[`SecuritySentinelPlugin`](../../Sources/GatewayApp/SecuritySentinelPlugin.swift) inspects potentially destructive requests, consults an external `SecuritySentinel` service, logs decisions to `logs/security.log` and denies or escalates high‑risk actions.
-
 ### Chain‑of‑thought logging
-[`CoTLogger`](../../Sources/GatewayApp/CoTLogger.swift) captures reasoning when `include_cot` is set, sanitizes secrets, and optionally checks risky entries with the sentinel before persisting them.
+[`CoTLogger`](../../Sources/GatewayApp/CoTLogger.swift) captures reasoning when `include_cot` is set, sanitizes secrets, and persists them.
 
 ### Rate limiting
 [`RateLimiterGatewayPlugin`](../../libs/GatewayPlugins/RateLimiterGatewayPlugin/RateLimiterGatewayPlugin/RateLimiterGatewayPlugin.swift) implements per‑client token buckets to throttle excessive requests and records allowance metrics.
 
 ### Pre‑deployment verification
 [`scripts/predeploy.sh`](../../scripts/predeploy.sh) verifies container image signatures with Cosign, scans for high‑severity vulnerabilities via Grype, and generates an SBOM using Syft before release.
-
-### Security Sentinel persona
-The [LLM gateway safeguards](./llm-gateway-safeguards.md) define a `SecuritySentinel` role that reviews high‑risk instructions and returns `allow`, `deny`, or `escalate` decisions to the gateway.
 
 ## Roadmap & Gaps
 The following recommendations remain pending:

@@ -30,5 +30,3 @@
 9. **DestructiveGuardian Gateway Plugin**
    - Add tests for `guardianEvaluate` covering protected vs. unprotected paths, manual approvals, and audit logging side effects
 
-10. **SecuritySentinel Gateway Plugin**
-    - Implement tests exercising `sentinelConsult` decisions and router behavior for valid requests, malformed bodies, and unknown routes

@@ -20,11 +20,6 @@ public struct Router: Sendable {
                 return try await handlers.chatWithObjective(request, body: body)
             }
             return HTTPResponse(status: 400)
-        case ("POST", ["sentinel", "consult"]):
-            if let body = try? JSONDecoder().decode(SecurityCheckRequest.self, from: request.body) {
-                return try await handlers.sentinelConsult(request, body: body)
-            }
-            return HTTPResponse(status: 400)
         case ("GET", let parts) where parts.count == 3 && parts[0] == "chat" && parts[2] == "cot":
             return try await handlers.getChatCoT(request, chatID: String(parts[1]))
         default:

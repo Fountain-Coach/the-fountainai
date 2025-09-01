@@ -37,32 +37,6 @@ paths:
                   type: integer
       security:
         - bearerAuth: []
-  /sentinel/consult:
-    post:
-      summary: Consult Security Sentinel
-      description: >
-        Sends a summary of a potentially destructive operation to the security sentinel
-        service for an allow/deny/escalate decision.
-      operationId: sentinelConsult
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SecurityCheckRequest'
-      responses:
-        '200':
-          description: Decision
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SecurityDecision'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
   /auth/token:
     post:
       summary: Issue Authentication Token
@@ -272,29 +246,6 @@ components:
         proxyEnabled:
           type: boolean
           description: Indicates if proxying to the upstream is enabled
-    SecurityCheckRequest:
-      type: object
-      required:
-        - summary
-        - user
-        - resources
-      properties:
-        summary:
-          type: string
-        user:
-          type: string
-        resources:
-          type: array
-          items:
-            type: string
-    SecurityDecision:
-      type: object
-      required:
-        - decision
-      properties:
-        decision:
-          type: string
-          enum: [allow, deny, escalate]
     ErrorResponse:
       type: object
       required:

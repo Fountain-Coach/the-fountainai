@@ -1,7 +1,7 @@
 import Foundation
 import FountainRuntime
 
-/// Plugin exposing sentinel consult and CoT endpoints.
+/// Plugin exposing CoT endpoints.
 public struct LLMGatewayPlugin: Sendable {
     public let router: Router
 

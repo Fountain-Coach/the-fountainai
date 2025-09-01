@@ -10,22 +10,6 @@ public struct Handlers: Sendable {
         self.cotLogURL = cotLogURL
     }
 
-    /// Simple sentinel consult handler that performs trivial
-    /// decision logic on the provided summary text.
-    public func sentinelConsult(_ request: HTTPRequest, body: SecurityCheckRequest) async throws -> HTTPResponse {
-        let summary = body.summary.lowercased()
-        let decision: String
-        if summary.contains("escalate") {
-            decision = "escalate"
-        } else if summary.contains("delete") || summary.contains("deny") || summary.contains("danger") {
-            decision = "deny"
-        } else {
-            decision = "allow"
-        }
-        let respBody = try JSONEncoder().encode(SecurityDecision(decision: decision))
-        return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: respBody)
-    }
-
     /// Placeholder handler for ``POST /chat``.
     public func chatWithObjective(_ request: HTTPRequest, body: ChatRequest) async throws -> HTTPResponse {
         let id = UUID().uuidString

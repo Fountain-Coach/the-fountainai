@@ -38,21 +38,6 @@ The OpenAPI Curator service uses the following variables:
 
 - `CURATOR_RULES_PATH` – path to the YAML rule file (default `Configuration/curator.yml`).
 - `CURATOR_STORAGE_PATH` – directory where curated outputs are stored.
-
-### Security Sentinel configuration
-
-To enable the LLM-backed Security Sentinel gateway plugin, set the following variables:
-
-```bash
-SEC_SENTINEL_ENABLED=true
-SEC_SENTINEL_URL=https://llm-gateway/sentinel/consult
-SEC_SENTINEL_API_KEY=changeme
-SEC_SENTINEL_TIMEOUT_MS=4000
-SEC_SENTINEL_RETRIES=1
-SEC_SENTINEL_MODEL=
-SEC_SENTINEL_FAIL_MODE=fallback   # fallback | allow | deny
-```
-
 ---
 
 ## 🎹 Identity

@@ -82,33 +82,6 @@ paths:
           description: Not Found
       security:
         - bearerAuth: []
-  /sentinel/consult:
-    post:
-      tags:
-        - Sentinel
-      summary: Consult Security Sentinel
-      description: >
-        Sends a summary of a risky operation to the security_sentinel role.
-      operationId: sentinelConsult
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SecurityCheckRequest'
-      responses:
-        "200":
-          description: Decision
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SecurityDecision'
-        "422":
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
     ChatRequest:
@@ -141,31 +114,6 @@ components:
           title: Include Chain of Thought
           description: When true, reasoning steps are returned and logged
           type: boolean
-    SecurityCheckRequest:
-      title: SecurityCheckRequest
-      type: object
-      required:
-        - summary
-        - user
-        - resources
-      properties:
-        summary:
-          type: string
-        user:
-          type: string
-        resources:
-          type: array
-          items:
-            type: string
-    SecurityDecision:
-      title: SecurityDecision
-      type: object
-      required:
-        - decision
-      properties:
-        decision:
-          type: string
-          enum: [allow, deny, escalate]
     FunctionCallObject:
       title: FunctionCallObject
       type: object
