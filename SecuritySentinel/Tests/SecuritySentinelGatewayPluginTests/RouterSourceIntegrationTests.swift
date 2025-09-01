@@ -1,7 +1,7 @@
 import XCTest
 import Foundation
 import FountainRuntime
-@testable import SecuritySentinelGatewayPlugin
+@testable import SecuritySentinelGatewayPluginModule
 
 final class RouterSourceIntegrationTests: XCTestCase {
     override func tearDown() {

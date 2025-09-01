@@ -1,5 +1,5 @@
 import XCTest
-@testable import SecuritySentinelGatewayPlugin
+@testable import SecuritySentinelGatewayPluginModule
 
 final class SentinelClientFactoryFailModesTests: XCTestCase {
     override func tearDown() {

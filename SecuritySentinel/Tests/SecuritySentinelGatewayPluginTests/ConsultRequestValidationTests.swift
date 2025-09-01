@@ -1,5 +1,5 @@
 import XCTest
-@testable import SecuritySentinelGatewayPlugin
+@testable import SecuritySentinelGatewayPluginModule
 
 final class ConsultRequestValidationTests: XCTestCase {
     func testValidSummaryPasses() throws {

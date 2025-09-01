@@ -1,5 +1,5 @@
 import XCTest
-@testable import SecuritySentinelGatewayPlugin
+@testable import SecuritySentinelGatewayPluginModule
 
 final class RuleBasedSecuritySentinelClientTests: XCTestCase {
     func testEscalateKeywordProducesEscalateDecision() async throws {
