@@ -105,6 +105,7 @@ let fullTargets: [Target] = [
             "PayloadInspectionGatewayPlugin",
             "DestructiveGuardianGatewayPlugin",
             "RoleHealthCheckGatewayPlugin",
+            .product(name: "SecuritySentinelGatewayPlugin", package: "SecuritySentinel"),
             "LauncherSignature",
             .product(name: "Crypto", package: "swift-crypto"),
             .product(name: "X509", package: "swift-certificates"),
@@ -479,6 +480,7 @@ let leanTargets: [Target] = [
             "PayloadInspectionGatewayPlugin",
             "DestructiveGuardianGatewayPlugin",
             "RoleHealthCheckGatewayPlugin",
+            .product(name: "SecuritySentinelGatewayPlugin", package: "SecuritySentinel"),
             "LauncherSignature",
             .product(name: "Crypto", package: "swift-crypto"),
             .product(name: "X509", package: "swift-certificates"),
@@ -636,6 +638,7 @@ let package = Package(
         .package(url: "https://github.com/Fountain-Coach/midi2.git", from: "0.3.1"),
         .package(url: "https://github.com/apple/swift-numerics.git", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.3.0"),
+        .package(url: "https://github.com/Fountain-Coach/SecuritySentinel.git", from: "1.0.0"),
         .package(path: "libs/OpenAPICurator"),
     ],
     targets: targets
