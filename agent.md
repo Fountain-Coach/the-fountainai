@@ -1,187 +1,161 @@
-# 🧠 FountainAI Root Agent Manifest — “Fully Tested Code”
+# 🧠 FountainAI Root Agent — **Task‑Scoped Contract**
 
-**Scope:** Whole repository (Swift 6), CI, launcher, and plugins  
-**Intent:** Make every change land with comprehensive tests and enforced coverage, automatically.
+**Scope:** This repository (Swift 6). **Operational scope per PR:** only the *current task* (changed files + directly affected interfaces).  
+**Intent:** Codex implements and tests **the task at hand**, not the whole system. Keep the feedback loop **≤ 5 minutes**.
 
-_Last updated:_ 31.08.2035
-
----
-
-## 🎯 Mission
-
-1) Generate **production-quality Swift code** _with tests first mindset_.  
-2) **Enforce coverage** per target (default ≥ `MIN_COVERAGE`, see CI).  
-3) Keep this file as a **machine-actionable contract** for Codex runs.
+_Last updated:_ 01.09.2025
 
 ---
 
-## ✅ Hard Rules (non-negotiable)
+## TL;DR
 
-- **Build + Test + Coverage** must run green on macOS & Linux:  
-  - `swift build -c release -Xswiftc -O -Xswiftc -warnings-as-errors`
-  - `swift test -c release --enable-code-coverage`
-- Use the repository script: `Scripts/coverage.sh $MIN_COVERAGE`  
-  - Emits: `coverage-summary.txt`, `coverage.lcov`, `coverage-targets.txt`
-- **Per-target coverage** is enforced (see `coverage.sh` targets list).  
-- All PRs must add/adjust tests to keep coverage ≥ threshold for touched targets.
-- Public APIs: add **golden tests** and **failure-path tests**.
+- **Constrain** to the **Impact Cone**: `{changed files} ∪ {their public interfaces} ∪ {direct dependents}`.  
+- **Fast unit tests only** for impacted targets (mocks/stubs by default).  
+- **No coverage, no Linux, no broad E2E** in the task loop.  
+- Escalate minimally only when a cross‑module contract actually changes.
 
 ---
 
-## 🤝 Soft Rules (defaults Codex should assume)
+## ✅ Hard Rules (per task iteration)
 
-- **Thresholds:** If not set by the PR, assume `MIN_COVERAGE = 90`.  
-- **Coverage matrix:** Maintain a “What’s still uncovered?” matrix in this file (see below).  
-- **Test taxonomy:**  
-  - **Unit:** Pure logic, 1 module, no I/O.  
-  - **Integration:** Multiple modules; start minimal HTTP servers if needed.  
-  - **E2E:** Launch via `FountainAiLauncher` and verify outcomes.
-
----
-
-## 🔍 Validation Rules (what Codex must verify)
-
-- `Scripts/coverage.sh` exits **non-zero** if any tracked target is below threshold.  
-- CI (`.github/workflows/ci.yml`) uses `MIN_COVERAGE` env; do not lower it without justification.  
-- `coverage-targets.txt` contains **all key modules/plugins** touched by the PR.
-- New code paths (error branches, edge conditions) have **explicit tests**.
-
----
-
-## 🛟 Correction Logic (what to do if validation fails)
-
-1) Parse `coverage-summary.txt` / JSON export and find **gaps**.  
-2) Generate tests for missed branches/lines; prefer **small, focused** cases.  
-3) Re-run coverage; if still below, add **integration/E2E** exercises.  
-4) Update **matrix** and **commit**.
-
----
-
-## ⚙️ Operation Cycle
-
-> Codex must execute these steps for every iteration.
-
-### 1. **Build & Test with Coverage**
-
-   ```bash
-   swift build -c release -Xswiftc -O -Xswiftc -warnings-as-errors
-   Scripts/coverage.sh ${MIN_COVERAGE:-90}
-   ```
-
-### 2.    Export JSON (optional for fine-grained prompts)
-
+1) **Build fast & strict** (Debug + warnings as errors):  
 ```bash
-CODECOV_DIR=$(dirname "$(swift test --show-codecov-path)")
-TEST_BIN=$(find .build -name '*.xctest' | head -n 1)
-llvm-cov export "$TEST_BIN" -instr-profile "$CODECOV_DIR/default.profdata" -format=json > coverage.json
+swift build -c debug -Xswiftc -Onone -Xswiftc -enable-testing -Xswiftc -warnings-as-errors
 ```
 
-### 3.    Regenerate Coverage Matrix (below) from coverage.json.
-    
-    
-### 4.    Write artifacts: coverage-summary.txt, coverage.lcov, coverage-targets.txt.
-    
-### 5.    If touching runtime paths, run E2E through the Launcher:
+2) **Test only the Impact Cone** (parallel, filtered):  
 ```bash
-swift run FountainAiLauncher --dry-run
+Scripts/impacted-targets.sh | xargs -I {} swift test --parallel --filter {}
 ```
-or full supervised launch in CI sandbox, then hit health endpoints
 
-### 6.    Commit: source + tests + updated agent.md matrix.
-
----
-
-## 📦 Per-Target Coverage Policy
-
-Coverage is enforced for these exemplars (Codex: keep in sync with Scripts/coverage.sh):
-
-- libs/FountainRuntime
-- apps/GatewayServer
-- libs/GatewayPlugins/LLMGatewayPlugin
-- libs/GatewayPlugins/AuthGatewayPlugin
-- libs/GatewayPlugins/RateLimiterGatewayPlugin
-- libs/GatewayPlugins/BudgetBreakerGatewayPlugin
-- libs/GatewayPlugins/PayloadInspectionGatewayPlugin
-- libs/GatewayPlugins/DestructiveGuardianGatewayPlugin
-- libs/GatewayPlugins/SecuritySentinelGatewayPlugin
-
-CI fails if any of the above dip below MIN_COVERAGE.
+3) **Every changed public API**: add **1 happy path + 1 failure path** unit test.  
+4) **Do not** call real network/processes in task loop (use mocks/stubs).
 
 ---
 
-## 🧪 Test Types & Minimums
+## 🤝 Soft Rules (defaults)
 
-- **Unit:** Each new public function ⇒ ≥ 2 tests (happy path + 1 edge/failure).  
-- **Integration:** For every new cross-module behavior ⇒ ≥ 1 scenario test.  
-- **E2E:** For any new executable, command, or major flow ⇒ ≥ 1 scenario under the launcher.
-
----
-
-## 🧭 Coverage Matrix (machine-readable)
-
-Codex: regenerate this table each run by parsing coverage.json. Keep rows atomic.
-
-| Feature / Path        | File(s) / Target                    | Action (what test to add)                          | Status | Blockers                  | Tags         |
-|------------------------|-------------------------------------|---------------------------------------------------|--------|---------------------------|--------------|
-| Example: rate limit hit | GatewayServer / RateLimiterPlugin   | Simulate over-budget burst, assert 429 + headers   | ⏳      | test clock helper missing | test, plugin |
-| Example: parse failure  | FountainRuntime/Parser.swift        | Feed invalid token stream, assert error enum case  | ⏳      | —                         | test, parser |
-| Example: launch failure | FountainAiLauncher                 | Corrupt binary hash → expect refusal + log         | ⏳      | fixture for hash mismatch | test, launcher |
-
-Status: ✅ done · ⏳ todo · ⚠️ partial · ❌ missing
+- Behavioral test names (Given/When/Then).  
+- Use test builders/fixtures; avoid deep graphs.  
+- If a test > 500 ms → refactor/mock.  
+- Skip trivial pass‑throughs unless guarding invariants.
 
 ---
 
-## 🧰 Prompt Snippets Codex Can Use
+## 🔍 Validation (what Codex must check each run)
 
-### Generate matrix from coverage JSON
-
-You have coverage.json from llvm-cov export.  
-List all functions/files with <100% coverage and propose ONE specific test per gap.  
-Output rows for the Coverage Matrix table (no prose), grouped by target.
-
-### Create edge/failure tests
-
-For `<File.swift:LineRange>`, write a SwiftPM test that triggers the failure branch.  
-No network or external processes unless explicitly mocked.
-
-### E2E via Launcher
-
-Launch FountainAiLauncher in a test harness, assert health/control-plane responses,  
-and verify logs include request_id + exit_code. Fail fast on any stderr.
+- Changed files compile with **no warnings**.  
+- Impact Cone unit tests **green**.  
+- Changed **public APIs** have happy/failure tests.  
+- If change is cross‑module, add **exactly one** contract/integration smoke (≤ 10s).
 
 ---
 
-## 🧪 Acceptance Checklist (PR must satisfy)
+## 🛟 Correction Logic
 
-- All tests pass on CI (Linux) and locally (macOS)  
-- `Scripts/coverage.sh $MIN_COVERAGE` passes; coverage-targets.txt updated  
-- Coverage Matrix updated in this file (no stale rows)  
-- New behaviors include unit + (if applicable) integration/E2E tests  
-- No warnings; -warnings-as-errors holds  
-- Launcher flows tested when touching runtime orchestration
+1) Narrow the cone; isolate with stubs.  
+2) Add a **micro‑test** for the failing branch.  
+3) If still failing, add a seam test (interface‑level).  
+4) Only if necessary, add **one** integration smoke (≤ 10s).
 
 ---
 
-## 🗂 Artifacts & Locations
+## ⚙️ Task Loop
 
-- **Coverage artifacts:** coverage-summary.txt, coverage.lcov, coverage-targets.txt  
-- **Optional analysis:** coverage.json (for Codex parsing)  
-- **Logs:** /logs/ (build/test summaries), feedback: /feedback/ (planning hints)
-
----
-
-## 📓 Notes for Maintainers
-
-- Prefer small PRs that complete vertical slices: code + tests + docs + matrix.  
-- If you must lower MIN_COVERAGE, pin the reason and a follow-up matrix row.  
-- Keep Scripts/coverage.sh authoritative for target list and measurements.
+1) **State the Task Contract** (inputs/outputs/invariants).  
+2) **List Impact Cone** via script.  
+3) **Write/adjust tests first** for the changed logic/API.  
+4) **Implement** until green with filtered tests.  
+5) If cross‑module, add one seam test (≤ 10s).  
+6) **Commit** code + tests + short task note.
 
 ---
 
-**Why this aligns with the repo today**
+## 🧪 Escalation Matrix
 
-- CI already runs a **coverage script** and enforces thresholds; this draft formalizes how Codex uses it (and per-target enforcement you added).  
-- The initial **coverage baseline and action plan** establish the gap; the matrix + prompts operationalize closing it.  
-- The **operation cycle** matches the optimized build/test flow and the **Launcher-centric** run model.  
-- The “**make the repo Codex-compatible**” matrix convention is preserved so agents can plan and act iteratively.  
-- The JSON-driven **coverage-matrix** prompt matches your tutorial for LLVM coverage export + Codex loops.  
+| Risk | Criteria | Extra checks |
+|------|---------|--------------|
+| Low  | Pure internal logic | none |
+| Med  | Public API change in one module | 1 interface contract test |
+| High | Cross‑module protocol/security/launcher | 1 integration smoke (≤10s) |
+
+> Coverage, Linux, and broad E2E live in the **full suite** (nightly / main / opt‑in label).
+
+---
+
+## 🧰 CI: Minimal PR Workflow (reference)
+
+```yaml
+# .github/workflows/task-fast.yml
+name: task-fast
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  fast:
+    runs-on: macos-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: |
+            .build
+            ~/.swiftpm
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: ${{ runner.os }}-spm-
+      - run: swift build -c debug -Xswiftc -Onone -Xswiftc -enable-testing -Xswiftc -warnings-as-errors
+      - run: Scripts/impacted-targets.sh | tee impacted-filters.txt
+      - run: xargs -I {} swift test --parallel --filter {} < impacted-filters.txt
+```
+
+---
+
+## 🛠 Script: `Scripts/impacted-targets.sh` (drop‑in)
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+BASE=${BASE_REF:-origin/main}
+
+# 1) changed source files against main
+CHANGED=$(git diff --name-only "$BASE"...HEAD | grep -E '\.(swift|c|cpp|mm|metal)$' || true)
+
+# Nothing relevant changed → print a no-op filter so CI can exit 0 after build
+if [[ -z "$CHANGED" ]]; then
+  echo '^Noop$'
+  exit 0
+fi
+
+# 2) naive path→target mapper aligned with repo layout
+# libs/<Module>/..., apps/<App>/...
+TARGETS=()
+while IFS= read -r f; do
+  top=$(echo "$f" | awk -F'/' '{print $1}')
+  mod=$(echo "$f" | awk -F'/' '{print $2}')
+  case "$top" in
+    libs) name="$mod" ;;
+    apps) name="$mod" ;;
+    *)    name="" ;;
+  esac
+  [[ -n "${name}" ]] && TARGETS+=("^${name}\.\|\b${name}Tests\.")
+done <<< "$CHANGED"
+
+# 3) de-dupe; fallback to running all tests if mapping failed
+if [[ ${#TARGETS[@]} -eq 0 ]]; then
+  echo '.*'   # run all tests as a safe fallback
+else
+  printf '%s\n' "${TARGETS[@]}" | sort -u
+fi
+```
+
+> You can later replace the naive mapper with a precise `swift package describe --type json` → `jq` mapping. The naive version keeps PRs fast today.
+
+---
+
+## 📓 Maintainers
+
+- Keep PRs **small & vertical** (code + tests).  
+- If a module grows flaky, quarantine extra checks to a **full-suite** workflow (nightly/main/label).  
+- Avoid adding coverage or Linux to PR loop; reserve for gates that aren’t speed‑critical.
