@@ -147,7 +147,11 @@ let fullTargets: [Target] = [
     ),
     .target(
         name: "SecuritySentinelGatewayPlugin",
-        dependencies: ["FountainRuntime", .product(name: "AsyncHTTPClient", package: "async-http-client")],
+        dependencies: [
+            "FountainRuntime",
+            .product(name: "AsyncHTTPClient", package: "async-http-client"),
+            .product(name: "Logging", package: "swift-log")
+        ],
         path: "libs/GatewayPlugins/SecuritySentinelGatewayPlugin",
     ),
     .target(
