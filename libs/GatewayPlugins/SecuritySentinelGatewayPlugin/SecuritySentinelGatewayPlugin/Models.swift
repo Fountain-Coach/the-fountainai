@@ -11,6 +11,18 @@ public struct ConsultRequest: Codable, Sendable {
         self.summary = summary
         self.context = context
     }
+
+    enum ValidationError: Error {
+        case invalidSummary
+    }
+
+    /// Validates that the summary is non-empty and no longer than 1000 characters.
+    public func validate() throws {
+        let trimmed = summary.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty, trimmed.count <= 1000 else {
+            throw ValidationError.invalidSummary
+        }
+    }
 }
 
 // © 2025 Contexter alias Benedikt Eickhoff 🖚️ All rights reserved.

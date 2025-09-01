@@ -70,6 +70,16 @@ final class SecuritySentinelGatewayPluginTests: XCTestCase {
     }
 
     @MainActor
+    func testConsultInvalidSummaryReturns400() async throws {
+        let plugin = SecuritySentinelGatewayPlugin()
+        let body = ConsultRequest(summary: "", context: "ctx")
+        let data = try JSONEncoder().encode(body)
+        let request = HTTPRequest(method: "POST", path: "/sentinel/consult", body: data)
+        let resp = try await plugin.router.route(request)
+        XCTAssertEqual(resp?.status, 400)
+    }
+
+    @MainActor
     func testUnknownRouteReturnsNil() async throws {
         let plugin = SecuritySentinelGatewayPlugin()
         let request = HTTPRequest(method: "GET", path: "/unknown", body: Data())
