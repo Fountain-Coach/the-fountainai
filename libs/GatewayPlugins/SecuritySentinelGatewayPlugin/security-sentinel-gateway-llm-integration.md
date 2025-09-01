@@ -228,7 +228,6 @@ SecuritySentinelGateway/
       HTTP/
         Routes/SentinelRoutes.swift
         Models/ConsultRequest.swift
-        Models/ConsultResponse.swift
     Run/
       main.swift
   Tests/

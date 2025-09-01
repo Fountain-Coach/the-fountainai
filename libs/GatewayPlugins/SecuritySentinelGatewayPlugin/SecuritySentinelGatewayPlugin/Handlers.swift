@@ -7,30 +7,9 @@ public actor Handlers {
 
     /// Consults the security sentinel and returns a detailed decision.
     public func sentinelConsult(_ request: HTTPRequest, body: ConsultRequest) async throws -> HTTPResponse {
-        let summary = body.summary.lowercased()
-        let decision: String
-        let reason: String
-        if summary.contains("escalate") {
-            decision = "escalate"
-            reason = "escalation keyword found"
-        } else if summary.contains("delete") || summary.contains("deny") || summary.contains("danger") {
-            decision = "deny"
-            reason = "dangerous keyword found"
-        } else {
-            decision = "allow"
-            reason = "no dangerous keywords"
-        }
-        let response = ConsultResponse(
-            decision: decision,
-            reason: reason,
-            confidence: 0.5,
-            model: "mock-model",
-            requestID: UUID().uuidString,
-            latencyMS: 1,
-            source: "mock",
-            timestamp: Date()
-        )
-        let respBody = try JSONEncoder().encode(response)
+        let client = RuleBasedSecuritySentinelClient()
+        let decision = try await client.consult(summary: body.summary, context: ["context": body.context])
+        let respBody = try JSONEncoder().encode(decision)
         return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: respBody)
     }
 }
