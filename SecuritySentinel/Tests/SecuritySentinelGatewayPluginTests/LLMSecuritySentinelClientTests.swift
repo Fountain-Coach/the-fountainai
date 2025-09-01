@@ -1,6 +1,6 @@
 import XCTest
 import AsyncHTTPClient
-@testable import SecuritySentinelGatewayPlugin
+@testable import SecuritySentinelGatewayPluginModule
 
 final class LLMSecuritySentinelClientTests: XCTestCase {
     override func tearDown() {
