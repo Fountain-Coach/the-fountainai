@@ -147,7 +147,7 @@ let fullTargets: [Target] = [
     ),
     .target(
         name: "SecuritySentinelGatewayPlugin",
-        dependencies: ["FountainRuntime"],
+        dependencies: ["FountainRuntime", .product(name: "AsyncHTTPClient", package: "async-http-client")],
         path: "libs/GatewayPlugins/SecuritySentinelGatewayPlugin",
     ),
     .target(
@@ -527,7 +527,7 @@ let leanTargets: [Target] = [
     ),
     .target(
         name: "SecuritySentinelGatewayPlugin",
-        dependencies: ["FountainRuntime"],
+        dependencies: ["FountainRuntime", .product(name: "AsyncHTTPClient", package: "async-http-client")],
         path: "libs/GatewayPlugins/SecuritySentinelGatewayPlugin",
         exclude: ["security-sentinel-gateway-llm-integration.md"]
     ),
