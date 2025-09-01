@@ -25,8 +25,7 @@ let fullProducts: [Product] = [
     .executable(name: "function-caller-server", targets: ["function-caller-server"]),
     .library(name: "ToolsFactoryService", targets: ["ToolsFactoryService"]),
     .executable(name: "openapi-curator-cli", targets: ["openapi-curator-cli"]),
-    .executable(name: "openapi-curator-service", targets: ["openapi-curator-service"])
-]
+    .executable(name: "openapi-curator-service", targets: ["openapi-curator-service"])]
 
 let leanProducts: [Product] = [
     .library(name: "FountainCodex", targets: ["FountainCodex"]),
@@ -342,6 +341,7 @@ let fullTargets: [Target] = [
     .testTarget(name: "MIDI2TransportsTests", dependencies: ["MIDI2Transports"], path: "Tests/MIDI2TransportsTests"),
     .testTarget(name: "FlexctlTests", dependencies: ["flexctl", "ResourceLoader"], path: "Tests/FlexctlTests"),
     .testTarget(name: "GatewayAppTests", dependencies: ["gateway-server", "LLMGatewayPlugin", "AuthGatewayPlugin", "DestructiveGuardianGatewayPlugin", "SecuritySentinelGatewayPlugin", "PayloadInspectionGatewayPlugin", "BudgetBreakerGatewayPlugin", "RateLimiterGatewayPlugin", "RoleHealthCheckGatewayPlugin", "persist-server"], path: "Tests/GatewayAppTests"),
+    .testTarget(name: "SecuritySentinelGatewayAppTests", dependencies: ["SecuritySentinelGatewayPlugin", .product(name: "AsyncHTTPClient", package: "async-http-client"), "FountainRuntime"], path: "SecuritySentinelGateway/Tests/AppTests"),
     .testTarget(name: "FountainOpsTests", dependencies: ["LLMGatewayPlugin"], path: "Tests/FountainOpsTests"),
     .testTarget(name: "ToolsFactoryServiceTests", dependencies: ["ToolsFactoryService", "TypesensePersistence"], path: "Tests/ToolsFactoryServiceTests"),
     .testTarget(
@@ -624,6 +624,7 @@ let leanTargets: [Target] = [
         path: "Tests/OpenAPICuratorTests",
         resources: [.copy("Fixtures")]
     ),
+    .testTarget(name: "SecuritySentinelGatewayAppTests", dependencies: ["SecuritySentinelGatewayPlugin", .product(name: "AsyncHTTPClient", package: "async-http-client"), "FountainRuntime"], path: "SecuritySentinelGateway/Tests/AppTests"),
 ]
 
 var targets: [Target] = LEAN ? leanTargets : fullTargets
