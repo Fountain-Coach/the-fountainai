@@ -9,7 +9,7 @@ public struct Router: Sendable {
     public func route(_ request: HTTPRequest) async throws -> HTTPResponse? {
         switch (request.method, request.path) {
         case ("POST", "/sentinel/consult"):
-            if let body = try? JSONDecoder().decode(SecurityCheckRequest.self, from: request.body) {
+            if let body = try? JSONDecoder().decode(ConsultRequest.self, from: request.body) {
                 return try await handlers.sentinelConsult(request, body: body)
             } else {
                 return HTTPResponse(status: 400)

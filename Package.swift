@@ -528,7 +528,8 @@ let leanTargets: [Target] = [
     .target(
         name: "SecuritySentinelGatewayPlugin",
         dependencies: ["FountainRuntime"],
-        path: "libs/GatewayPlugins/SecuritySentinelGatewayPlugin"
+        path: "libs/GatewayPlugins/SecuritySentinelGatewayPlugin",
+        exclude: ["security-sentinel-gateway-llm-integration.md"]
     ),
     .target(
         name: "RoleHealthCheckGatewayPlugin",
