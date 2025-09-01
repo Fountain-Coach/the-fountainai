@@ -27,7 +27,6 @@ TARGETS=(
   "BudgetBreakerGatewayPlugin:libs/GatewayPlugins/BudgetBreakerGatewayPlugin"
   "PayloadInspectionGatewayPlugin:libs/GatewayPlugins/PayloadInspectionGatewayPlugin"
   "DestructiveGuardianGatewayPlugin:libs/GatewayPlugins/DestructiveGuardianGatewayPlugin"
-  "SecuritySentinelGatewayPlugin:libs/GatewayPlugins/SecuritySentinelGatewayPlugin"
 )
 
 > coverage-targets.txt

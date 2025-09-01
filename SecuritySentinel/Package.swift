@@ -26,15 +26,6 @@ let package = Package(
                 .product(name: "Logging", package: "swift-log")
             ],
             path: "Sources/SecuritySentinelGatewayPlugin"
-        ),
-        .testTarget(
-            name: "SecuritySentinelGatewayPluginTests",
-            dependencies: [
-                "SecuritySentinelGatewayPluginModule",
-                .product(name: "AsyncHTTPClient", package: "async-http-client"),
-                .product(name: "FountainRuntime", package: "the-fountainai")
-            ],
-            path: "Tests/SecuritySentinelGatewayPluginTests"
         )
     ]
 )

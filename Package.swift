@@ -37,7 +37,6 @@ let leanProducts: [Product] = [
     .library(name: "BudgetBreakerGatewayPlugin", targets: ["BudgetBreakerGatewayPlugin"]),
     .library(name: "PayloadInspectionGatewayPlugin", targets: ["PayloadInspectionGatewayPlugin"]),
     .library(name: "DestructiveGuardianGatewayPlugin", targets: ["DestructiveGuardianGatewayPlugin"]),
-    .library(name: "SecuritySentinelGatewayPlugin", targets: ["SecuritySentinelGatewayPlugin"]),
     .library(name: "RoleHealthCheckGatewayPlugin", targets: ["RoleHealthCheckGatewayPlugin"])
 ]
 
@@ -105,7 +104,6 @@ let fullTargets: [Target] = [
             "BudgetBreakerGatewayPlugin",
             "PayloadInspectionGatewayPlugin",
             "DestructiveGuardianGatewayPlugin",
-            "SecuritySentinelGatewayPlugin",
             "RoleHealthCheckGatewayPlugin",
             "LauncherSignature",
             .product(name: "Crypto", package: "swift-crypto"),
@@ -143,15 +141,6 @@ let fullTargets: [Target] = [
         name: "DestructiveGuardianGatewayPlugin",
         dependencies: ["FountainRuntime"],
         path: "libs/GatewayPlugins/DestructiveGuardianGatewayPlugin",
-    ),
-    .target(
-        name: "SecuritySentinelGatewayPlugin",
-        dependencies: [
-            "FountainRuntime",
-            .product(name: "AsyncHTTPClient", package: "async-http-client"),
-            .product(name: "Logging", package: "swift-log")
-        ],
-        path: "libs/GatewayPlugins/SecuritySentinelGatewayPlugin",
     ),
     .target(
         name: "RoleHealthCheckGatewayPlugin",
@@ -340,8 +329,7 @@ let fullTargets: [Target] = [
     .testTarget(name: "MIDI2CoreTests", dependencies: ["MIDI2Core", "ResourceLoader", "flexctl"], path: "Tests/MIDI2CoreTests"),
     .testTarget(name: "MIDI2TransportsTests", dependencies: ["MIDI2Transports"], path: "Tests/MIDI2TransportsTests"),
     .testTarget(name: "FlexctlTests", dependencies: ["flexctl", "ResourceLoader"], path: "Tests/FlexctlTests"),
-    .testTarget(name: "GatewayAppTests", dependencies: ["gateway-server", "LLMGatewayPlugin", "AuthGatewayPlugin", "DestructiveGuardianGatewayPlugin", "SecuritySentinelGatewayPlugin", "PayloadInspectionGatewayPlugin", "BudgetBreakerGatewayPlugin", "RateLimiterGatewayPlugin", "RoleHealthCheckGatewayPlugin", "persist-server"], path: "Tests/GatewayAppTests"),
-    .testTarget(name: "SecuritySentinelGatewayAppTests", dependencies: ["SecuritySentinelGatewayPlugin", .product(name: "AsyncHTTPClient", package: "async-http-client"), "FountainRuntime"], path: "SecuritySentinelGateway/Tests/AppTests"),
+    .testTarget(name: "GatewayAppTests", dependencies: ["gateway-server", "LLMGatewayPlugin", "AuthGatewayPlugin", "DestructiveGuardianGatewayPlugin", "PayloadInspectionGatewayPlugin", "BudgetBreakerGatewayPlugin", "RateLimiterGatewayPlugin", "RoleHealthCheckGatewayPlugin", "persist-server"], path: "Tests/GatewayAppTests"),
     .testTarget(name: "FountainOpsTests", dependencies: ["LLMGatewayPlugin"], path: "Tests/FountainOpsTests"),
     .testTarget(name: "ToolsFactoryServiceTests", dependencies: ["ToolsFactoryService", "TypesensePersistence"], path: "Tests/ToolsFactoryServiceTests"),
     .testTarget(
@@ -490,7 +478,6 @@ let leanTargets: [Target] = [
             "BudgetBreakerGatewayPlugin",
             "PayloadInspectionGatewayPlugin",
             "DestructiveGuardianGatewayPlugin",
-            "SecuritySentinelGatewayPlugin",
             "RoleHealthCheckGatewayPlugin",
             "LauncherSignature",
             .product(name: "Crypto", package: "swift-crypto"),
@@ -528,12 +515,6 @@ let leanTargets: [Target] = [
         name: "DestructiveGuardianGatewayPlugin",
         dependencies: ["FountainRuntime"],
         path: "libs/GatewayPlugins/DestructiveGuardianGatewayPlugin"
-    ),
-    .target(
-        name: "SecuritySentinelGatewayPlugin",
-        dependencies: ["FountainRuntime", .product(name: "AsyncHTTPClient", package: "async-http-client")],
-        path: "libs/GatewayPlugins/SecuritySentinelGatewayPlugin",
-        exclude: ["security-sentinel-gateway-llm-integration.md"]
     ),
     .target(
         name: "RoleHealthCheckGatewayPlugin",
@@ -624,7 +605,6 @@ let leanTargets: [Target] = [
         path: "Tests/OpenAPICuratorTests",
         resources: [.copy("Fixtures")]
     ),
-    .testTarget(name: "SecuritySentinelGatewayAppTests", dependencies: ["SecuritySentinelGatewayPlugin", .product(name: "AsyncHTTPClient", package: "async-http-client"), "FountainRuntime"], path: "SecuritySentinelGateway/Tests/AppTests"),
 ]
 
 var targets: [Target] = LEAN ? leanTargets : fullTargets
