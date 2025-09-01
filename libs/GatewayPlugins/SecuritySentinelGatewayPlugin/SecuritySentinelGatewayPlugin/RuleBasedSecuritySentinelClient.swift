@@ -20,8 +20,8 @@ final class RuleBasedSecuritySentinelClient: SecuritySentinelClient {
         return SentinelDecision(
             decision: verdict,
             reason: reason,
-            confidence: 0.5,
-            model: "rule-based",
+            confidence: nil,
+            model: nil,
             requestID: UUID().uuidString,
             latencyMS: 1,
             source: .fallback_rules,
