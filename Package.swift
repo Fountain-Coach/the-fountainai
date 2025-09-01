@@ -105,7 +105,6 @@ let fullTargets: [Target] = [
             "PayloadInspectionGatewayPlugin",
             "DestructiveGuardianGatewayPlugin",
             "RoleHealthCheckGatewayPlugin",
-            .product(name: "SecuritySentinelGatewayPlugin", package: "SecuritySentinel"),
             "LauncherSignature",
             .product(name: "Crypto", package: "swift-crypto"),
             .product(name: "X509", package: "swift-certificates"),
@@ -331,7 +330,6 @@ let fullTargets: [Target] = [
     .testTarget(name: "MIDI2TransportsTests", dependencies: ["MIDI2Transports"], path: "Tests/MIDI2TransportsTests"),
     .testTarget(name: "FlexctlTests", dependencies: ["flexctl", "ResourceLoader"], path: "Tests/FlexctlTests"),
     .testTarget(name: "GatewayAppTests", dependencies: ["gateway-server", "LLMGatewayPlugin", "AuthGatewayPlugin", "DestructiveGuardianGatewayPlugin", "PayloadInspectionGatewayPlugin", "BudgetBreakerGatewayPlugin", "RateLimiterGatewayPlugin", "RoleHealthCheckGatewayPlugin", "persist-server"], path: "Tests/GatewayAppTests"),
-    .testTarget(name: "FountainOpsTests", dependencies: ["LLMGatewayPlugin"], path: "Tests/FountainOpsTests"),
     .testTarget(name: "ToolsFactoryServiceTests", dependencies: ["ToolsFactoryService", "TypesensePersistence"], path: "Tests/ToolsFactoryServiceTests"),
     .testTarget(
         name: "ToolsmithPackageTests",
@@ -480,7 +478,6 @@ let leanTargets: [Target] = [
             "PayloadInspectionGatewayPlugin",
             "DestructiveGuardianGatewayPlugin",
             "RoleHealthCheckGatewayPlugin",
-            .product(name: "SecuritySentinelGatewayPlugin", package: "SecuritySentinel"),
             "LauncherSignature",
             .product(name: "Crypto", package: "swift-crypto"),
             .product(name: "X509", package: "swift-certificates"),
@@ -638,7 +635,6 @@ let package = Package(
         .package(url: "https://github.com/Fountain-Coach/midi2.git", from: "0.3.1"),
         .package(url: "https://github.com/apple/swift-numerics.git", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.3.0"),
-        .package(url: "https://github.com/Fountain-Coach/SecuritySentinel.git", from: "1.0.0"),
         .package(path: "libs/OpenAPICurator"),
     ],
     targets: targets
