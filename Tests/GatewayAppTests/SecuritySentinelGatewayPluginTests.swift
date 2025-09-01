@@ -8,11 +8,11 @@ final class SecuritySentinelGatewayPluginTests: XCTestCase {
     @MainActor
     func testDenyDecisionAndMetrics() async throws {
         let plugin = SecuritySentinelGatewayPlugin()
-        let body = SecurityCheckRequest(summary: "delete files", user: "u", resources: [])
+        let body = ConsultRequest(summary: "delete files", context: "u")
         let data = try JSONEncoder().encode(body)
         let request = HTTPRequest(method: "POST", path: "/sentinel/consult", body: data)
         let resp = try await plugin.router.route(request)
-        let decision = try JSONDecoder().decode(SecurityDecision.self, from: resp!.body)
+        let decision = try JSONDecoder().decode(ConsultResponse.self, from: resp!.body)
         XCTAssertEqual(decision.decision, "deny")
         let before = await GatewayRequestMetrics.shared.snapshot()
         await GatewayRequestMetrics.shared.record(method: request.method, status: resp!.status)
@@ -24,11 +24,11 @@ final class SecuritySentinelGatewayPluginTests: XCTestCase {
     @MainActor
     func testAllowDecisionAndMetrics() async throws {
         let plugin = SecuritySentinelGatewayPlugin()
-        let body = SecurityCheckRequest(summary: "safe", user: "u", resources: [])
+        let body = ConsultRequest(summary: "safe", context: "u")
         let data = try JSONEncoder().encode(body)
         let request = HTTPRequest(method: "POST", path: "/sentinel/consult", body: data)
         let resp = try await plugin.router.route(request)
-        let decision = try JSONDecoder().decode(SecurityDecision.self, from: resp!.body)
+        let decision = try JSONDecoder().decode(ConsultResponse.self, from: resp!.body)
         XCTAssertEqual(decision.decision, "allow")
         let before = await GatewayRequestMetrics.shared.snapshot()
         await GatewayRequestMetrics.shared.record(method: request.method, status: resp!.status)
@@ -40,11 +40,11 @@ final class SecuritySentinelGatewayPluginTests: XCTestCase {
     @MainActor
     func testEscalateDecisionAndMetrics() async throws {
         let plugin = SecuritySentinelGatewayPlugin()
-        let body = SecurityCheckRequest(summary: "please escalate", user: "u", resources: [])
+        let body = ConsultRequest(summary: "please escalate", context: "u")
         let data = try JSONEncoder().encode(body)
         let request = HTTPRequest(method: "POST", path: "/sentinel/consult", body: data)
         let resp = try await plugin.router.route(request)
-        let decision = try JSONDecoder().decode(SecurityDecision.self, from: resp!.body)
+        let decision = try JSONDecoder().decode(ConsultResponse.self, from: resp!.body)
         XCTAssertEqual(decision.decision, "escalate")
         let before = await GatewayRequestMetrics.shared.snapshot()
         await GatewayRequestMetrics.shared.record(method: request.method, status: resp!.status)
