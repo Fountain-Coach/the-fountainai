@@ -13,7 +13,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(path: ".."),
+        .package(url: "https://github.com/Fountain-Coach/the-fountainai.git", from: "1.0.0"),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.21.0"),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.5.0")
     ],
