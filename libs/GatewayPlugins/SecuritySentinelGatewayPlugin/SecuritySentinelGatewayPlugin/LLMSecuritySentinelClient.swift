@@ -2,11 +2,6 @@ import Foundation
 import AsyncHTTPClient
 import NIOCore
 
-/// Failure mode behaviour when the LLM call fails.
-enum FailMode: String {
-    case allow, deny, fallback
-}
-
 /// Client that consults an external LLM backed Security Sentinel service.
 final class LLMSecuritySentinelClient: SecuritySentinelClient {
     private let http: HTTPClient
@@ -15,7 +10,6 @@ final class LLMSecuritySentinelClient: SecuritySentinelClient {
     private let timeoutMS: Int
     private let retries: Int
     private let model: String?
-    private let failMode: FailMode
     private let breaker: CircuitBreaker
     private let ownsHTTPClient: Bool
 
@@ -35,7 +29,6 @@ final class LLMSecuritySentinelClient: SecuritySentinelClient {
         self.timeoutMS = SentinelEnv.timeoutMS
         self.retries = SentinelEnv.retries
         self.model = SentinelEnv.model
-        self.failMode = FailMode(rawValue: SentinelEnv.failMode) ?? .fallback
         self.breaker = CircuitBreaker()
     }
 
@@ -61,7 +54,7 @@ final class LLMSecuritySentinelClient: SecuritySentinelClient {
 
     func consult(summary: String, context: [String: (any Codable & Sendable)]?) async throws -> SentinelDecision {
         guard await breaker.allow() else {
-            return try await applyFailMode(reason: "circuit open", summary: summary, context: context)
+            return llmUnavailableDecision()
         }
         let payload = Payload(summary: summary, context: nil, model: model)
         let body = try JSONEncoder().encode(payload)
@@ -81,7 +74,7 @@ final class LLMSecuritySentinelClient: SecuritySentinelClient {
                     throw NSError(domain: "llm", code: Int(response.status.code))
                 }
                 guard response.status.code < 400 else {
-                    return try await applyFailMode(reason: "LLM \(response.status.code)", summary: summary, context: context)
+                    return llmUnavailableDecision()
                 }
                 let buffer = try await response.body.collect(upTo: 1_048_576)
                 let data = Data(buffer.readableBytesView)
@@ -106,41 +99,24 @@ final class LLMSecuritySentinelClient: SecuritySentinelClient {
                     continue
                 } else {
                     await breaker.recordFailure()
-                    return try await applyFailMode(reason: "LLM unavailable", summary: summary, context: context)
+                    return llmUnavailableDecision()
                 }
             }
         }
     }
 
-    private func applyFailMode(reason: String, summary: String, context: [String: (any Codable & Sendable)]?) async throws -> SentinelDecision {
+    private func llmUnavailableDecision() -> SentinelDecision {
         let ts = ISO8601DateFormatter().string(from: Date())
-        switch failMode {
-        case .allow:
-            return SentinelDecision(
-                decision: .allow,
-                reason: reason,
-                confidence: nil,
-                model: nil,
-                requestID: UUID().uuidString,
-                latencyMS: 0,
-                source: .llm,
-                timestamp: ts
-            )
-        case .deny:
-            return SentinelDecision(
-                decision: .deny,
-                reason: reason,
-                confidence: nil,
-                model: nil,
-                requestID: UUID().uuidString,
-                latencyMS: 0,
-                source: .llm,
-                timestamp: ts
-            )
-        case .fallback:
-            let fallback = RuleBasedSecuritySentinelClient()
-            return try await fallback.consult(summary: summary, context: context)
-        }
+        return SentinelDecision(
+            decision: .deny,
+            reason: "LLM unavailable",
+            confidence: nil,
+            model: nil,
+            requestID: UUID().uuidString,
+            latencyMS: 0,
+            source: .llm,
+            timestamp: ts
+        )
     }
 }
 

@@ -1,14 +1,9 @@
 import Foundation
 
-/// Factory that selects the appropriate Security Sentinel client based on environment.
+/// Factory that provides the Security Sentinel client.
 enum SentinelClientFactory {
     static func make() -> SecuritySentinelClient {
-        guard SentinelEnv.enabled,
-              SentinelEnv.url != nil,
-              SentinelEnv.apiKey != nil else {
-            return RuleBasedSecuritySentinelClient()
-        }
-        return LLMSecuritySentinelClient()
+        LLMSecuritySentinelClient()
     }
 }
 
