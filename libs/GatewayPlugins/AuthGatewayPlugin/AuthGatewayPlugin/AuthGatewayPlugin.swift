@@ -5,8 +5,10 @@ import FountainRuntime
 public struct AuthGatewayPlugin: Sendable {
     public let router: Router
 
-    public init(secret: String = ProcessInfo.processInfo.environment["GATEWAY_JWT_SECRET"] ?? "secret") {
-        self.router = Router(handlers: Handlers(secret: secret))
+    /// Creates a plugin with the supplied router. Defaults to a router with
+    /// a fresh set of handlers.
+    public init(router: Router = Router()) {
+        self.router = router
     }
 }
 
