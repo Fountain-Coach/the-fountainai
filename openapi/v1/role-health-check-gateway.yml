@@ -5,6 +5,7 @@ info:
   description: >
     Verifies seeded roles and promotes validated reflections.
   version: 1.0.0
+x-persona: ../personas/role-health-check.md
 servers:
   - url: http://role-health-check.fountain.coach/api/v1
 x-prompts:

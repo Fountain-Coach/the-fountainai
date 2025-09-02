@@ -11,6 +11,7 @@ info:
   license:
     name: GPL-3.0
     url: https://opensource.org/licenses/GPL-3.0
+x-persona: personas/typesense.md
 servers:
   - url: "{protocol}://{hostname}:{port}"
     description: Typesense Server

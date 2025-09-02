@@ -5,6 +5,8 @@ info:
   description: >
     Enforces request budgets with simple health checks.
   version: 1.0.0
+  
+x-persona: ../personas/budget-breaker.md
 servers:
   - url: http://budget-breaker.fountain.coach/api/v1
 paths:

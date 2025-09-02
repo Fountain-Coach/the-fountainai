@@ -55,5 +55,10 @@ The following personas drive Gateway plugin behaviour via the LLM:
 - [Rate Limiter Persona](personas/rate-limiter.md)
 - [Payload Inspection Persona](personas/payload-inspection.md)
 - [Security Sentinel Persona](personas/security-sentinel.md)
+- [Budget Breaker Persona](personas/budget-breaker.md)
+- [Destructive Guardian Persona](personas/destructive-guardian.md)
+- [Role Health Check Persona](personas/role-health-check.md)
+- [Persistence Service Persona](personas/persist.md)
+- [Typesense API Persona](personas/typesense.md)
 
 © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
