@@ -5,6 +5,7 @@ info:
   description: >
     Consults the Security Sentinel role for allow/deny/escalate decisions.
   version: 1.0.0
+x-persona: ../personas/security-sentinel.md
 servers:
   - url: http://security-sentinel.fountain.coach/api/v1
 paths:

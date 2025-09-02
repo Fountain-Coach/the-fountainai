@@ -20,6 +20,9 @@ enum SentinelEnv {
     static var model: String? {
         ProcessInfo.processInfo.environment["SEC_SENTINEL_MODEL"]
     }
+    static var personaPath: String {
+        ProcessInfo.processInfo.environment["SEC_SENTINEL_PERSONA_PATH"] ?? "openapi/personas/security-sentinel.md"
+    }
 }
 
 // © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
