@@ -4,12 +4,21 @@ import FountainRuntime
 /// Actor housing payload inspection handlers backed by an LLM.
 public actor Handlers {
     private let client = LLMPluginClient(personaPath: "openapi/personas/payload-inspection.md")
+    private let maxSize: Int
 
-    public init() {}
+    public init(maxSize: Int = 1024) {
+        self.maxSize = maxSize
+    }
 
     /// Delegates payload inspection to the LLM.
     public func inspectPayload(_ request: HTTPRequest, body: PayloadInspectionRequest?) async throws -> HTTPResponse {
-        let prompt = body.flatMap { try? String(data: JSONEncoder().encode($0), encoding: .utf8) } ?? ""
+        guard let body = body else {
+            return HTTPResponse(status: 400)
+        }
+        guard body.payload.utf8.count <= maxSize else {
+            return HTTPResponse(status: 413)
+        }
+        let prompt = (try? String(data: JSONEncoder().encode(body), encoding: .utf8)) ?? ""
         let result = try await client.call(prompt: prompt)
         return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: Data(result.utf8))
     }
