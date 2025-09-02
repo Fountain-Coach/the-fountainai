@@ -10,6 +10,7 @@ final class LLMSecuritySentinelClient: SecuritySentinelClient {
     private let timeoutMS: Int
     private let retries: Int
     private let model: String?
+    private let persona: String?
     private let breaker: CircuitBreaker
     private let ownsHTTPClient: Bool
 
@@ -29,6 +30,7 @@ final class LLMSecuritySentinelClient: SecuritySentinelClient {
         self.timeoutMS = SentinelEnv.timeoutMS
         self.retries = SentinelEnv.retries
         self.model = SentinelEnv.model
+        self.persona = try? String(contentsOfFile: SentinelEnv.personaPath, encoding: .utf8)
         self.breaker = CircuitBreaker()
     }
 
@@ -39,6 +41,7 @@ final class LLMSecuritySentinelClient: SecuritySentinelClient {
     }
 
     private struct Payload: Codable {
+        let persona: String?
         let summary: String
         let context: [String: String]?
         let model: String?
@@ -56,7 +59,7 @@ final class LLMSecuritySentinelClient: SecuritySentinelClient {
         guard await breaker.allow() else {
             return llmUnavailableDecision()
         }
-        let payload = Payload(summary: summary, context: nil, model: model)
+        let payload = Payload(persona: persona, summary: summary, context: nil, model: model)
         let body = try JSONEncoder().encode(payload)
         var request = HTTPClientRequest(url: url.absoluteString)
         request.method = .POST

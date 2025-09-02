@@ -1,6 +1,7 @@
 # FountainAI OpenAPI Specifications
 
 Versioned service definitions live here. Each YAML file describes a FountainAI service interface.
+Persona definitions for Gateway plugins live in `personas/` and are referenced via `x-persona` in the specs.
 
 | Service | Version | Owner | Spec |
 | --- | --- | --- | --- |
