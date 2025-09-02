@@ -51,14 +51,24 @@ Persona definitions for Gateway plugins live in `personas/` and are referenced v
 
 The following personas drive Gateway plugin behaviour via the LLM:
 
-- [Auth Gateway Persona](personas/auth.md)
-- [Rate Limiter Persona](personas/rate-limiter.md)
-- [Payload Inspection Persona](personas/payload-inspection.md)
-- [Security Sentinel Persona](personas/security-sentinel.md)
-- [Budget Breaker Persona](personas/budget-breaker.md)
-- [Destructive Guardian Persona](personas/destructive-guardian.md)
-- [Role Health Check Persona](personas/role-health-check.md)
-- [Persistence Service Persona](personas/persist.md)
-- [Typesense API Persona](personas/typesense.md)
+- [Auth Gateway Persona](personas/auth.md) – [Spec](v1/auth-gateway.yml)
+- [Rate Limiter Persona](personas/rate-limiter.md) – [Spec](v1/rate-limiter-gateway.yml)
+- [Payload Inspection Persona](personas/payload-inspection.md) – [Spec](v1/payload-inspection-gateway.yml)
+- [Security Sentinel Persona](personas/security-sentinel.md) – [Spec](v1/security-sentinel-gateway.yml)
+- [Budget Breaker Persona](personas/budget-breaker.md) – [Spec](v1/budget-breaker-gateway.yml)
+- [Destructive Guardian Persona](personas/destructive-guardian.md) – [Spec](v1/destructive-guardian-gateway.yml)
+- [Role Health Check Persona](personas/role-health-check.md) – [Spec](v1/role-health-check-gateway.yml)
+- [Persistence Service Persona](personas/persist.md) – [Spec](v1/persist.yml)
+- [Typesense API Persona](personas/typesense.md) – [Spec](typesense.yml)
+
+### Default Roles
+
+The Bootstrap Service seeds the following default roles, validated by the Role Health Check Gateway:
+
+- [Drift Role](personas/drift.md) – [Spec](v1/bootstrap.yml)
+- [Semantic Arc Role](personas/semantic-arc.md) – [Spec](v1/bootstrap.yml)
+- [Patterns Role](personas/patterns.md) – [Spec](v1/bootstrap.yml)
+- [History Role](personas/history.md) – [Spec](v1/bootstrap.yml)
+- [View Creator Role](personas/view-creator.md) – [Spec](v1/bootstrap.yml)
 
 © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
