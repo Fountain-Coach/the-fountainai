@@ -6,6 +6,7 @@ info:
     Lightweight authentication gateway plugin exposing token validation
     and claims retrieval endpoints.
   version: 1.0.0
+x-persona: ../personas/auth.md
 servers:
   - url: https://gateway.fountain.coach/api/v1
 paths:
