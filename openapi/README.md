@@ -22,7 +22,28 @@ Versioned service definitions live here. Each YAML file describes a FountainAI s
 | Payload Inspection Gateway Plugin | 1.0.0 | Contexter alias Benedikt Eickhoff | [v1/payload-inspection-gateway.yml](v1/payload-inspection-gateway.yml) |
 | Budget Breaker Gateway Plugin | 1.0.0 | Contexter alias Benedikt Eickhoff | [v1/budget-breaker-gateway.yml](v1/budget-breaker-gateway.yml) |
 | Destructive Guardian Gateway Plugin | 1.0.0 | Contexter alias Benedikt Eickhoff | [v1/destructive-guardian-gateway.yml](v1/destructive-guardian-gateway.yml) |
+| Security Sentinel Gateway Plugin | 1.0.0 | Contexter alias Benedikt Eickhoff | [v1/security-sentinel-gateway.yml](v1/security-sentinel-gateway.yml) |
 | Tool Server | 1.0.0 | Contexter alias Benedikt Eickhoff | [v1/tool-server.yml](v1/tool-server.yml) |
 | OpenAPI Curator Service | 1.0.0 | Contexter alias Benedikt Eickhoff | [v1/openapi-curator.yml](v1/openapi-curator.yml) |
+
+
+## Gateway Plugins
+
+| Plugin | Owner | Status | Spec |
+| --- | --- | --- | --- |
+| Auth Gateway Plugin | Contexter alias Benedikt Eickhoff | ✅ | [v1/auth-gateway.yml](v1/auth-gateway.yml) |
+| Role Health Check Gateway Plugin | Contexter alias Benedikt Eickhoff | ✅ | [v1/role-health-check-gateway.yml](v1/role-health-check-gateway.yml) |
+| Rate Limiter Gateway Plugin | Contexter alias Benedikt Eickhoff | ✅ | [v1/rate-limiter-gateway.yml](v1/rate-limiter-gateway.yml) |
+| Payload Inspection Gateway Plugin | Contexter alias Benedikt Eickhoff | ✅ | [v1/payload-inspection-gateway.yml](v1/payload-inspection-gateway.yml) |
+| Budget Breaker Gateway Plugin | Contexter alias Benedikt Eickhoff | ✅ | [v1/budget-breaker-gateway.yml](v1/budget-breaker-gateway.yml) |
+| Destructive Guardian Gateway Plugin | Contexter alias Benedikt Eickhoff | ✅ | [v1/destructive-guardian-gateway.yml](v1/destructive-guardian-gateway.yml) |
+| Security Sentinel Gateway Plugin | Contexter alias Benedikt Eickhoff | ✅ | [v1/security-sentinel-gateway.yml](v1/security-sentinel-gateway.yml) |
+
+## Persistence/Typesense
+
+| Service | Owner | Status | Spec |
+| --- | --- | --- | --- |
+| Persistence Service | Contexter alias Benedikt Eickhoff | ✅ | [v1/persist.yml](v1/persist.yml) |
+| Typesense API | Contexter alias Benedikt Eickhoff | ✅ | [typesense.yml](typesense.yml) |
 
 © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
