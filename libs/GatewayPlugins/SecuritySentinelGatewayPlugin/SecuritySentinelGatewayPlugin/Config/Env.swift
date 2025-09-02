@@ -20,9 +20,6 @@ enum SentinelEnv {
     static var model: String? {
         ProcessInfo.processInfo.environment["SEC_SENTINEL_MODEL"]
     }
-    static var failMode: String {
-        ProcessInfo.processInfo.environment["SEC_SENTINEL_FAIL_MODE"] ?? "fallback" // allow|deny|fallback
-    }
 }
 
 // © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
