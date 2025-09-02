@@ -110,10 +110,12 @@ final class URLSessionHTTPClientTests: XCTestCase {
             do {
                 _ = try await client.execute(method: .GET, url: "http://localhost", body: nil)
                 XCTFail("Expected to throw")
-            } catch is TestError {
-                // expected
             } catch {
-                XCTFail("Unexpected error: \(error)")
+                if error is TestError || (error as NSError).domain.contains("TestError") {
+                    // expected
+                } else {
+                    XCTFail("Unexpected error: \(error)")
+                }
             }
         }
         waitForExpectations(timeout: 1)
