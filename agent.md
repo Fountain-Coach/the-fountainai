@@ -1,161 +1,183 @@
-# 🧠 FountainAI Root Agent — **Task‑Scoped Contract**
+# ULTRA-LEAN ROOT AGENT DIRECTIVE
 
-**Scope:** This repository (Swift 6). **Operational scope per PR:** only the *current task* (changed files + directly affected interfaces).  
-**Intent:** Codex implements and tests **the task at hand**, not the whole system. Keep the feedback loop **≤ 5 minutes**.
+Always default to **Tier-A (lean mode)**:
+- Build only the changed Swift targets.
+- Run only unit + contract tests for those targets.
+- Use caches, incremental builds, and Debug mode (no whole-module optimization).
+- Never run unrelated targets or full apps in Tier-A.
+- Keep each run under 5 minutes. If slower, report slowest targets/tests and suggest splitting or caching.
 
-_Last updated:_ 01.09.2025
+Escalate to **Tier-B (full mode)** only when:
+- Core contracts or public APIs changed,
+- Boot/wiring or security primitives changed,
+- Shared core modules with many dependents changed.
 
----
+At the end of every run, output one summary block with:
+- Mode (Tier-A | Tier-B),
+- Impacted targets,
+- Build + test status,
+- Coverage %, durations, flakes,
+- Any slow-build suggestions.
 
-## TL;DR
-
-- **Constrain** to the **Impact Cone**: `{changed files} ∪ {their public interfaces} ∪ {direct dependents}`.  
-- **Fast unit tests only** for impacted targets (mocks/stubs by default).  
-- **No coverage, no Linux, no broad E2E** in the task loop.  
-- Escalate minimally only when a cross‑module contract actually changes.
-
----
-
-## ✅ Hard Rules (per task iteration)
-
-1) **Build fast & strict** (Debug + warnings as errors):  
-```bash
-swift build -c debug -Xswiftc -Onone -Xswiftc -enable-testing -Xswiftc -warnings-as-errors
-```
-
-2) **Test only the Impact Cone** (parallel, filtered):  
-```bash
-Scripts/impacted-targets.sh | xargs -I {} swift test --parallel --filter {}
-```
-
-3) **Every changed public API**: add **1 happy path + 1 failure path** unit test.  
-4) **Do not** call real network/processes in task loop (use mocks/stubs).
+Never expand scope silently. If unsure which targets changed, ask explicitly.
 
 ---
 
-## 🤝 Soft Rules (defaults)
+# Agent Development Cycle — **Lean Testing Mode** (Repo-Root Policy, **Swift-Only**)
 
-- Behavioral test names (Given/When/Then).  
-- Use test builders/fixtures; avoid deep graphs.  
-- If a test > 500 ms → refactor/mock.  
-- Skip trivial pass‑throughs unless guarding invariants.
+> **Purpose:** Make the Codex loop (code → test → learn → improve) **fast by default** across the entire Swift repository (gateway, services, libraries, plugins). Full-suite runs are **explicitly opt-in** and reserved for changes that truly demand them.
 
 ---
 
-## 🔍 Validation (what Codex must check each run)
-
-- Changed files compile with **no warnings**.  
-- Impact Cone unit tests **green**.  
-- Changed **public APIs** have happy/failure tests.  
-- If change is cross‑module, add **exactly one** contract/integration smoke (≤ 10s).
+## 0) Outcomes we enforce
+- **90% of iterations** finish using **scoped builds + scoped tests** (seconds to a couple minutes).
+- **Full system runs** happen on **nightlies** and **mainline merges**, or when a change clearly crosses boundaries (see §7).
+- The **agent** receives deterministic **signals** from tests: green/red + structured artifacts (coverage, timing, flakiness, perf deltas) to self-improve without waiting on the entire stack.
 
 ---
 
-## 🛟 Correction Logic
+## 1) Scope detection (how we decide what to run)
+The CI dispatcher and local helpers detect scope from file paths in a change set:
 
-1) Narrow the cone; isolate with stubs.  
-2) Add a **micro‑test** for the failing branch.  
-3) If still failing, add a seam test (interface‑level).  
-4) Only if necessary, add **one** integration smoke (≤ 10s).
-
----
-
-## ⚙️ Task Loop
-
-1) **State the Task Contract** (inputs/outputs/invariants).  
-2) **List Impact Cone** via script.  
-3) **Write/adjust tests first** for the changed logic/API.  
-4) **Implement** until green with filtered tests.  
-5) If cross‑module, add one seam test (≤ 10s).  
-6) **Commit** code + tests + short task note.
+| Path Pattern | Scope Class | Default Action |
+|---|---|---|
+| `libs/GatewayPlugins/<name>/` | **Swift gateway plugin** | Build & test **that target only**; run **Gateway Contract Suite** |
+| `apps/<name>/` | **Swift application** | Build & test **that app**; run **App Contract Suite**; optional **micro-harness** |
+| `packages/<name>/` or `Sources/<name>/` | **Swift library/package** | Build & unit test the **package**; run **Library Contract Suite** |
+| `openapi/` | **Contracts** | Regenerate stubs (no network), run **contract tests** of impacted dependents |
+| `core/` or `FountainCodex/` | **Core shared** | **Elevate**: scoped dependents + minimal gateway/app smoke |
+| `Configuration/` or infra scripts | **Infra config** | Validate config; don’t run app tests unless schema changes require it |
 
 ---
 
-## 🧪 Escalation Matrix
+## 2) Local fast loop (Swift-only)
+Use these patterns per change. Replace `<T>` with your target name.
 
-| Risk | Criteria | Extra checks |
-|------|---------|--------------|
-| Low  | Pure internal logic | none |
-| Med  | Public API change in one module | 1 interface contract test |
-| High | Cross‑module protocol/security/launcher | 1 integration smoke (≤10s) |
+- Build target `<T>` in Debug, incremental, jobs=8.
+- Test target `<T>` in parallel, filter by `<T>` or keyword.
+- Run contract tests for `<T>`.
+- Run harness for `<T>` (≤120s) if available.
 
-> Coverage, Linux, and broad E2E live in the **full suite** (nightly / main / opt‑in label).
-
----
-
-## 🧰 CI: Minimal PR Workflow (reference)
-
-```yaml
-# .github/workflows/task-fast.yml
-name: task-fast
-on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-jobs:
-  fast:
-    runs-on: macos-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/cache@v4
-        with:
-          path: |
-            .build
-            ~/.swiftpm
-          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
-          restore-keys: ${{ runner.os }}-spm-
-      - run: swift build -c debug -Xswiftc -Onone -Xswiftc -enable-testing -Xswiftc -warnings-as-errors
-      - run: Scripts/impacted-targets.sh | tee impacted-filters.txt
-      - run: xargs -I {} swift test --parallel --filter {} < impacted-filters.txt
-```
+**Golden rule:** If your test uses real network, files outside tmp, or external services, it’s **not** a fast-loop test. Use fakes/mocks and in-memory adapters.
 
 ---
 
-## 🛠 Script: `Scripts/impacted-targets.sh` (drop‑in)
+## 3) Harnesses (tiny Swift executables for manual pokes)
+Every runnable component should provide a **micro-harness** that exposes the *smallest* executable surface for manual validation:
+- **Gateway plugin harness**: registers only its router with a minimal HTTP loop.
+- **App harness**: starts just the changed routes/handlers with in-memory stores.
+- **Library harness**: a CLI that exercises the public API with fixtures.
 
-```bash
-#!/usr/bin/env bash
-set -euo pipefail
-
-BASE=${BASE_REF:-origin/main}
-
-# 1) changed source files against main
-CHANGED=$(git diff --name-only "$BASE"...HEAD | grep -E '\.(swift|c|cpp|mm|metal)$' || true)
-
-# Nothing relevant changed → print a no-op filter so CI can exit 0 after build
-if [[ -z "$CHANGED" ]]; then
-  echo '^Noop$'
-  exit 0
-fi
-
-# 2) naive path→target mapper aligned with repo layout
-# libs/<Module>/..., apps/<App>/...
-TARGETS=()
-while IFS= read -r f; do
-  top=$(echo "$f" | awk -F'/' '{print $1}')
-  mod=$(echo "$f" | awk -F'/' '{print $2}')
-  case "$top" in
-    libs) name="$mod" ;;
-    apps) name="$mod" ;;
-    *)    name="" ;;
-  esac
-  [[ -n "${name}" ]] && TARGETS+=("^${name}\.\|\b${name}Tests\.")
-done <<< "$CHANGED"
-
-# 3) de-dupe; fallback to running all tests if mapping failed
-if [[ ${#TARGETS[@]} -eq 0 ]]; then
-  echo '.*'   # run all tests as a safe fallback
-else
-  printf '%s\n' "${TARGETS[@]}" | sort -u
-fi
-```
-
-> You can later replace the naive mapper with a precise `swift package describe --type json` → `jq` mapping. The naive version keeps PRs fast today.
+Harnesses must:
+- Boot in **< 2s** on a dev machine.
+- Avoid global singletons; inject fakes via initializers.
+- Log to temp files; no external sinks in debug.
 
 ---
 
-## 📓 Maintainers
+## 4) Contract testing (shared Swift suites)
+Reusable XCTest suites adopted via tiny shim tests:
+- **Gateway Contract Suite** — route presence, schema conformance, error codes, idempotency.
+- **App Contract Suite** — request/response shapes, validation errors, pagination.
+- **Library Contract Suite** — API invariants, serialization, error semantics.
 
-- Keep PRs **small & vertical** (code + tests).  
-- If a module grows flaky, quarantine extra checks to a **full-suite** workflow (nightly/main/label).  
-- Avoid adding coverage or Linux to PR loop; reserve for gates that aren’t speed‑critical.
+**No full stack** required: suites run in-process with fixture payloads.
+
+---
+
+## 5) Dispatcher-based CI (Tier-A fast, Tier-B full)
+**Tier-A (default on PRs & branches):**
+1. Compute impacted Swift targets from paths.
+2. Build **only impacted targets** with cache.
+3. Run **unit + contract suites** for those targets.
+4. Emit structured artifacts: coverage (per target), timing, flaky test list.
+5. If all green → success. No full stack.
+
+**Tier-B (nightly & mainline):**
+1. Full repository build.
+2. Cross-component integration tests.
+3. Minimal E2E smoke.
+4. Publish dashboards; open issues on regressions.
+
+**Never block PRs** on Tier-B unless §7 applies.
+
+---
+
+## 6) Escalation criteria (when you *must* run the big suite)
+Run full integration + E2E only if your diff:
+- Touches **core shared** modules used across boundaries.
+- Changes **public contracts** (OpenAPI or public API in a non-backward-compatible way).
+- Modifies **boot/wiring** of servers, global middleware, or process lifecycle.
+- Alters **security, auth, or persistence** primitives.
+
+If none of the above: stay in **Tier-A**.
+
+---
+
+## 7) Build Acceleration (Swift-only)
+
+### Strategy
+- Lock dependencies: commit `Package.resolved`.
+- Thin targets: avoid pulling heavy deps into plugins; keep shared DTO kits separate.
+- Dev feature flags: compile out telemetry/exporters/crypto in Debug when not under test.
+
+### Compiler & cache
+- Incremental, parallel, target-scoped builds.
+- Debug only (`-Onone`), **disable WMO** in Debug; reserve `-O`/WMO for Release.
+- Cache `.build/` in CI keyed by OS + `Package.resolved` hash.
+- Consider binary targets for large, stable libs.
+
+### Module hygiene
+- Keep imports local to the target.
+- Move pure logic into micro-targets to maximize cache hits.
+- Avoid unnecessary cross-target references and large resource bundles.
+
+### Slow-build gate
+If a **Tier-A** run exceeds **5 minutes**:
+1. Report the **slowest targets/tests**.
+2. Suggest **splits** (extract DTO kit, cut heavy deps).
+3. Propose enabling a **binary target** or **prebaked Swift toolchain image** for CI.
+
+---
+
+## 8) Agent feedback artifacts (for self-improvement)
+All test stages must emit machine-readable artifacts:
+- `artifacts/<target>/junit.xml` — pass/fail
+- `artifacts/<target>/coverage.json` — per-file coverage deltas
+- `artifacts/<target>/durations.json` — slowest N tests
+- `artifacts/<target>/flake.json` — flakiness tracker
+
+---
+
+## 9) Coding rules that keep Swift tests fast
+- **Protocol-first DI**: inject fakes for I/O, clocks, randomness.
+- **No hidden singletons**.
+- **Pure logic at the edge**: parse/validate → pure decision → serialize.
+- **Hermetic logs**: assert on structured fields; avoid time-dependent checks.
+- **Small targets**: split DTO/contract kits away from heavy deps.
+
+---
+
+## 10) Required output format (plain text summary)
+At the end of any run, the agent MUST print a single block:
+
+BEGIN SUMMARY
+MODE: Tier-A | Tier-B
+IMPACTED_TARGETS: [T1, T2, …]
+BUILD_STATUS: pass | fail
+TEST_STATUS: pass | fail
+COVERAGE: {T1: <pct>, T2: <pct>}
+DURATIONS_MS: {build_total: <n>, tests_total: <n>, slowest_tests: [<id:ms>…]}
+FLAKES: [<test_id>…]
+SLOW_BUILD_ACTIONS: [suggestion strings, possibly empty]
+END SUMMARY
+
+This is human-readable, uniform, and sufficient for Codex to self-improve.
+
+---
+
+## 11) TL;DR commands (Swift)
+- Build target `<T>` in Debug, incremental, jobs=8.
+- Test target `<T>` in parallel, filter `<T>`.
+- Run harness for `<T>` if available.
+- Stay Tier-A unless escalation rules apply.
