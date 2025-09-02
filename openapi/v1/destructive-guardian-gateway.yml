@@ -5,6 +5,8 @@ info:
   description: >
     Evaluates potentially destructive requests and returns allow/deny decisions.
   version: 1.0.0
+
+x-persona: ../personas/destructive-guardian.md
 servers:
   - url: http://destructive-guardian.fountain.coach/api/v1
 paths:

@@ -6,6 +6,7 @@ info:
     Persistence and semantic indexing API for FountainAI corpora and related
     semantic artifacts (baselines, drifts, reflections, functions, history).
   version: 1.0.0
+x-persona: ../personas/persist.md
 servers:
   - url: http://persist.fountain.coach/api/v1
 paths:
