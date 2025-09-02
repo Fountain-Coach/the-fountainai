@@ -47,4 +47,13 @@ Persona definitions for Gateway plugins live in `personas/` and are referenced v
 | Persistence Service | Contexter alias Benedikt Eickhoff | ✅ | [v1/persist.yml](v1/persist.yml) |
 | Typesense API | Contexter alias Benedikt Eickhoff | ✅ | [typesense.yml](typesense.yml) |
 
+## Personas
+
+The following personas drive Gateway plugin behaviour via the LLM:
+
+- [Auth Gateway Persona](personas/auth.md)
+- [Rate Limiter Persona](personas/rate-limiter.md)
+- [Payload Inspection Persona](personas/payload-inspection.md)
+- [Security Sentinel Persona](personas/security-sentinel.md)
+
 © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.

@@ -1,64 +1,45 @@
 import Foundation
 import FountainRuntime
 
-/// Collection of handlers for rate limiter gateway endpoints.
+/// Handlers for rate limiter gateway endpoints using an LLM backend.
 public actor Handlers {
-    private struct Bucket { var tokens: Double; var lastRefill: TimeInterval; let capacity: Double; let rate: Double }
-    private var buckets: [String: Bucket] = [:]
-    private var allowed = 0
-    private var throttled = 0
-    private let defaultLimit: Int
+    private let client = LLMPluginClient(personaPath: "openapi/personas/rate-limiter.md")
 
-    public init(defaultLimit: Int = 60) {
-        self.defaultLimit = defaultLimit
-    }
+    public init() {}
 
-    /// Checks and consumes a token for the given route and client.
-    public func allow(routeId: String, clientId: String, limitPerMinute: Int?) -> Bool {
-        let limit = limitPerMinute ?? defaultLimit
-        if limit <= 0 {
-            allowed += 1
-            Task { await DNSMetrics.shared.recordRateLimit(allowed: true) }
-            return true
-        }
-        let key = "\(routeId)#\(clientId)"
-        let ratePerSecond = Double(limit) / 60.0
-        let now = Date().timeIntervalSince1970
-        var bucket = buckets[key] ?? Bucket(tokens: Double(limit), lastRefill: now, capacity: Double(limit), rate: ratePerSecond)
-        let elapsed = max(0, now - bucket.lastRefill)
-        bucket.tokens = min(bucket.capacity, bucket.tokens + elapsed * bucket.rate)
-        bucket.lastRefill = now
-        if bucket.tokens >= 1.0 {
-            bucket.tokens -= 1.0
-            buckets[key] = bucket
-            allowed += 1
-            Task { await DNSMetrics.shared.recordRateLimit(allowed: true) }
-            return true
-        }
-        buckets[key] = bucket
-        throttled += 1
-        Task { await DNSMetrics.shared.recordRateLimit(allowed: false) }
-        return false
-    }
-
-    /// Returns accumulated allowed and throttled counts.
-    public func stats() -> (allowed: Int, throttled: Int) { (allowed, throttled) }
-
-    /// Handler for rate limit checks.
+    /// Delegates rate limit checks to the LLM.
     public func rateLimitCheck(_ request: HTTPRequest, body: RateLimitCheckRequest?) async throws -> HTTPResponse {
-        guard let body else { return HTTPResponse(status: 400) }
-        let permitted = allow(routeId: body.routeId, clientId: body.clientId, limitPerMinute: body.limitPerMinute)
-        let resp = RateLimitCheckResponse(allowed: permitted)
-        let data = try JSONEncoder().encode(resp)
-        return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: data)
+        let prompt = body.flatMap { try? String(data: JSONEncoder().encode($0), encoding: .utf8) } ?? ""
+        let result = try await client.call(prompt: prompt)
+        return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: Data(result.utf8))
     }
 
-    /// Handler returning aggregated statistics.
+    /// Requests aggregated statistics from the LLM.
     public func rateLimitStats(_ request: HTTPRequest, body: NoBody?) async throws -> HTTPResponse {
-        let (allowed, throttled) = stats()
-        let resp = RateLimitStatsResponse(allowed: allowed, throttled: throttled)
-        let data = try JSONEncoder().encode(resp)
-        return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: data)
+        let result = try await client.call(prompt: "stats")
+        return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: Data(result.utf8))
+    }
+}
+
+/// Minimal client that forwards prompts and persona to the LLM Gateway.
+struct LLMPluginClient {
+    let persona: String
+    let url: URL
+
+    init(personaPath: String,
+         url: URL = URL(string: ProcessInfo.processInfo.environment["LLM_GATEWAY_URL"] ?? "http://localhost:8080/chat")!) {
+        self.persona = (try? String(contentsOfFile: personaPath, encoding: .utf8)) ?? ""
+        self.url = url
+    }
+
+    func call(prompt: String) async throws -> String {
+        var req = URLRequest(url: url)
+        req.httpMethod = "POST"
+        req.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        let payload = ["persona": persona, "prompt": prompt]
+        req.httpBody = try JSONSerialization.data(withJSONObject: payload)
+        let (data, _) = try await URLSession.shared.data(for: req)
+        return String(data: data, encoding: .utf8) ?? "{}"
     }
 }
 

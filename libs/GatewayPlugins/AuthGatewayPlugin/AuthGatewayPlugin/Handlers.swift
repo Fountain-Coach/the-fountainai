@@ -1,68 +1,46 @@
 import Foundation
 import FountainRuntime
-import Crypto
 
-/// Collection of handlers for auth gateway endpoints.
-public struct Handlers: Sendable {
-    private let secret: String
+/// Collection of handlers for auth gateway endpoints backed by an LLM.
+public actor Handlers {
+    private let client = LLMPluginClient(personaPath: "openapi/personas/auth.md")
 
-    public init(secret: String = ProcessInfo.processInfo.environment["GATEWAY_JWT_SECRET"] ?? "secret") {
-        self.secret = secret
-    }
+    public init() {}
 
-    private func claims(for token: String) -> ClaimsResponse? {
-        let segments = token.split(separator: ".")
-        guard segments.count == 3 else { return nil }
-        let signingInput = segments[0] + "." + segments[1]
-        guard let signatureData = Data(base64URLEncoded: String(segments[2])) else { return nil }
-        let key = SymmetricKey(data: Data(secret.utf8))
-        let expected = HMAC<SHA256>.authenticationCode(for: Data(signingInput.utf8), using: key)
-        guard Data(expected) == signatureData,
-              let payloadData = Data(base64URLEncoded: String(segments[1])),
-              let payload = try? JSONDecoder().decode(JWTPayload.self, from: payloadData) else { return nil }
-        let now = Int(Date().timeIntervalSince1970)
-        let leeway = Int(ProcessInfo.processInfo.environment["GATEWAY_JWT_LEEWAY"] ?? "60") ?? 60
-        if payload.exp + leeway < now { return nil }
-        if let nbf = payload.nbf, nbf - leeway > now { return nil }
-        if let iss = ProcessInfo.processInfo.environment["GATEWAY_JWT_ISS"], let pi = payload.iss, iss != pi { return nil }
-        if let aud = ProcessInfo.processInfo.environment["GATEWAY_JWT_AUD"], let pa = payload.aud, aud != pa { return nil }
-        if ((ProcessInfo.processInfo.environment["GATEWAY_JWT_REQUIRE_JTI"] as NSString?)?.boolValue ?? false) && (payload.jti ?? "").isEmpty { return nil }
-        let scopes = payload.role.map { [$0] } ?? []
-        return ClaimsResponse(role: payload.role, scopes: scopes)
-    }
-
-    private struct JWTPayload: Decodable { let iss: String?; let aud: String?; let nbf: Int?; let exp: Int; let jti: String?; let role: String? }
-
-    /// Validates a provided bearer token.
+    /// Delegates validation to the LLM using the Auth persona.
     public func authValidate(_ request: HTTPRequest, body: ValidateRequest?) async throws -> HTTPResponse {
-        guard let token = body?.token, let claims = claims(for: token) else {
-            return HTTPResponse(status: 401)
-        }
-        let resp = ValidationResponse(valid: true, role: claims.role)
-        let data = try JSONEncoder().encode(resp)
-        return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: data)
+        let prompt = body.flatMap { try? String(data: JSONEncoder().encode($0), encoding: .utf8) } ?? ""
+        let result = try await client.call(prompt: prompt)
+        return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: Data(result.utf8))
     }
 
-    /// Returns claims for the bearer token in the Authorization header.
+    /// Retrieves claims for the supplied token via the LLM.
     public func authClaims(_ request: HTTPRequest, body: NoBody?) async throws -> HTTPResponse {
-        guard let auth = request.headers["Authorization"], auth.hasPrefix("Bearer "),
-              let claims = claims(for: String(auth.dropFirst(7))) else {
-            return HTTPResponse(status: 401)
-        }
-        let data = try JSONEncoder().encode(claims)
-        return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: data)
+        let token = request.headers["Authorization"] ?? ""
+        let result = try await client.call(prompt: token)
+        return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: Data(result.utf8))
     }
 }
 
-private extension Data {
-    init?(base64URLEncoded input: String) {
-        var base64 = input
-            .replacingOccurrences(of: "-", with: "+")
-            .replacingOccurrences(of: "_", with: "/")
-        let padding = 4 - base64.count % 4
-        if padding < 4 { base64 += String(repeating: "=", count: padding) }
-        guard let data = Data(base64Encoded: base64) else { return nil }
-        self = data
+/// Minimal client that forwards prompts and persona to the LLM Gateway.
+struct LLMPluginClient {
+    let persona: String
+    let url: URL
+
+    init(personaPath: String,
+         url: URL = URL(string: ProcessInfo.processInfo.environment["LLM_GATEWAY_URL"] ?? "http://localhost:8080/chat")!) {
+        self.persona = (try? String(contentsOfFile: personaPath, encoding: .utf8)) ?? ""
+        self.url = url
+    }
+
+    func call(prompt: String) async throws -> String {
+        var req = URLRequest(url: url)
+        req.httpMethod = "POST"
+        req.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        let payload = ["persona": persona, "prompt": prompt]
+        req.httpBody = try JSONSerialization.data(withJSONObject: payload)
+        let (data, _) = try await URLSession.shared.data(for: req)
+        return String(data: data, encoding: .utf8) ?? "{}"
     }
 }
 

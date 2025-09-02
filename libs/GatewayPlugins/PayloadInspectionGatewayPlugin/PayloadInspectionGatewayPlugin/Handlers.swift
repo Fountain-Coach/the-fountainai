@@ -1,23 +1,39 @@
 import Foundation
 import FountainRuntime
 
-/// Actor housing payload inspection handlers.
+/// Actor housing payload inspection handlers backed by an LLM.
 public actor Handlers {
-    private let maxSize: Int
+    private let client = LLMPluginClient(personaPath: "openapi/personas/payload-inspection.md")
 
-    /// Creates a new handlers instance.
-    /// - Parameter maxSize: Maximum allowed payload size in bytes.
-    public init(maxSize: Int = 1024) {
-        self.maxSize = maxSize
+    public init() {}
+
+    /// Delegates payload inspection to the LLM.
+    public func inspectPayload(_ request: HTTPRequest, body: PayloadInspectionRequest?) async throws -> HTTPResponse {
+        let prompt = body.flatMap { try? String(data: JSONEncoder().encode($0), encoding: .utf8) } ?? ""
+        let result = try await client.call(prompt: prompt)
+        return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: Data(result.utf8))
+    }
+}
+
+/// Minimal client that forwards prompts and persona to the LLM Gateway.
+struct LLMPluginClient {
+    let persona: String
+    let url: URL
+
+    init(personaPath: String,
+         url: URL = URL(string: ProcessInfo.processInfo.environment["LLM_GATEWAY_URL"] ?? "http://localhost:8080/chat")!) {
+        self.persona = (try? String(contentsOfFile: personaPath, encoding: .utf8)) ?? ""
+        self.url = url
     }
 
-    /// Inspects the provided payload and returns sanitized content with any violations.
-    public func inspectPayload(_ request: HTTPRequest, body: PayloadInspectionRequest?) async throws -> HTTPResponse {
-        guard let body else { return HTTPResponse(status: 400) }
-        guard body.payload.utf8.count <= maxSize else { return HTTPResponse(status: 413) }
-        let response = PayloadInspectionResponse(sanitized: body.payload, violations: [])
-        let data = try JSONEncoder().encode(response)
-        return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: data)
+    func call(prompt: String) async throws -> String {
+        var req = URLRequest(url: url)
+        req.httpMethod = "POST"
+        req.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        let payload = ["persona": persona, "prompt": prompt]
+        req.httpBody = try JSONSerialization.data(withJSONObject: payload)
+        let (data, _) = try await URLSession.shared.data(for: req)
+        return String(data: data, encoding: .utf8) ?? "{}"
     }
 }
 

@@ -5,6 +5,7 @@ info:
   description: >
     Token bucket rate limiter for FountainAI gateway.
   version: 1.0.0
+x-persona: ../personas/rate-limiter.md
 servers:
   - url: http://rate-limiter.fountain.coach/api/v1
 paths:

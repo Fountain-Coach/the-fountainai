@@ -5,6 +5,7 @@ info:
   description: >
     Inspects payloads for forbidden content and either sanitizes them or reports violations.
   version: 1.0.0
+x-persona: ../personas/payload-inspection.md
 servers:
   - url: http://payload-inspection.fountain.coach/api/v1
 paths:
