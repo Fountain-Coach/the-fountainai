@@ -1,8 +1,9 @@
 import Foundation
 
 /// Factory that provides the Security Sentinel client.
-enum SentinelClientFactory {
-    static func make() -> SecuritySentinelClient {
+public enum SentinelClientFactory {
+    /// Create a client capable of consulting the Security Sentinel service.
+    public static func make() -> SecuritySentinelClient {
         LLMSecuritySentinelClient()
     }
 }

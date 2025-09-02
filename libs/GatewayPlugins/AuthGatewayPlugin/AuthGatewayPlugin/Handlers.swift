@@ -13,14 +13,14 @@ public actor Handlers {
     /// Delegates validation to the LLM using the Auth persona.
     public func authValidate(_ request: HTTPRequest, body: ValidateRequest?) async throws -> HTTPResponse {
         let prompt = body.flatMap { try? String(data: JSONEncoder().encode($0), encoding: .utf8) } ?? ""
-        let result = try await client.call(prompt: prompt)
+        let result = (try? await client.call(prompt: prompt)) ?? "{}"
         return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: Data(result.utf8))
     }
 
     /// Retrieves claims for the supplied token via the LLM.
     public func authClaims(_ request: HTTPRequest, body: NoBody?) async throws -> HTTPResponse {
         let token = request.headers["Authorization"] ?? ""
-        let result = try await client.call(prompt: token)
+        let result = (try? await client.call(prompt: token)) ?? "{}"
         return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: Data(result.utf8))
     }
 }

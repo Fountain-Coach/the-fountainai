@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 import FountainRuntime
 
 /// Actor housing payload inspection handlers backed by an LLM.
@@ -19,7 +22,7 @@ public actor Handlers {
             return HTTPResponse(status: 413)
         }
         let prompt = (try? String(data: JSONEncoder().encode(body), encoding: .utf8)) ?? ""
-        let result = try await client.call(prompt: prompt)
+        let result = (try? await client.call(prompt: prompt)) ?? "{}"
         return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: Data(result.utf8))
     }
 }
