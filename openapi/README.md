@@ -71,4 +71,5 @@ The Bootstrap Service seeds the following default roles, validated by the Role H
 - [History Role](personas/history.md) – [Spec](v1/bootstrap.yml)
 - [View Creator Role](personas/view-creator.md) – [Spec](v1/bootstrap.yml)
 
+
 © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
