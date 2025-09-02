@@ -6,6 +6,7 @@ import LLMGatewayPlugin
 import AuthGatewayPlugin
 import RateLimiterGatewayPlugin
 import LauncherSignature
+import GatewayPersonaOrchestrator
 
 verifyLauncherSignature()
 // Role guard plugin in this target
@@ -44,8 +45,12 @@ plugins.append(contentsOf: [
     LoggingPlugin() as any GatewayPlugin,
     PublishingFrontendPlugin(rootPath: publishingConfig?.rootPath ?? "./Public") as any GatewayPlugin
 ])
+let orchestrator = GatewayPersonaOrchestrator(personas: [
+    SecuritySentinelPersona(),
+    DestructiveGuardianPersona()
+])
 
-let server = GatewayServer(plugins: plugins, zoneManager: nil, routeStoreURL: routesFile, certificatePath: nil, rateLimiter: rateLimiter, roleGuardStore: roleGuardStore)
+let server = GatewayServer(plugins: plugins, zoneManager: nil, routeStoreURL: routesFile, certificatePath: nil, rateLimiter: rateLimiter, roleGuardStore: roleGuardStore, personaOrchestrator: orchestrator)
 Task { @MainActor in
     try await server.start(port: 8080)
 }

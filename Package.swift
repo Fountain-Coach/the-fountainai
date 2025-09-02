@@ -25,7 +25,8 @@ let fullProducts: [Product] = [
     .executable(name: "function-caller-server", targets: ["function-caller-server"]),
     .library(name: "ToolsFactoryService", targets: ["ToolsFactoryService"]),
     .executable(name: "openapi-curator-cli", targets: ["openapi-curator-cli"]),
-    .executable(name: "openapi-curator-service", targets: ["openapi-curator-service"])]
+    .executable(name: "openapi-curator-service", targets: ["openapi-curator-service"]),
+    .library(name: "GatewayPersonaOrchestrator", targets: ["GatewayPersonaOrchestrator"])]
 
 let leanProducts: [Product] = [
     .library(name: "FountainCodex", targets: ["FountainCodex"]),
@@ -38,7 +39,8 @@ let leanProducts: [Product] = [
     .library(name: "PayloadInspectionGatewayPlugin", targets: ["PayloadInspectionGatewayPlugin"]),
     .library(name: "DestructiveGuardianGatewayPlugin", targets: ["DestructiveGuardianGatewayPlugin"]),
     .library(name: "RoleHealthCheckGatewayPlugin", targets: ["RoleHealthCheckGatewayPlugin"]),
-    .library(name: "SecuritySentinelGatewayPlugin", targets: ["SecuritySentinelGatewayPlugin"])
+    .library(name: "SecuritySentinelGatewayPlugin", targets: ["SecuritySentinelGatewayPlugin"]),
+    .library(name: "GatewayPersonaOrchestrator", targets: ["GatewayPersonaOrchestrator"])
 ]
 
 var products: [Product] = LEAN ? leanProducts : fullProducts
@@ -107,6 +109,7 @@ let fullTargets: [Target] = [
             "DestructiveGuardianGatewayPlugin",
             "RoleHealthCheckGatewayPlugin",
             "SecuritySentinelGatewayPlugin",
+            "GatewayPersonaOrchestrator",
             "LauncherSignature",
             .product(name: "Crypto", package: "swift-crypto"),
             .product(name: "X509", package: "swift-certificates"),
@@ -158,6 +161,15 @@ let fullTargets: [Target] = [
             .product(name: "Logging", package: "swift-log")
         ],
         path: "libs/GatewayPlugins/SecuritySentinelGatewayPlugin",
+    ),
+    .target(
+        name: "GatewayPersonaOrchestrator",
+        dependencies: [
+            "FountainRuntime",
+            "SecuritySentinelGatewayPlugin",
+            "DestructiveGuardianGatewayPlugin"
+        ],
+        path: "libs/GatewayPersonaOrchestrator"
     ),
     .target(
         name: "PublishingFrontend",
@@ -491,6 +503,7 @@ let leanTargets: [Target] = [
             "DestructiveGuardianGatewayPlugin",
             "RoleHealthCheckGatewayPlugin",
             "SecuritySentinelGatewayPlugin",
+            "GatewayPersonaOrchestrator",
             "LauncherSignature",
             .product(name: "Crypto", package: "swift-crypto"),
             .product(name: "X509", package: "swift-certificates"),
@@ -542,6 +555,15 @@ let leanTargets: [Target] = [
             .product(name: "Logging", package: "swift-log")
         ],
         path: "libs/GatewayPlugins/SecuritySentinelGatewayPlugin"
+    ),
+    .target(
+        name: "GatewayPersonaOrchestrator",
+        dependencies: [
+            "FountainRuntime",
+            "SecuritySentinelGatewayPlugin",
+            "DestructiveGuardianGatewayPlugin"
+        ],
+        path: "libs/GatewayPersonaOrchestrator"
     ),
     .target(
         name: "PublishingFrontend",

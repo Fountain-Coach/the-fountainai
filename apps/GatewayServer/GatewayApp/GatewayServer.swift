@@ -7,6 +7,9 @@ import X509
 import LLMGatewayPlugin
 import AuthGatewayPlugin
 import RateLimiterGatewayPlugin
+#if canImport(GatewayPersonaOrchestrator)
+import GatewayPersonaOrchestrator
+#endif
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
@@ -35,6 +38,7 @@ public final class GatewayServer {
     private let rateLimiter: RateLimiterGatewayPlugin?
     private let breaker: CircuitBreaker = CircuitBreaker()
     private var roleGuardReloader: RoleGuardConfigReloader?
+    private let personaOrchestrator: GatewayPersonaOrchestrator?
 
     private struct ZoneCreateRequest: Codable { let name: String }
     private struct ZonesResponse: Codable { let zones: [ZoneManager.Zone] }
@@ -82,11 +86,13 @@ public final class GatewayServer {
                 routeStoreURL: URL? = nil,
                 certificatePath: String? = nil,
                 rateLimiter: RateLimiterGatewayPlugin? = nil,
-                roleGuardStore: RoleGuardStore? = nil) {
+                roleGuardStore: RoleGuardStore? = nil,
+                personaOrchestrator: GatewayPersonaOrchestrator? = nil) {
         self.manager = manager
         self.plugins = plugins
         self.zoneManager = zoneManager
         self.roleGuardStore = roleGuardStore
+        self.personaOrchestrator = personaOrchestrator
         self.group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
         self.routes = [:]
         self.routesURL = routeStoreURL
@@ -115,6 +121,19 @@ public final class GatewayServer {
                 return HTTPResponse(status: 429, headers: ["Content-Type": "text/plain"], body: Data("too many requests".utf8))
             } catch is ServiceUnavailableError {
                 return HTTPResponse(status: 503, headers: ["Content-Type": "text/plain"], body: Data("service unavailable".utf8))
+            }
+
+            if let orchestrator = self.personaOrchestrator {
+                let verdict = await orchestrator.decide(for: request)
+                switch verdict {
+                case .allow:
+                    break
+                case .deny(let reason, _):
+                    return self.error(403, message: reason)
+                case .escalate(let reason, _):
+                    let json = try? JSONEncoder().encode(["decision": "escalate", "reason": reason])
+                    return HTTPResponse(status: 202, headers: ["Content-Type": "application/json"], body: json ?? Data())
+                }
             }
 
             // Allow plugins with routers to handle requests before builtin routes.
