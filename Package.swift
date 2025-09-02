@@ -37,7 +37,8 @@ let leanProducts: [Product] = [
     .library(name: "BudgetBreakerGatewayPlugin", targets: ["BudgetBreakerGatewayPlugin"]),
     .library(name: "PayloadInspectionGatewayPlugin", targets: ["PayloadInspectionGatewayPlugin"]),
     .library(name: "DestructiveGuardianGatewayPlugin", targets: ["DestructiveGuardianGatewayPlugin"]),
-    .library(name: "RoleHealthCheckGatewayPlugin", targets: ["RoleHealthCheckGatewayPlugin"])
+    .library(name: "RoleHealthCheckGatewayPlugin", targets: ["RoleHealthCheckGatewayPlugin"]),
+    .library(name: "SecuritySentinelGatewayPlugin", targets: ["SecuritySentinelGatewayPlugin"])
 ]
 
 var products: [Product] = LEAN ? leanProducts : fullProducts
@@ -105,7 +106,7 @@ let fullTargets: [Target] = [
             "PayloadInspectionGatewayPlugin",
             "DestructiveGuardianGatewayPlugin",
             "RoleHealthCheckGatewayPlugin",
-            .product(name: "SecuritySentinelGatewayPlugin", package: "security-sentinel"),
+            "SecuritySentinelGatewayPlugin",
             "LauncherSignature",
             .product(name: "Crypto", package: "swift-crypto"),
             .product(name: "X509", package: "swift-certificates"),
@@ -147,6 +148,16 @@ let fullTargets: [Target] = [
         name: "RoleHealthCheckGatewayPlugin",
         dependencies: ["FountainRuntime"],
         path: "libs/GatewayPlugins/RoleHealthCheckGatewayPlugin",
+    ),
+    .target(
+        name: "SecuritySentinelGatewayPlugin",
+        dependencies: [
+            "FountainRuntime",
+            .product(name: "AsyncHTTPClient", package: "async-http-client"),
+            .product(name: "NIOCore", package: "swift-nio"),
+            .product(name: "Logging", package: "swift-log")
+        ],
+        path: "libs/GatewayPlugins/SecuritySentinelGatewayPlugin",
     ),
     .target(
         name: "PublishingFrontend",
@@ -479,7 +490,7 @@ let leanTargets: [Target] = [
             "PayloadInspectionGatewayPlugin",
             "DestructiveGuardianGatewayPlugin",
             "RoleHealthCheckGatewayPlugin",
-            .product(name: "SecuritySentinelGatewayPlugin", package: "security-sentinel"),
+            "SecuritySentinelGatewayPlugin",
             "LauncherSignature",
             .product(name: "Crypto", package: "swift-crypto"),
             .product(name: "X509", package: "swift-certificates"),
@@ -521,6 +532,16 @@ let leanTargets: [Target] = [
         name: "RoleHealthCheckGatewayPlugin",
         dependencies: ["FountainRuntime"],
         path: "libs/GatewayPlugins/RoleHealthCheckGatewayPlugin"
+    ),
+    .target(
+        name: "SecuritySentinelGatewayPlugin",
+        dependencies: [
+            "FountainRuntime",
+            .product(name: "AsyncHTTPClient", package: "async-http-client"),
+            .product(name: "NIOCore", package: "swift-nio"),
+            .product(name: "Logging", package: "swift-log")
+        ],
+        path: "libs/GatewayPlugins/SecuritySentinelGatewayPlugin"
     ),
     .target(
         name: "PublishingFrontend",
@@ -635,7 +656,6 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-certificates.git", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.5.0"),
         .package(url: "https://github.com/Fountain-Coach/midi2.git", from: "0.3.1"),
-        .package(url: "https://github.com/Fountain-Coach/security-sentinel.git", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-numerics.git", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.3.0"),
         .package(path: "libs/OpenAPICurator"),
