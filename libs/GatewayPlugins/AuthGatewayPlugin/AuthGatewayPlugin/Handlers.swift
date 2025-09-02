@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 import FountainRuntime
 
 /// Collection of handlers for auth gateway endpoints backed by an LLM.
