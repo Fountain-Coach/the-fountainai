@@ -1,7 +1,10 @@
 import Foundation
 import FountainRuntime
-import SecuritySentinelGatewayPlugin
-import DestructiveGuardianGatewayPlugin
+import protocol SecuritySentinelGatewayPlugin.SecuritySentinelClient
+import enum SecuritySentinelGatewayPlugin.SentinelClientFactory
+import struct DestructiveGuardianGatewayPlugin.Handlers
+import struct DestructiveGuardianGatewayPlugin.GuardianEvaluateRequest
+import struct DestructiveGuardianGatewayPlugin.GuardianEvaluateResponse
 
 /// High level verdict returned by a persona evaluation.
 public enum GatewayPersonaVerdict: Sendable {
@@ -100,9 +103,11 @@ public struct DestructiveGuardianPersona: GatewayPersona {
     public init(sensitivePaths: [String] = ["/"],
                 privilegedTokens: [String] = [],
                 auditURL: URL = URL(fileURLWithPath: "logs/guardian.log")) {
-        self.handlers = Handlers(sensitivePaths: sensitivePaths,
-                                 privilegedTokens: Set(privilegedTokens),
-                                 auditURL: auditURL)
+        self.handlers = Handlers(
+            sensitivePaths: sensitivePaths,
+            privilegedTokens: Set(privilegedTokens),
+            auditURL: auditURL
+        )
     }
 
     public func evaluate(_ request: HTTPRequest) async -> GatewayPersonaVerdict {

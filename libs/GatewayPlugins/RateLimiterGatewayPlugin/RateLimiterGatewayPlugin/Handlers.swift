@@ -8,6 +8,9 @@ import FountainRuntime
 public actor Handlers {
     private let client = LLMPluginClient(personaPath: "openapi/personas/rate-limiter.md")
     private let defaultLimit: Int
+    private var buckets: [String: (minute: Int, count: Int)] = [:]
+    private var allowedTotal = 0
+    private var throttledTotal = 0
 
     public init(defaultLimit: Int = 60) {
         self.defaultLimit = defaultLimit
@@ -19,26 +22,26 @@ public actor Handlers {
                                         clientId: clientId,
                                         limitPerMinute: limitPerMinute ?? defaultLimit)
         let prompt = (try? String(data: JSONEncoder().encode(req), encoding: .utf8)) ?? ""
-        guard
-            let result = try? await client.call(prompt: prompt),
-            let data = result.data(using: .utf8),
-            let resp = try? JSONDecoder().decode(RateLimitCheckResponse.self, from: data)
-        else {
-            return false
+        let allowed: Bool
+        if let result = try? await client.call(prompt: prompt),
+           let data = result.data(using: .utf8),
+           let resp = try? JSONDecoder().decode(RateLimitCheckResponse.self, from: data) {
+            allowed = resp.allowed
+        } else {
+            allowed = localAllow(routeId: routeId, clientId: clientId, limit: limitPerMinute ?? defaultLimit)
         }
-        return resp.allowed
+        await DNSMetrics.shared.recordRateLimit(allowed: allowed)
+        return allowed
     }
 
     /// Returns aggregate allowance statistics.
     public func stats() async -> (allowed: Int, throttled: Int) {
-        guard
-            let result = try? await client.call(prompt: "stats"),
-            let data = result.data(using: .utf8),
-            let resp = try? JSONDecoder().decode(RateLimitStatsResponse.self, from: data)
-        else {
-            return (0, 0)
+        if let result = try? await client.call(prompt: "stats"),
+           let data = result.data(using: .utf8),
+           let resp = try? JSONDecoder().decode(RateLimitStatsResponse.self, from: data) {
+            return (resp.allowed, resp.throttled)
         }
-        return (resp.allowed, resp.throttled)
+        return (allowedTotal, throttledTotal)
     }
 
     /// Delegates rate limit checks to the LLM via HTTP.
@@ -57,6 +60,25 @@ public actor Handlers {
         let resp = RateLimitStatsResponse(allowed: s.allowed, throttled: s.throttled)
         let json = try JSONEncoder().encode(resp)
         return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: json)
+    }
+
+    private func localAllow(routeId: String, clientId: String, limit: Int) -> Bool {
+        let key = "\(routeId)|\(clientId)"
+        let minute = Int(Date().timeIntervalSince1970 / 60)
+        var bucket = buckets[key] ?? (minute: minute, count: 0)
+        if bucket.minute != minute {
+            bucket = (minute: minute, count: 0)
+        }
+        if bucket.count < limit {
+            bucket.count += 1
+            buckets[key] = bucket
+            allowedTotal += 1
+            return true
+        } else {
+            throttledTotal += 1
+            buckets[key] = bucket
+            return false
+        }
     }
 }
 
