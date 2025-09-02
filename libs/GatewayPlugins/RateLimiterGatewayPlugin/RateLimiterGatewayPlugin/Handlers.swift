@@ -1,23 +1,62 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 import FountainRuntime
 
 /// Handlers for rate limiter gateway endpoints using an LLM backend.
 public actor Handlers {
     private let client = LLMPluginClient(personaPath: "openapi/personas/rate-limiter.md")
+    private let defaultLimit: Int
 
-    public init() {}
-
-    /// Delegates rate limit checks to the LLM.
-    public func rateLimitCheck(_ request: HTTPRequest, body: RateLimitCheckRequest?) async throws -> HTTPResponse {
-        let prompt = body.flatMap { try? String(data: JSONEncoder().encode($0), encoding: .utf8) } ?? ""
-        let result = try await client.call(prompt: prompt)
-        return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: Data(result.utf8))
+    public init(defaultLimit: Int = 60) {
+        self.defaultLimit = defaultLimit
     }
 
-    /// Requests aggregated statistics from the LLM.
+    /// Returns whether the request is within its rate limit.
+    public func allow(routeId: String, clientId: String, limitPerMinute: Int?) async -> Bool {
+        let req = RateLimitCheckRequest(routeId: routeId,
+                                        clientId: clientId,
+                                        limitPerMinute: limitPerMinute ?? defaultLimit)
+        let prompt = (try? String(data: JSONEncoder().encode(req), encoding: .utf8)) ?? ""
+        guard
+            let result = try? await client.call(prompt: prompt),
+            let data = result.data(using: .utf8),
+            let resp = try? JSONDecoder().decode(RateLimitCheckResponse.self, from: data)
+        else {
+            return false
+        }
+        return resp.allowed
+    }
+
+    /// Returns aggregate allowance statistics.
+    public func stats() async -> (allowed: Int, throttled: Int) {
+        guard
+            let result = try? await client.call(prompt: "stats"),
+            let data = result.data(using: .utf8),
+            let resp = try? JSONDecoder().decode(RateLimitStatsResponse.self, from: data)
+        else {
+            return (0, 0)
+        }
+        return (resp.allowed, resp.throttled)
+    }
+
+    /// Delegates rate limit checks to the LLM via HTTP.
+    public func rateLimitCheck(_ request: HTTPRequest, body: RateLimitCheckRequest?) async throws -> HTTPResponse {
+        let allowed = await allow(routeId: body?.routeId ?? "",
+                                  clientId: body?.clientId ?? "",
+                                  limitPerMinute: body?.limitPerMinute)
+        let resp = RateLimitCheckResponse(allowed: allowed)
+        let json = try JSONEncoder().encode(resp)
+        return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: json)
+    }
+
+    /// Requests aggregated statistics from the LLM via HTTP.
     public func rateLimitStats(_ request: HTTPRequest, body: NoBody?) async throws -> HTTPResponse {
-        let result = try await client.call(prompt: "stats")
-        return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: Data(result.utf8))
+        let s = await stats()
+        let resp = RateLimitStatsResponse(allowed: s.allowed, throttled: s.throttled)
+        let json = try JSONEncoder().encode(resp)
+        return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: json)
     }
 }
 
