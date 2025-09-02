@@ -61,4 +61,15 @@ The following personas drive Gateway plugin behaviour via the LLM:
 - [Persistence Service Persona](personas/persist.md) – [Spec](v1/persist.yml)
 - [Typesense API Persona](personas/typesense.md) – [Spec](typesense.yml)
 
+### Default Roles
+
+The Bootstrap Service seeds the following default roles, validated by the Role Health Check Gateway:
+
+- [Drift Role](personas/drift.md) – [Spec](v1/bootstrap.yml)
+- [Semantic Arc Role](personas/semantic-arc.md) – [Spec](v1/bootstrap.yml)
+- [Patterns Role](personas/patterns.md) – [Spec](v1/bootstrap.yml)
+- [History Role](personas/history.md) – [Spec](v1/bootstrap.yml)
+- [View Creator Role](personas/view-creator.md) – [Spec](v1/bootstrap.yml)
+
+
 © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
