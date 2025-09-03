@@ -12,6 +12,17 @@ This README covers operations and deployment. For the golden-key specification a
 
 ---
 
+## 🔑 Required Environment
+
+Before starting the launcher, export the FountainStore connection details:
+
+- `FOUNTAINSTORE_URL`
+- `FOUNTAINSTORE_API_KEY`
+
+These are checked alongside `OPENAI_API_KEY` during diagnostics.
+
+---
+
 ## 🎯 Features
 
 - ✅ Cross-platform orchestration (macOS & Linux)

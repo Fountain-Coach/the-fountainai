@@ -323,5 +323,14 @@ public actor FountainStoreClient {
     }
 }
 
+public extension FountainStoreClient {
+    /// Resolve and ensure required collections for the given corpus.
+    /// Current implementation is a no-op placeholder until FountainStore
+    /// exposes a management API for collection creation.
+    func ensureCollections(corpusId: String = ProcessInfo.processInfo.environment["DEFAULT_CORPUS_ID"] ?? "tools-factory") async {
+        _ = corpusId
+    }
+}
+
 // © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
 
