@@ -49,6 +49,19 @@ final class FountainStoreClientTests: XCTestCase {
         XCTAssertEqual(metrics["query.byId"], 1)
     }
 
+    func testUnsupportedQueryShape() async throws {
+        let client = FountainStoreClient(client: MockFountainStoreClient())
+        let q = Query(mode: .byId("p1"), sort: [(field: "foo", ascending: true)])
+        do {
+            _ = try await client.query(corpusId: "c1", collection: "pages", query: q)
+            XCTFail("expected notSupported")
+        } catch PersistenceError.notSupported(let need) {
+            XCTAssertEqual(need, "query.byId.invalid")
+        }
+        let metrics = await client.capabilityRequests
+        XCTAssertEqual(metrics["query.byId.invalid"], 1)
+    }
+
     func testCollectionHelpers() async throws {
         let client = FountainStoreClient(client: MockFountainStoreClient())
         _ = try await client.createCorpus("c2")

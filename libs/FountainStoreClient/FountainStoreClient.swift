@@ -90,6 +90,7 @@ public actor FountainStoreClient {
     }
 
     public func query(corpusId: String, collection: String, query: Query) async throws -> QueryResponse {
+        try validateQuery(query)
         if let mode = query.mode {
             switch mode {
             case .byId: try await requireCapability("query.byId")
@@ -100,6 +101,30 @@ public actor FountainStoreClient {
         if !query.filters.isEmpty { try await requireCapability("query.filters") }
         if !query.sort.isEmpty { try await requireCapability("query.sort") }
         return try await client.query(corpusId: corpusId, collection: collection, query: query)
+    }
+
+    private func validateQuery(_ q: Query) throws {
+        if q.sort.count > 1 {
+            try requestCapability("query.sort.multi")
+        }
+        if let mode = q.mode {
+            switch mode {
+            case .byId:
+                if !q.filters.isEmpty || !q.sort.isEmpty || q.limit != nil || q.offset != nil {
+                    try requestCapability("query.byId.invalid")
+                }
+            case .byIndexEq, .prefixScan:
+                if !q.filters.isEmpty {
+                    try requestCapability("query.modeWithFilters")
+                }
+            }
+        }
+    }
+
+    private func requestCapability(_ need: String) throws -> Never {
+        capabilityCounters[need, default: 0] += 1
+        print("capability request: need=\(need)")
+        throw PersistenceError.notSupported(need: need)
     }
 
     // MARK: - Capabilities
