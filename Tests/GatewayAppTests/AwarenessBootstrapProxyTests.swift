@@ -6,13 +6,13 @@ import FoundationNetworking
 @testable import gateway_server
 @testable import AwarenessService
 @testable import BootstrapService
-@testable import TypesensePersistence
+@testable import FountainStoreClient
 
 final class AwarenessBootstrapProxyTests: XCTestCase {
     @MainActor
     func testGatewayProxiesAwarenessAndBootstrap() async throws {
         // Start upstream Awareness
-        let svc = TypesensePersistenceService(client: MockTypesenseClient())
+        let svc = FountainStoreClient(client: MockFountainStoreClient())
         await svc.ensureCollections()
         let awarenessKernel = makeAwarenessKernel(service: svc)
         let awareness = NIOHTTPServer(kernel: awarenessKernel)

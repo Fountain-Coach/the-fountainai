@@ -6,13 +6,13 @@ import FoundationNetworking
 @testable import gateway_server
 @testable import FountainRuntime
 @testable import persist_server
-@testable import TypesensePersistence
+@testable import FountainStoreClient
 
 final class GatewayPersistProxyTests: XCTestCase {
     @MainActor
     func testGatewayProxiesPersistRoutes() async throws {
         // Start a persist upstream on a random port
-        let svc = TypesensePersistenceService(client: MockTypesenseClient())
+        let svc = FountainStoreClient(client: MockFountainStoreClient())
         await svc.ensureCollections()
         let persistKernel = makePersistKernel(service: svc)
         let upstream = NIOHTTPServer(kernel: persistKernel)

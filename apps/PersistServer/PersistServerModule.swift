@@ -1,6 +1,6 @@
 import Foundation
 import FountainRuntime
-import TypesensePersistence
+import FountainStoreClient
 
 public func metrics_metrics_get() async -> HTTPResponse {
     let uptime = Int(ProcessInfo.processInfo.systemUptime)
@@ -8,7 +8,7 @@ public func metrics_metrics_get() async -> HTTPResponse {
     return HTTPResponse(status: 200, headers: ["Content-Type": "text/plain"], body: body)
 }
 
-public func listFunctionsInCorpus(service svc: TypesensePersistenceService, corpusId: String, limit: Int, offset: Int, q: String?) async throws -> HTTPResponse {
+public func listFunctionsInCorpus(service svc: FountainStoreClient, corpusId: String, limit: Int, offset: Int, q: String?) async throws -> HTTPResponse {
     let (total, functions) = try await svc.listFunctions(corpusId: corpusId, limit: limit, offset: offset, q: q)
     let obj: [String: Any] = [
         "total": total,
@@ -18,7 +18,7 @@ public func listFunctionsInCorpus(service svc: TypesensePersistenceService, corp
     return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: json)
 }
 
-public func makePersistKernel(service svc: TypesensePersistenceService) -> HTTPKernel {
+public func makePersistKernel(service svc: FountainStoreClient) -> HTTPKernel {
     HTTPKernel { req in
         let pathOnly = req.path.split(separator: "?", maxSplits: 1, omittingEmptySubsequences: false).first.map(String.init) ?? req.path
         let segments = pathOnly.split(separator: "/", omittingEmptySubsequences: true)

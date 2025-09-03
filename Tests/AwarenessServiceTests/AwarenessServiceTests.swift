@@ -1,10 +1,10 @@
 import XCTest
 @testable import AwarenessService
-@testable import TypesensePersistence
+@testable import FountainStoreClient
 
 final class AwarenessServiceTests: XCTestCase {
     func makeRouter() -> AwarenessRouter {
-        let svc = TypesensePersistenceService(client: MockTypesenseClient())
+        let svc = FountainStoreClient(client: MockFountainStoreClient())
         return AwarenessRouter(persistence: svc)
     }
 
@@ -17,7 +17,7 @@ final class AwarenessServiceTests: XCTestCase {
     }
 
     func testInitAndBaselineAndSummaryFlow() async throws {
-        let svc = TypesensePersistenceService(client: MockTypesenseClient())
+        let svc = FountainStoreClient(client: MockFountainStoreClient())
         let router = AwarenessRouter(persistence: svc)
         // init corpus
         let initBody = try JSONEncoder().encode(InitIn(corpusId: "c1"))
@@ -39,7 +39,7 @@ final class AwarenessServiceTests: XCTestCase {
     }
 
     func testAnalyticsHistoryAndSemanticArc() async throws {
-        let svc = TypesensePersistenceService(client: MockTypesenseClient())
+        let svc = FountainStoreClient(client: MockFountainStoreClient())
         let router = AwarenessRouter(persistence: svc)
         _ = try await router.route(.init(method: "POST", path: "/corpus/init", body: try JSONEncoder().encode(InitIn(corpusId: "c9"))))
         _ = try await router.route(.init(method: "POST", path: "/corpus/baseline", body: try JSONEncoder().encode(BaselineRequest(corpusId: "c9", baselineId: "b1", content: "hello"))))

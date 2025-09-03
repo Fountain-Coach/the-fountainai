@@ -5,13 +5,13 @@ import FoundationNetworking
 #endif
 @testable import gateway_server
 @testable import AwarenessService
-@testable import TypesensePersistence
+@testable import FountainStoreClient
 
 final class RoleGuardProxyTests: XCTestCase {
     @MainActor
     func test401And403And200() async throws {
         // Upstream awareness
-        let svc = TypesensePersistenceService(client: MockTypesenseClient())
+        let svc = FountainStoreClient(client: MockFountainStoreClient())
         await svc.ensureCollections()
         let awarenessKernel = makeAwarenessKernel(service: svc)
         let upstream = NIOHTTPServer(kernel: awarenessKernel)

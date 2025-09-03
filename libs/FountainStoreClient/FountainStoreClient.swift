@@ -4,16 +4,15 @@ public enum PersistenceError: Error, Equatable {
     case invalidData
 }
 
-public actor TypesensePersistenceService {
-    private let client: TypesenseClientLike
+public actor FountainStoreClient {
+    private let client: FountainStoreClientProtocol
 
-    public init(client: TypesenseClientLike) {
+    public init(client: FountainStoreClientProtocol) {
         self.client = client
     }
 
     // MARK: - Collections
     public func ensureCollections() async {
-        // Idempotent best-effort creation
         try? await client.createCollection(name: "corpora", fields: [("corpusId", "string")], defaultSortingField: "corpusId")
         try? await client.createCollection(name: "baselines", fields: [("corpusId", "string"), ("baselineId", "string"), ("content", "string"), ("ts", "float")], defaultSortingField: "baselineId")
         try? await client.createCollection(name: "reflections", fields: [("corpusId", "string"), ("reflectionId", "string"), ("question", "string"), ("content", "string"), ("ts", "float")], defaultSortingField: "reflectionId")

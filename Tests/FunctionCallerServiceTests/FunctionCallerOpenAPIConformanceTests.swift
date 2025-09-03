@@ -1,10 +1,10 @@
 import XCTest
 @testable import FunctionCallerService
-@testable import TypesensePersistence
+@testable import FountainStoreClient
 
 final class FunctionCallerOpenAPIConformanceTests: XCTestCase {
     func testListFunctionsResponseShapeMatchesOpenAPI() async throws {
-        let svc = TypesensePersistenceService(client: MockTypesenseClient())
+        let svc = FountainStoreClient(client: MockFountainStoreClient())
         await svc.ensureCollections()
         // Seed a function
         _ = try await svc.addFunction(.init(corpusId: "c1", functionId: "f1", name: "F1", description: "d1", httpMethod: "GET", httpPath: "/f1"))
@@ -27,7 +27,7 @@ final class FunctionCallerOpenAPIConformanceTests: XCTestCase {
     }
 
     func testMetricsEndpointReturnsPlainText() async throws {
-        let svc = TypesensePersistenceService(client: MockTypesenseClient())
+        let svc = FountainStoreClient(client: MockFountainStoreClient())
         let router = FunctionCallerRouter(persistence: svc)
         let resp = try await router.route(.init(method: "GET", path: "/metrics"))
         XCTAssertEqual(resp.status, 200)

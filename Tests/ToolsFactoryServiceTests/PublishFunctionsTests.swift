@@ -1,6 +1,6 @@
 import XCTest
 @testable import ToolsFactoryService
-@testable import TypesensePersistence
+@testable import FountainStoreClient
 
 final class PublishFunctionsTests: XCTestCase {
     func testPublishFunctionsUpsertsIntoPersistence() async throws {
@@ -9,7 +9,7 @@ final class PublishFunctionsTests: XCTestCase {
             tools: [:],
             operations: ["op1", "op2"]
         )
-        let svc = TypesensePersistenceService(client: MockTypesenseClient())
+        let svc = FountainStoreClient(client: MockFountainStoreClient())
         await svc.ensureCollections()
         try await publishFunctions(manifest: manifest, corpusId: "tools", service: svc)
         let (total, list) = try await svc.listFunctions(corpusId: "tools")

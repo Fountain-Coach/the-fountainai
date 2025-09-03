@@ -1,5 +1,5 @@
 import Foundation
-import TypesensePersistence
+import FountainStoreClient
 import FountainRuntime
 
 public struct InitIn: Codable { public let corpusId: String }
@@ -15,8 +15,8 @@ public struct HTTPRequest: Sendable { public let method: String; public let path
 public struct HTTPResponse: Sendable { public let status: Int; public let headers: [String:String]; public let body: Data; public init(status: Int, headers: [String:String] = [:], body: Data = Data()) { self.status = status; self.headers = headers; self.body = body } }
 
 public final class AwarenessRouter: @unchecked Sendable {
-    let persistence: TypesensePersistenceService
-    public init(persistence: TypesensePersistenceService) { self.persistence = persistence }
+    let persistence: FountainStoreClient
+    public init(persistence: FountainStoreClient) { self.persistence = persistence }
 
     // MARK: - Operation Handlers
 
@@ -26,7 +26,7 @@ public final class AwarenessRouter: @unchecked Sendable {
     }
 
     public func initializeCorpus(_ input: InitIn) async throws -> HTTPResponse {
-        let req = TypesensePersistence.CorpusCreateRequest(corpusId: input.corpusId)
+        let req = CorpusCreateRequest(corpusId: input.corpusId)
         let resp = try await persistence.createCorpus(req)
         let out = InitOut(message: "corpus \(resp.corpusId) created")
         let data = try JSONEncoder().encode(out)
@@ -204,12 +204,12 @@ extension AwarenessRouter {
     }
 }
 
-public func makeAwarenessKernel(service svc: TypesensePersistenceService) -> HTTPKernel {
+public func makeAwarenessKernel(service svc: FountainStoreClient) -> HTTPKernel {
     let router = AwarenessRouter(persistence: svc)
     return HTTPKernel { req in
         let ar = HTTPRequest(method: req.method, path: req.path, body: req.body)
         let resp = try await router.route(ar)
-        return FountainCodex.HTTPResponse(status: resp.status, headers: resp.headers, body: resp.body)
+        return FountainRuntime.HTTPResponse(status: resp.status, headers: resp.headers, body: resp.body)
     }
 }
 

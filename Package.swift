@@ -9,7 +9,7 @@ let LEAN = (ProcessInfo.processInfo.environment["FULL_TESTS"] != "1")
 let fullProducts: [Product] = [
     .library(name: "FountainCodex", targets: ["FountainCodex"]),
     .library(name: "FountainRuntime", targets: ["FountainRuntime"]),
-    .library(name: "TypesensePersistence", targets: ["TypesensePersistence"]),
+    .library(name: "FountainStoreClient", targets: ["FountainStoreClient"]),
     .library(name: "MIDI2Models", targets: ["MIDI2Models"]),
     .library(name: "MIDI2Core", targets: ["MIDI2Core"]),
     .library(name: "FlexBridge", targets: ["FlexBridge"]),
@@ -73,13 +73,8 @@ let fullTargets: [Target] = [
         path: "libs/LauncherSignature"
     ),
     .target(
-        name: "TypesensePersistence",
-        dependencies: [
-            .product(name: "Typesense", package: "typesense-swift"),
-            .product(name: "Numerics", package: "swift-numerics"),
-            .product(name: "Atomics", package: "swift-atomics")
-        ],
-        path: "libs/TypesensePersistence"
+        name: "FountainStoreClient",
+        path: "libs/FountainStoreClient"
     ),
     .executableTarget(
         name: "sse-client",
@@ -178,22 +173,22 @@ let fullTargets: [Target] = [
     ),
     .target(
         name: "AwarenessService",
-        dependencies: ["TypesensePersistence", .product(name: "Numerics", package: "swift-numerics"), .product(name: "Atomics", package: "swift-atomics"), "FountainRuntime"],
+        dependencies: ["FountainStoreClient", .product(name: "Numerics", package: "swift-numerics"), .product(name: "Atomics", package: "swift-atomics"), "FountainRuntime"],
         path: "libs/AwarenessService"
     ),
     .target(
         name: "BootstrapService",
-        dependencies: ["TypesensePersistence", .product(name: "Numerics", package: "swift-numerics"), .product(name: "Atomics", package: "swift-atomics"), "FountainRuntime"],
+        dependencies: ["FountainStoreClient", .product(name: "Numerics", package: "swift-numerics"), .product(name: "Atomics", package: "swift-atomics"), "FountainRuntime"],
         path: "libs/BootstrapService"
     ),
     .target(
         name: "PlannerService",
-        dependencies: ["FountainRuntime", "TypesensePersistence"],
+        dependencies: ["FountainRuntime", "FountainStoreClient"],
         path: "libs/PlannerService"
     ),
     .target(
         name: "FunctionCallerService",
-        dependencies: ["FountainRuntime", "TypesensePersistence", .product(name: "AsyncHTTPClient", package: "async-http-client")],
+        dependencies: ["FountainRuntime", "FountainStoreClient", .product(name: "AsyncHTTPClient", package: "async-http-client")],
         path: "libs/FunctionCallerService"
     ),
     .executableTarget(
@@ -230,7 +225,7 @@ let fullTargets: [Target] = [
         dependencies: [
             .product(name: "Crypto", package: "swift-crypto"),
             .product(name: "Toolsmith", package: "toolsmith"),
-            "TypesensePersistence",
+            "FountainStoreClient",
             .product(name: "Numerics", package: "swift-numerics"),
             .product(name: "Atomics", package: "swift-atomics")
         ],
@@ -246,37 +241,37 @@ let fullTargets: [Target] = [
     ),
     .target(
         name: "ToolsFactoryService",
-        dependencies: ["FountainRuntime", "ToolServer", "TypesensePersistence"],
+        dependencies: ["FountainRuntime", "ToolServer", "FountainStoreClient"],
         path: "libs/ToolsFactoryService"
     ),
     .executableTarget(
         name: "tools-factory-server",
-        dependencies: ["FountainRuntime", "ToolsFactoryService", "TypesensePersistence", "LauncherSignature"],
+        dependencies: ["FountainRuntime", "ToolsFactoryService", "FountainStoreClient", "LauncherSignature"],
         path: "apps/ToolsFactoryServer"
     ),
     .executableTarget(
         name: "planner-server",
-        dependencies: ["FountainRuntime", "TypesensePersistence", "PlannerService", "Yams", "LauncherSignature"],
+        dependencies: ["FountainRuntime", "FountainStoreClient", "PlannerService", "Yams", "LauncherSignature"],
         path: "apps/PlannerServer"
     ),
     .executableTarget(
         name: "function-caller-server",
-        dependencies: ["FountainRuntime", "TypesensePersistence", "FunctionCallerService", "Yams", "LauncherSignature"],
+        dependencies: ["FountainRuntime", "FountainStoreClient", "FunctionCallerService", "Yams", "LauncherSignature"],
         path: "apps/FunctionCallerServer"
     ),
     .executableTarget(
         name: "persist-server",
-        dependencies: ["FountainRuntime", "TypesensePersistence", "Yams", "LauncherSignature"],
+        dependencies: ["FountainRuntime", "FountainStoreClient", "Yams", "LauncherSignature"],
         path: "apps/PersistServer"
     ),
     .executableTarget(
         name: "baseline-awareness-server",
-        dependencies: ["TypesensePersistence", "AwarenessService", "LauncherSignature"],
+        dependencies: ["FountainStoreClient", "AwarenessService", "LauncherSignature"],
         path: "apps/BaselineAwarenessServer"
     ),
     .executableTarget(
         name: "bootstrap-server",
-        dependencies: ["TypesensePersistence", "BootstrapService", "LauncherSignature"],
+        dependencies: ["FountainStoreClient", "BootstrapService", "LauncherSignature"],
         path: "apps/BootstrapServer"
     ),
     .testTarget(
@@ -354,7 +349,7 @@ let fullTargets: [Target] = [
     .testTarget(name: "MIDI2TransportsTests", dependencies: ["MIDI2Transports"], path: "Tests/MIDI2TransportsTests"),
     .testTarget(name: "FlexctlTests", dependencies: ["flexctl", "ResourceLoader"], path: "Tests/FlexctlTests"),
     .testTarget(name: "GatewayAppTests", dependencies: ["gateway-server", "LLMGatewayPlugin", "AuthGatewayPlugin", "DestructiveGuardianGatewayPlugin", "PayloadInspectionGatewayPlugin", "BudgetBreakerGatewayPlugin", "RateLimiterGatewayPlugin", "RoleHealthCheckGatewayPlugin", "persist-server"], path: "Tests/GatewayAppTests"),
-    .testTarget(name: "ToolsFactoryServiceTests", dependencies: ["ToolsFactoryService", "TypesensePersistence"], path: "Tests/ToolsFactoryServiceTests"),
+    .testTarget(name: "ToolsFactoryServiceTests", dependencies: ["ToolsFactoryService", "FountainStoreClient"], path: "Tests/ToolsFactoryServiceTests"),
     .testTarget(
         name: "ToolsmithPackageTests",
         dependencies: [
@@ -371,33 +366,28 @@ let fullTargets: [Target] = [
         path: "Tests/SSEOverMIDITests"
     ),
     .testTarget(
-        name: "TypesensePersistenceTests",
-        dependencies: ["TypesensePersistence"],
-        path: "Tests/TypesensePersistenceTests"
-    ),
-    .testTarget(
         name: "AwarenessServiceTests",
-        dependencies: ["AwarenessService", "TypesensePersistence"],
+        dependencies: ["AwarenessService", "FountainStoreClient"],
         path: "Tests/AwarenessServiceTests"
     ),
     .testTarget(
         name: "BootstrapServiceTests",
-        dependencies: ["BootstrapService", "TypesensePersistence"],
+        dependencies: ["BootstrapService", "FountainStoreClient"],
         path: "Tests/BootstrapServiceTests"
     ),
     .testTarget(
         name: "PlannerServiceTests",
-        dependencies: ["PlannerService", "TypesensePersistence", "Yams"],
+        dependencies: ["PlannerService", "FountainStoreClient", "Yams"],
         path: "Tests/PlannerServiceTests"
     ),
     .testTarget(
         name: "FunctionCallerServiceTests",
-        dependencies: ["FunctionCallerService", "TypesensePersistence", "FountainRuntime", "Yams"],
+        dependencies: ["FunctionCallerService", "FountainStoreClient", "FountainRuntime", "Yams"],
         path: "Tests/FunctionCallerServiceTests"
     ),
     .testTarget(
         name: "E2ETests",
-        dependencies: ["AwarenessService", "BootstrapService", "TypesensePersistence"],
+        dependencies: ["AwarenessService", "BootstrapService", "FountainStoreClient"],
         path: "Tests/E2ETests"
     ),
     .testTarget(
@@ -407,7 +397,7 @@ let fullTargets: [Target] = [
     ),
     .testTarget(
         name: "OpenAPIConformanceTests",
-        dependencies: ["Yams", "AwarenessService", "BootstrapService", "TypesensePersistence", "FountainRuntime", "RoleHealthCheckGatewayPlugin"],
+        dependencies: ["Yams", "AwarenessService", "BootstrapService", "FountainStoreClient", "FountainRuntime", "RoleHealthCheckGatewayPlugin"],
         path: "Tests/OpenAPIConformanceTests"
     ),
     .testTarget(
@@ -482,13 +472,8 @@ let leanTargets: [Target] = [
         path: "libs/LauncherSignature"
     ),
     .target(
-        name: "TypesensePersistence",
-        dependencies: [
-            .product(name: "Typesense", package: "typesense-swift"),
-            .product(name: "Numerics", package: "swift-numerics"),
-            .product(name: "Atomics", package: "swift-atomics")
-        ],
-        path: "libs/TypesensePersistence"
+        name: "FountainStoreClient",
+        path: "libs/FountainStoreClient"
     ),
     .executableTarget(
         name: "gateway-server",
@@ -582,7 +567,7 @@ let leanTargets: [Target] = [
         dependencies: [
             .product(name: "Crypto", package: "swift-crypto"),
             .product(name: "Toolsmith", package: "toolsmith"),
-            "TypesensePersistence",
+            "FountainStoreClient",
             .product(name: "Numerics", package: "swift-numerics"),
             .product(name: "Atomics", package: "swift-atomics")
         ],
@@ -669,7 +654,6 @@ let package = Package(
     ],
     products: products,
     dependencies: [
-        .package(url: "https://github.com/typesense/typesense-swift.git", from: "1.0.1"),
         .package(url: "https://github.com/Fountain-Coach/toolsmith.git", exact: "1.0.0"),
         .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.0"),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.21.0"),

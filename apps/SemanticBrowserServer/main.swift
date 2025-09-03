@@ -5,26 +5,6 @@ import LauncherSignature
 verifyLauncherSignature()
 
 func buildService() -> SemanticMemoryService {
-    let env = ProcessInfo.processInfo.environment
-    let urls: [String]?
-    if let list = env["SB_TYPESENSE_URLS"] {
-        urls = list.split(separator: ",").map(String.init)
-    } else if let one = env["SB_TYPESENSE_URL"] {
-        urls = [one]
-    } else if let list = env["TYPESENSE_URLS"] {
-        urls = list.split(separator: ",").map(String.init)
-    } else if let one = env["TYPESENSE_URL"] {
-        urls = [one]
-    } else {
-        urls = nil
-    }
-    let apiKey = env["SB_TYPESENSE_API_KEY"] ?? env["TYPESENSE_API_KEY"]
-    #if canImport(Typesense)
-    if let urls, let apiKey, !urls.isEmpty, !apiKey.isEmpty {
-        let backend = TypesenseSemanticBackend(nodes: urls, apiKey: apiKey, debug: false)
-        return SemanticMemoryService(backend: backend)
-    }
-    #endif
     return SemanticMemoryService()
 }
 

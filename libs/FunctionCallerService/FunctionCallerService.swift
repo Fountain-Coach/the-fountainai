@@ -1,7 +1,7 @@
 import Foundation
 import AsyncHTTPClient
 import FountainRuntime
-import TypesensePersistence
+import FountainStoreClient
 
 public struct FunctionInfo: Codable, Sendable {
     public let function_id: String
@@ -67,10 +67,10 @@ public struct HTTPResponse: Sendable {
 }
 
 public final class FunctionCallerRouter: @unchecked Sendable {
-    let persistence: TypesensePersistenceService
+    let persistence: FountainStoreClient
     let client: HTTPClient
 
-    public init(persistence: TypesensePersistenceService, client: HTTPClient = HTTPClient(eventLoopGroupProvider: .createNew)) {
+    public init(persistence: FountainStoreClient, client: HTTPClient = HTTPClient(eventLoopGroupProvider: .createNew)) {
         self.persistence = persistence
         self.client = client
     }
@@ -165,7 +165,7 @@ public final class FunctionCallerRouter: @unchecked Sendable {
     }
 }
 
-public func makeFunctionCallerKernel(service svc: TypesensePersistenceService) -> HTTPKernel {
+public func makeFunctionCallerKernel(service svc: FountainStoreClient) -> HTTPKernel {
     let router = FunctionCallerRouter(persistence: svc)
     return HTTPKernel { req in
         let ar = HTTPRequest(method: req.method, path: req.path, headers: req.headers, body: req.body)
