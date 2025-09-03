@@ -6,18 +6,24 @@ import LauncherSignature
 
 verifyLauncherSignature()
 
-// Awareness server using the shared NIOHTTPServer for consistent HTTP handling
+let corpusId = ProcessInfo.processInfo.environment["DEFAULT_CORPUS_ID"] ?? "tools-factory"
+let storePath = ProcessInfo.processInfo.environment["FOUNTAIN_STORE_PATH"] ?? "./data/fountain-store"
 do {
-    let corpusId = ProcessInfo.processInfo.environment["DEFAULT_CORPUS_ID"] ?? "tools-factory"
-    let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
-    Task { await svc.ensureCollections(corpusId: corpusId) }
-    let server = NIOHTTPServer(kernel: makeAwarenessKernel(service: svc))
-    let port: Int = 8081
-    _ = try await server.start(port: port)
-    print("baseline-awareness (NIO) listening on :\(port)")
-    dispatchMain()
+    try FileManager.default.createDirectory(atPath: storePath, withIntermediateDirectories: true)
 } catch {
-    print("Failed to start baseline-awareness: \(error)")
+    FileHandle.standardError.write(Data("[baseline-awareness] Failed to create store directory: \(error)\n".utf8))
 }
+let svc = FountainStoreClient(client: EmbeddedFountainStoreClient(path: storePath))
+Task {
+    await svc.ensureCollections(corpusId: corpusId)
+    let server = NIOHTTPServer(kernel: makeAwarenessKernel(service: svc))
+    do {
+        _ = try await server.start(port: 8081)
+        print("baseline-awareness (NIO) listening on :8081")
+    } catch {
+        FileHandle.standardError.write(Data("[baseline-awareness] Failed to start: \(error)\n".utf8))
+    }
+}
+dispatchMain()
 
 // © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
