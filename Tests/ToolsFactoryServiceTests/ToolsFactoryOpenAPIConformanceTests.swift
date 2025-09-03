@@ -1,6 +1,6 @@
 import XCTest
 @testable import ToolsFactoryService
-@testable import TypesensePersistence
+@testable import FountainStoreClient
 
 final class ToolsFactoryOpenAPIConformanceTests: XCTestCase {
     func testListToolsResponseShapeMatchesOpenAPI() async throws {
@@ -9,7 +9,7 @@ final class ToolsFactoryOpenAPIConformanceTests: XCTestCase {
             tools: [:],
             operations: []
         )
-        let svc = TypesensePersistenceService(client: MockTypesenseClient())
+        let svc = FountainStoreClient(client: MockFountainStoreClient())
         await svc.ensureCollections()
         let router = ToolsFactoryRouter(service: svc, adapters: [:], manifest: manifest, defaultCorpusId: "tf")
         // Seed a couple of functions

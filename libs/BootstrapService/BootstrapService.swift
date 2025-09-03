@@ -1,5 +1,5 @@
 import Foundation
-import TypesensePersistence
+import FountainStoreClient
 import FountainRuntime
 
 public struct InitIn: Codable { public let corpusId: String }
@@ -12,8 +12,8 @@ public struct HTTPRequest: Sendable { public let method: String; public let path
 public struct HTTPResponse: Sendable { public let status: Int; public let headers: [String:String]; public let body: Data; public init(status: Int, headers: [String:String] = [:], body: Data = Data()) { self.status = status; self.headers = headers; self.body = body } }
 
 public final class BootstrapRouter: @unchecked Sendable {
-    let persistence: TypesensePersistenceService
-    public init(persistence: TypesensePersistenceService) { self.persistence = persistence }
+    let persistence: FountainStoreClient
+    public init(persistence: FountainStoreClient) { self.persistence = persistence }
 
     private func defaultRoles() -> RoleDefaults {
         RoleDefaults(
@@ -42,7 +42,7 @@ public final class BootstrapRouter: @unchecked Sendable {
     ///
     /// Creates a new empty corpus and seeds the default GPT role prompts.
     public func bootstrapInitializeCorpus(_ input: InitIn) async throws -> HTTPResponse {
-        let req = TypesensePersistence.CorpusCreateRequest(corpusId: input.corpusId)
+        let req = CorpusCreateRequest(corpusId: input.corpusId)
         let resp = try await persistence.createCorpus(req)
         let roles = defaultRoles()
         let roleDocs: [Role] = [
@@ -155,12 +155,12 @@ public final class BootstrapRouter: @unchecked Sendable {
     }
 }
 
-public func makeBootstrapKernel(service svc: TypesensePersistenceService) -> HTTPKernel {
+public func makeBootstrapKernel(service svc: FountainStoreClient) -> HTTPKernel {
     let router = BootstrapRouter(persistence: svc)
     return HTTPKernel { req in
         let br = HTTPRequest(method: req.method, path: req.path, body: req.body)
         let resp = try await router.route(br)
-        return FountainCodex.HTTPResponse(status: resp.status, headers: resp.headers, body: resp.body)
+        return FountainRuntime.HTTPResponse(status: resp.status, headers: resp.headers, body: resp.body)
     }
 }
 

@@ -1,10 +1,10 @@
 import XCTest
 @testable import AwarenessService
-@testable import TypesensePersistence
+@testable import FountainStoreClient
 
 final class AwarenessOpenAPIConformanceTests: XCTestCase {
     func testHealthMatchesSchema() async throws {
-        let svc = TypesensePersistenceService(client: MockTypesenseClient())
+        let svc = FountainStoreClient(client: MockFountainStoreClient())
         let router = AwarenessRouter(persistence: svc)
         let resp = try await router.route(.init(method: "GET", path: "/health"))
         XCTAssertEqual(resp.status, 200)
@@ -13,7 +13,7 @@ final class AwarenessOpenAPIConformanceTests: XCTestCase {
     }
 
     func testInitializeCorpusMatchesSchema() async throws {
-        let svc = TypesensePersistenceService(client: MockTypesenseClient())
+        let svc = FountainStoreClient(client: MockFountainStoreClient())
         let router = AwarenessRouter(persistence: svc)
         let body = try JSONEncoder().encode(InitIn(corpusId: "ci1"))
         let resp = try await router.route(.init(method: "POST", path: "/corpus/init", body: body))
@@ -22,7 +22,7 @@ final class AwarenessOpenAPIConformanceTests: XCTestCase {
         XCTAssertTrue(out.message.contains("ci1"))
     }
     func testReflectionSummaryMatchesSchema() async throws {
-        let svc = TypesensePersistenceService(client: MockTypesenseClient())
+        let svc = FountainStoreClient(client: MockFountainStoreClient())
         let router = AwarenessRouter(persistence: svc)
         _ = try await svc.addReflection(.init(corpusId: "c1", reflectionId: "r1", question: "q", content: "a"))
         let resp = try await router.route(.init(method: "GET", path: "/corpus/reflections/c1"))
@@ -32,7 +32,7 @@ final class AwarenessOpenAPIConformanceTests: XCTestCase {
     }
 
     func testHistorySummaryMatchesSchema() async throws {
-        let svc = TypesensePersistenceService(client: MockTypesenseClient())
+        let svc = FountainStoreClient(client: MockFountainStoreClient())
         let router = AwarenessRouter(persistence: svc)
         _ = try await svc.addBaseline(.init(corpusId: "c2", baselineId: "b1", content: "x"))
         let resp = try await router.route(.init(method: "GET", path: "/corpus/history/c2"))
@@ -42,7 +42,7 @@ final class AwarenessOpenAPIConformanceTests: XCTestCase {
     }
 
     func testSummarizeHistoryMatchesSchema() async throws {
-        let svc = TypesensePersistenceService(client: MockTypesenseClient())
+        let svc = FountainStoreClient(client: MockFountainStoreClient())
         let router = AwarenessRouter(persistence: svc)
         _ = try await svc.addBaseline(.init(corpusId: "cs1", baselineId: "b1", content: "x"))
         _ = try await svc.addReflection(.init(corpusId: "cs1", reflectionId: "r1", question: "q", content: "a"))
@@ -53,7 +53,7 @@ final class AwarenessOpenAPIConformanceTests: XCTestCase {
     }
 
     func testListHistoryAnalyticsMatchesSchema() async throws {
-        let svc = TypesensePersistenceService(client: MockTypesenseClient())
+        let svc = FountainStoreClient(client: MockFountainStoreClient())
         let router = AwarenessRouter(persistence: svc)
         _ = try await svc.addBaseline(.init(corpusId: "ca1", baselineId: "b1", content: "x"))
         _ = try await svc.addReflection(.init(corpusId: "ca1", reflectionId: "r1", question: "q", content: "a"))
@@ -66,7 +66,7 @@ final class AwarenessOpenAPIConformanceTests: XCTestCase {
     }
 
     func testReadSemanticArcMatchesSchema() async throws {
-        let svc = TypesensePersistenceService(client: MockTypesenseClient())
+        let svc = FountainStoreClient(client: MockFountainStoreClient())
         let router = AwarenessRouter(persistence: svc)
         _ = try await svc.addBaseline(.init(corpusId: "sa1", baselineId: "b1", content: "x"))
         _ = try await svc.addReflection(.init(corpusId: "sa1", reflectionId: "r1", question: "q", content: "a"))
@@ -79,7 +79,7 @@ final class AwarenessOpenAPIConformanceTests: XCTestCase {
     }
 
     func testStreamHistoryAnalyticsMatchesSchema() async throws {
-        let svc = TypesensePersistenceService(client: MockTypesenseClient())
+        let svc = FountainStoreClient(client: MockFountainStoreClient())
         let router = AwarenessRouter(persistence: svc)
         let resp = try await router.route(.init(method: "GET", path: "/corpus/history/stream"))
         XCTAssertEqual(resp.status, 200)
@@ -88,7 +88,7 @@ final class AwarenessOpenAPIConformanceTests: XCTestCase {
     }
 
     func testMetricsMatchesSchema() async throws {
-        let svc = TypesensePersistenceService(client: MockTypesenseClient())
+        let svc = FountainStoreClient(client: MockFountainStoreClient())
         let router = AwarenessRouter(persistence: svc)
         let resp = try await router.route(.init(method: "GET", path: "/metrics"))
         XCTAssertEqual(resp.status, 200)

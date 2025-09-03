@@ -1,7 +1,7 @@
 import Foundation
 import Crypto
 import Toolsmith
-import TypesensePersistence
+import FountainStoreClient
 
 public protocol ToolAdapter {
     var tool: String { get }
@@ -13,10 +13,10 @@ public struct Router {
     let validator = Validation()
     let manifest: ToolManifest
     let toolsmith = Toolsmith()
-    let persistence: TypesensePersistenceService?
+    let persistence: FountainStoreClient?
     let defaultCorpusId: String
 
-    public init(adapters: [String: ToolAdapter], manifest: ToolManifest, persistence: TypesensePersistenceService? = nil, defaultCorpusId: String = "tools-factory") {
+    public init(adapters: [String: ToolAdapter], manifest: ToolManifest, persistence: FountainStoreClient? = nil, defaultCorpusId: String = "tools-factory") {
         self.adapters = adapters
         self.manifest = manifest
         self.persistence = persistence
@@ -82,7 +82,7 @@ public struct Router {
 
     private func listTools(_ request: HTTPRequest) async throws -> HTTPResponse {
         guard let svc = persistence else {
-            let err = ["error_code": "persistence_unavailable", "message": "Typesense not configured"]
+            let err = ["error_code": "persistence_unavailable", "message": "FountainStore not configured"]
             let data = try JSONSerialization.data(withJSONObject: err)
             return HTTPResponse(status: 422, headers: ["Content-Type": "application/json"], body: data)
         }
@@ -112,7 +112,7 @@ public struct Router {
 
     private func registerTools(_ request: HTTPRequest) async throws -> HTTPResponse {
         guard let svc = persistence else {
-            let err = ["error_code": "persistence_unavailable", "message": "Typesense not configured"]
+            let err = ["error_code": "persistence_unavailable", "message": "FountainStore not configured"]
             let data = try JSONSerialization.data(withJSONObject: err)
             return HTTPResponse(status: 422, headers: ["Content-Type": "application/json"], body: data)
         }

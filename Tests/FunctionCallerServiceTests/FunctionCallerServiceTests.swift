@@ -1,6 +1,6 @@
 import XCTest
 @testable import FunctionCallerService
-@testable import TypesensePersistence
+@testable import FountainStoreClient
 import FountainRuntime
 
 final class FunctionCallerServiceTests: XCTestCase {
@@ -16,7 +16,7 @@ final class FunctionCallerServiceTests: XCTestCase {
     func testListDetailAndInvoke() async throws {
         let stub = try await startStubServer()
         defer { try? await stub.shutdown() }
-        let svc = TypesensePersistenceService(client: MockTypesenseClient())
+        let svc = FountainStoreClient(client: MockFountainStoreClient())
         let fn = FunctionModel(corpusId: "c1", functionId: "echo", name: "Echo", description: "desc", httpMethod: "POST", httpPath: "http://127.0.0.1:\(stub.port)/echo")
         _ = try await svc.addFunction(fn)
         let router = FunctionCallerRouter(persistence: svc)

@@ -6,13 +6,13 @@ import FoundationNetworking
 import Yams
 @testable import gateway_server
 @testable import AwarenessService
-@testable import TypesensePersistence
+@testable import FountainStoreClient
 
 final class ProxySchemaValidationReflectionsTests: XCTestCase {
     @MainActor
     func testReflectionsSummaryViaGatewayMatchesSchema() async throws {
         // Upstream awareness: seed a reflection
-        let svc = TypesensePersistenceService(client: MockTypesenseClient())
+        let svc = FountainStoreClient(client: MockFountainStoreClient())
         await svc.ensureCollections()
         let router = AwarenessRouter(persistence: svc)
         _ = try await router.route(.init(method: "POST", path: "/corpus/init", body: try JSONEncoder().encode(InitIn(corpusId: "gwr"))))

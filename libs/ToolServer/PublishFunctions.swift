@@ -1,9 +1,9 @@
 import Foundation
-import TypesensePersistence
+import FountainStoreClient
 
 public enum PublishError: Error { case empty }
 
-public func publishFunctions(manifest: ToolManifest, corpusId: String, service: TypesensePersistenceService) async throws {
+public func publishFunctions(manifest: ToolManifest, corpusId: String, service: FountainStoreClient) async throws {
     let ops = manifest.operations
     if ops.isEmpty { throw PublishError.empty }
     for op in ops {

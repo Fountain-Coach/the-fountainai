@@ -1,11 +1,11 @@
 import XCTest
 @testable import AwarenessService
 @testable import BootstrapService
-@testable import TypesensePersistence
+@testable import FountainStoreClient
 
 final class AwarenessBootstrapE2ETests: XCTestCase {
     func testBootstrapThenAwarenessSummaryEndToEnd() async throws {
-        let shared = TypesensePersistenceService(client: MockTypesenseClient())
+        let shared = FountainStoreClient(client: MockFountainStoreClient())
         let bootstrap = BootstrapRouter(persistence: shared)
         let awareness = AwarenessRouter(persistence: shared)
 

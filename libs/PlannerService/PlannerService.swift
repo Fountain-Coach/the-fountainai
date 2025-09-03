@@ -1,5 +1,5 @@
 import Foundation
-import TypesensePersistence
+import FountainStoreClient
 import FountainRuntime
 
 public struct UserObjectiveRequest: Codable, Sendable {
@@ -76,8 +76,8 @@ public struct HTTPResponse: Sendable {
 }
 
 public final class PlannerRouter: @unchecked Sendable {
-    let persistence: TypesensePersistenceService
-    public init(persistence: TypesensePersistenceService) { self.persistence = persistence }
+    let persistence: FountainStoreClient
+    public init(persistence: FountainStoreClient) { self.persistence = persistence }
 
     // MARK: - Operation Handlers
 
@@ -166,7 +166,7 @@ public final class PlannerRouter: @unchecked Sendable {
     }
 }
 
-public func makePlannerKernel(service svc: TypesensePersistenceService) -> HTTPKernel {
+public func makePlannerKernel(service svc: FountainStoreClient) -> HTTPKernel {
     let router = PlannerRouter(persistence: svc)
     return HTTPKernel { req in
         let ar = HTTPRequest(method: req.method, path: req.path, body: req.body)

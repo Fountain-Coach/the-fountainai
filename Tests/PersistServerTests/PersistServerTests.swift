@@ -5,11 +5,11 @@ import FoundationNetworking
 #endif
 @testable import FountainRuntime
 @testable import persist_server
-@testable import TypesensePersistence
+@testable import FountainStoreClient
 
 final class PersistServerTests: XCTestCase {
     func testCorporaCRUDAndPagination() async throws {
-        let svc = TypesensePersistenceService(client: MockTypesenseClient())
+        let svc = FountainStoreClient(client: MockFountainStoreClient())
         await svc.ensureCollections()
         let kernel = makePersistKernel(service: svc)
         let server = NIOHTTPServer(kernel: kernel)
@@ -42,7 +42,7 @@ final class PersistServerTests: XCTestCase {
     }
 
     func testBaselinesAndReflections() async throws {
-        let svc = TypesensePersistenceService(client: MockTypesenseClient())
+        let svc = FountainStoreClient(client: MockFountainStoreClient())
         await svc.ensureCollections()
         let kernel = makePersistKernel(service: svc)
         let server = NIOHTTPServer(kernel: kernel)
@@ -87,7 +87,7 @@ final class PersistServerTests: XCTestCase {
     }
 
     func testFunctionsRegistry() async throws {
-        let svc = TypesensePersistenceService(client: MockTypesenseClient())
+        let svc = FountainStoreClient(client: MockFountainStoreClient())
         await svc.ensureCollections()
         let kernel = makePersistKernel(service: svc)
         let server = NIOHTTPServer(kernel: kernel)
@@ -140,7 +140,7 @@ final class PersistServerTests: XCTestCase {
     }
 
     func testMetricsEndpoint() async throws {
-        let svc = TypesensePersistenceService(client: MockTypesenseClient())
+        let svc = FountainStoreClient(client: MockFountainStoreClient())
         await svc.ensureCollections()
         let kernel = makePersistKernel(service: svc)
         let server = NIOHTTPServer(kernel: kernel)

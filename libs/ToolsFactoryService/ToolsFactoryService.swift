@@ -1,7 +1,7 @@
 @_exported import ToolServer
 import Foundation
 import FountainRuntime
-import TypesensePersistence
+import FountainStoreClient
 
 public struct HTTPRequest: Sendable {
     public let method: String
@@ -29,7 +29,7 @@ public struct HTTPResponse: Sendable {
 
 public final class ToolsFactoryRouter: @unchecked Sendable {
     private let router: ToolServer.Router
-    public init(service: TypesensePersistenceService?, adapters: [String: ToolAdapter], manifest: ToolManifest, defaultCorpusId: String = ProcessInfo.processInfo.environment["TOOLS_FACTORY_CORPUS_ID"] ?? "tools-factory") {
+    public init(service: FountainStoreClient?, adapters: [String: ToolAdapter], manifest: ToolManifest, defaultCorpusId: String = ProcessInfo.processInfo.environment["TOOLS_FACTORY_CORPUS_ID"] ?? "tools-factory") {
         self.router = ToolServer.Router(adapters: adapters, manifest: manifest, persistence: service, defaultCorpusId: defaultCorpusId)
     }
     /// `GET /metrics`
@@ -56,7 +56,7 @@ public final class ToolsFactoryRouter: @unchecked Sendable {
     }
 }
 
-public func makeToolsFactoryKernel(service svc: TypesensePersistenceService?, adapters: [String: ToolAdapter], manifest: ToolManifest) -> HTTPKernel {
+public func makeToolsFactoryKernel(service svc: FountainStoreClient?, adapters: [String: ToolAdapter], manifest: ToolManifest) -> HTTPKernel {
     let router = ToolsFactoryRouter(service: svc, adapters: adapters, manifest: manifest)
     return HTTPKernel { req in
         let ar = HTTPRequest(method: req.method, path: req.path, headers: req.headers, body: req.body)
