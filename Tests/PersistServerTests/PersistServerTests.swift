@@ -9,7 +9,7 @@ import FoundationNetworking
 
 final class PersistServerTests: XCTestCase {
     func testCorporaCRUDAndPagination() async throws {
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         await svc.ensureCollections()
         let kernel = makePersistKernel(service: svc)
         let server = NIOHTTPServer(kernel: kernel)
@@ -42,7 +42,7 @@ final class PersistServerTests: XCTestCase {
     }
 
     func testBaselinesAndReflections() async throws {
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         await svc.ensureCollections()
         let kernel = makePersistKernel(service: svc)
         let server = NIOHTTPServer(kernel: kernel)
@@ -87,7 +87,7 @@ final class PersistServerTests: XCTestCase {
     }
 
     func testFunctionsRegistry() async throws {
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         await svc.ensureCollections()
         let kernel = makePersistKernel(service: svc)
         let server = NIOHTTPServer(kernel: kernel)
@@ -140,7 +140,7 @@ final class PersistServerTests: XCTestCase {
     }
 
     func testMetricsEndpoint() async throws {
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         await svc.ensureCollections()
         let kernel = makePersistKernel(service: svc)
         let server = NIOHTTPServer(kernel: kernel)

@@ -9,7 +9,7 @@ final class PublishFunctionsTests: XCTestCase {
             tools: [:],
             operations: ["op1", "op2"]
         )
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         await svc.ensureCollections()
         try await publishFunctions(manifest: manifest, corpusId: "tools", service: svc)
         let (total, list) = try await svc.listFunctions(corpusId: "tools")

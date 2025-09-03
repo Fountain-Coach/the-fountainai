@@ -78,6 +78,7 @@ let fullTargets: [Target] = [
     ),
     .target(
         name: "FountainStoreClient",
+        dependencies: [.product(name: "FountainStore", package: "fountain-store")],
         path: "libs/FountainStoreClient"
     ),
     .executableTarget(
@@ -498,6 +499,7 @@ let leanTargets: [Target] = [
     ),
     .target(
         name: "FountainStoreClient",
+        dependencies: [.product(name: "FountainStore", package: "fountain-store")],
         path: "libs/FountainStoreClient"
     ),
     .executableTarget(

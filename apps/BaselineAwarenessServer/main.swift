@@ -9,7 +9,7 @@ verifyLauncherSignature()
 // Awareness server using the shared NIOHTTPServer for consistent HTTP handling
 do {
     let corpusId = ProcessInfo.processInfo.environment["DEFAULT_CORPUS_ID"] ?? "tools-factory"
-    let svc = FountainStoreClient(client: MockFountainStoreClient())
+    let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
     Task { await svc.ensureCollections(corpusId: corpusId) }
     let server = NIOHTTPServer(kernel: makeAwarenessKernel(service: svc))
     let port: Int = 8081

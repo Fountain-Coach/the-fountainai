@@ -43,15 +43,15 @@ final class SemanticBrowserIndexTests: XCTestCase {
 
     func testIndexWritesToBackend() async throws {
         final class RecordingBackend: SemanticMemoryService.Backend, @unchecked Sendable {
-            var pages: [SemanticMemoryService.PageDoc] = []
-            var segments: [SemanticMemoryService.SegmentDoc] = []
-            var entities: [SemanticMemoryService.EntityDoc] = []
-            func upsert(page: SemanticMemoryService.PageDoc) { pages.append(page) }
-            func upsert(segment: SemanticMemoryService.SegmentDoc) { segments.append(segment) }
-            func upsert(entity: SemanticMemoryService.EntityDoc) { entities.append(entity) }
-            func searchPages(q: String?, host: String?, lang: String?, limit: Int, offset: Int) -> (Int, [SemanticMemoryService.PageDoc]) { (0, []) }
-            func searchSegments(q: String?, kind: String?, entity: String?, limit: Int, offset: Int) -> (Int, [SemanticMemoryService.SegmentDoc]) { (0, []) }
-            func searchEntities(q: String?, type: String?, limit: Int, offset: Int) -> (Int, [SemanticMemoryService.EntityDoc]) { (0, []) }
+            var pages: [PageDoc] = []
+            var segments: [SegmentDoc] = []
+            var entities: [EntityDoc] = []
+            func upsert(page: PageDoc) { pages.append(page) }
+            func upsert(segment: SegmentDoc) { segments.append(segment) }
+            func upsert(entity: EntityDoc) { entities.append(entity) }
+            func searchPages(q: String?, host: String?, lang: String?, limit: Int, offset: Int) -> (Int, [PageDoc]) { (0, []) }
+            func searchSegments(q: String?, kind: String?, entity: String?, limit: Int, offset: Int) -> (Int, [SegmentDoc]) { (0, []) }
+            func searchEntities(q: String?, type: String?, limit: Int, offset: Int) -> (Int, [EntityDoc]) { (0, []) }
         }
         let backend = RecordingBackend()
         let svc = SemanticMemoryService(backend: backend)

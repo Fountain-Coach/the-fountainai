@@ -8,7 +8,7 @@ import LauncherSignature
 verifyLauncherSignature()
 
 let corpusId = ProcessInfo.processInfo.environment["DEFAULT_CORPUS_ID"] ?? "tools-factory"
-let svc = FountainStoreClient(client: MockFountainStoreClient())
+let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
 Task {
     await svc.ensureCollections(corpusId: corpusId)
     let kernel = makePlannerKernel(service: svc)

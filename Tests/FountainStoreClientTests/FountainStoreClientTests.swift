@@ -3,7 +3,7 @@ import XCTest
 
 final class FountainStoreClientTests: XCTestCase {
     func testCorpusAndDocLifecycle() async throws {
-        let client = FountainStoreClient(client: MockFountainStoreClient())
+        let client = FountainStoreClient(client: EmbeddedFountainStoreClient())
         _ = try await client.createCorpus("c1", metadata: ["owner": "me"])
         let corpus = try await client.getCorpus("c1")
         XCTAssertNotNil(corpus)
@@ -30,7 +30,7 @@ final class FountainStoreClientTests: XCTestCase {
     }
 
     func testCapabilities() async throws {
-        let client = FountainStoreClient(client: MockFountainStoreClient())
+        let client = FountainStoreClient(client: EmbeddedFountainStoreClient())
         let caps = try await client.capabilities()
         XCTAssertTrue(caps.corpus)
         XCTAssertTrue(caps.documents.contains("upsert"))
@@ -38,7 +38,7 @@ final class FountainStoreClientTests: XCTestCase {
 
     func testMissingCapability() async throws {
         let caps = Capabilities(corpus: true, documents: ["upsert", "get", "delete"], query: [], transactions: [], admin: [], experimental: [])
-        let client = FountainStoreClient(client: MockFountainStoreClient(caps: caps))
+        let client = FountainStoreClient(client: EmbeddedFountainStoreClient(caps: caps))
         do {
             _ = try await client.query(corpusId: "c1", collection: "pages", query: Query(mode: .byId("p1")))
             XCTFail("expected notSupported")
@@ -50,7 +50,7 @@ final class FountainStoreClientTests: XCTestCase {
     }
 
     func testUnsupportedQueryShape() async throws {
-        let client = FountainStoreClient(client: MockFountainStoreClient())
+        let client = FountainStoreClient(client: EmbeddedFountainStoreClient())
         let q = Query(mode: .byId("p1"), sort: [(field: "foo", ascending: true)])
         do {
             _ = try await client.query(corpusId: "c1", collection: "pages", query: q)
@@ -63,7 +63,7 @@ final class FountainStoreClientTests: XCTestCase {
     }
 
     func testCollectionHelpers() async throws {
-        let client = FountainStoreClient(client: MockFountainStoreClient())
+        let client = FountainStoreClient(client: EmbeddedFountainStoreClient())
         _ = try await client.createCorpus("c2")
         let page = Page(corpusId: "c2", pageId: "p1", url: "https://ex.com", host: "ex.com", title: "Ex")
         _ = try await client.addPage(page)
@@ -89,7 +89,7 @@ final class FountainStoreClientTests: XCTestCase {
     }
 
     func testListCorporaAndAdminOps() async throws {
-        let client = FountainStoreClient(client: MockFountainStoreClient())
+        let client = FountainStoreClient(client: EmbeddedFountainStoreClient())
         _ = try await client.createCorpus("cA")
         _ = try await client.createCorpus("cB")
         let (total, corpora) = try await client.listCorpora()
@@ -102,7 +102,7 @@ final class FountainStoreClientTests: XCTestCase {
     }
 
     func testExtendedCollections() async throws {
-        let client = FountainStoreClient(client: MockFountainStoreClient())
+        let client = FountainStoreClient(client: EmbeddedFountainStoreClient())
         _ = try await client.createCorpus("c3")
 
         let baseline = Baseline(corpusId: "c3", baselineId: "b1", content: "base")
@@ -132,7 +132,7 @@ final class FountainStoreClientTests: XCTestCase {
     }
 
     func testFunctionHelpers() async throws {
-        let client = FountainStoreClient(client: MockFountainStoreClient())
+        let client = FountainStoreClient(client: EmbeddedFountainStoreClient())
         _ = try await client.createCorpus("c4")
         let fn = FunctionModel(corpusId: "c4", functionId: "f1", name: "fn", description: "desc", httpMethod: "GET", httpPath: "/f")
         _ = try await client.addFunction(fn)
@@ -151,7 +151,7 @@ final class FountainStoreClientTests: XCTestCase {
 
     func testSnapshotCapabilityFallback() async throws {
         let caps = Capabilities(corpus: true, documents: ["upsert", "get", "delete"], query: ["byId"], transactions: [], admin: [], experimental: [])
-        let client = FountainStoreClient(client: MockFountainStoreClient(caps: caps))
+        let client = FountainStoreClient(client: EmbeddedFountainStoreClient(caps: caps))
         do {
             try await client.snapshot(corpusId: "c1")
             XCTFail("expected notSupported")

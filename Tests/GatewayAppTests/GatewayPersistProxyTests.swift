@@ -12,7 +12,7 @@ final class GatewayPersistProxyTests: XCTestCase {
     @MainActor
     func testGatewayProxiesPersistRoutes() async throws {
         // Start a persist upstream on a random port
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         await svc.ensureCollections()
         let persistKernel = makePersistKernel(service: svc)
         let upstream = NIOHTTPServer(kernel: persistKernel)

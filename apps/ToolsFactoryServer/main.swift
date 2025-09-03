@@ -23,7 +23,7 @@ let corpusId = ProcessInfo.processInfo.environment["TOOLS_FACTORY_CORPUS_ID"] ??
                ProcessInfo.processInfo.environment["DEFAULT_CORPUS_ID"] ?? "tools-factory"
 
 do {
-    let svc = FountainStoreClient(client: MockFountainStoreClient())
+    let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
     Task { await svc.ensureCollections(corpusId: corpusId); try? await publishFunctions(manifest: manifest, corpusId: corpusId, service: svc) }
     let kernel = makeToolsFactoryKernel(service: svc, adapters: adapters, manifest: manifest)
     let server = NIOHTTPServer(kernel: kernel)

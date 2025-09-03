@@ -31,7 +31,7 @@ final class OperationIdRouteTests: XCTestCase {
         let text = try String(contentsOfFile: "openapi/v1/baseline-awareness.yml")
         let yaml = try Yams.load(yaml: text) as? [String: Any]
         let paths = yaml?["paths"] as? [String: Any] ?? [:]
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         await svc.ensureCollections()
         let router = AwarenessRouter(persistence: svc)
 
@@ -67,7 +67,7 @@ final class OperationIdRouteTests: XCTestCase {
         let text = try String(contentsOfFile: "openapi/v1/bootstrap.yml")
         let yaml = try Yams.load(yaml: text) as? [String: Any]
         let paths = yaml?["paths"] as? [String: Any] ?? [:]
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         await svc.ensureCollections()
         let router = BootstrapRouter(persistence: svc)
         for (path, mapAny) in paths {

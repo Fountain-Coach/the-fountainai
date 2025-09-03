@@ -12,7 +12,7 @@ final class RateLimitProxyTests: XCTestCase {
     @MainActor
     func test429OnSecondRequest() async throws {
         // Upstream awareness
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         await svc.ensureCollections()
         let awarenessKernel = makeAwarenessKernel(service: svc)
         let upstream = NIOHTTPServer(kernel: awarenessKernel)

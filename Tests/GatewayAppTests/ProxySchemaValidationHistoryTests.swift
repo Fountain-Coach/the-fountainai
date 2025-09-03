@@ -12,7 +12,7 @@ final class ProxySchemaValidationHistoryTests: XCTestCase {
     @MainActor
     func testHistoryViaGatewayMatchesSchema() async throws {
         // Upstream awareness: seed baseline for history
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         await svc.ensureCollections()
         let router = AwarenessRouter(persistence: svc)
         _ = try await router.route(.init(method: "POST", path: "/corpus/init", body: try JSONEncoder().encode(InitIn(corpusId: "gwh"))))
