@@ -22,17 +22,25 @@ let manifest = (try? ToolManifest.load(from: manifestURL)) ?? ToolManifest(image
 let corpusId = ProcessInfo.processInfo.environment["TOOLS_FACTORY_CORPUS_ID"] ??
                ProcessInfo.processInfo.environment["DEFAULT_CORPUS_ID"] ?? "tools-factory"
 
+let storePath = ProcessInfo.processInfo.environment["FOUNTAIN_STORE_PATH"] ?? "./data/fountain-store"
 do {
-    let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
-    Task { await svc.ensureCollections(corpusId: corpusId); try? await publishFunctions(manifest: manifest, corpusId: corpusId, service: svc) }
+    try FileManager.default.createDirectory(atPath: storePath, withIntermediateDirectories: true)
+} catch {
+    FileHandle.standardError.write(Data("[tools-factory] Failed to create store directory: \(error)\n".utf8))
+}
+let svc = FountainStoreClient(client: EmbeddedFountainStoreClient(path: storePath))
+Task {
+    await svc.ensureCollections(corpusId: corpusId)
+    try? await publishFunctions(manifest: manifest, corpusId: corpusId, service: svc)
     let kernel = makeToolsFactoryKernel(service: svc, adapters: adapters, manifest: manifest)
     let server = NIOHTTPServer(kernel: kernel)
-    let port: Int = 8080
-    _ = try await server.start(port: port)
-    print("tools-factory (NIO) listening on :\(port)")
-    dispatchMain()
-} catch {
-    print("Failed to start tools-factory: \(error)")
+    do {
+        _ = try await server.start(port: 8080)
+        print("tools-factory (NIO) listening on :8080")
+    } catch {
+        FileHandle.standardError.write(Data("[tools-factory] Failed to start: \(error)\n".utf8))
+    }
 }
+dispatchMain()
 
 // © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.

@@ -6,18 +6,24 @@ import LauncherSignature
 
 verifyLauncherSignature()
 
-// Bootstrap server using the shared NIOHTTPServer for consistent HTTP handling
+let corpusId = ProcessInfo.processInfo.environment["DEFAULT_CORPUS_ID"] ?? "tools-factory"
+let storePath = ProcessInfo.processInfo.environment["FOUNTAIN_STORE_PATH"] ?? "./data/fountain-store"
 do {
-    let corpusId = ProcessInfo.processInfo.environment["DEFAULT_CORPUS_ID"] ?? "tools-factory"
-    let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
-    Task { await svc.ensureCollections(corpusId: corpusId) }
-    let server = NIOHTTPServer(kernel: makeBootstrapKernel(service: svc))
-    let port: Int = 8082
-    _ = try await server.start(port: port)
-    print("bootstrap (NIO) listening on :\(port)")
-    dispatchMain()
+    try FileManager.default.createDirectory(atPath: storePath, withIntermediateDirectories: true)
 } catch {
-    print("Failed to start bootstrap: \(error)")
+    FileHandle.standardError.write(Data("[bootstrap] Failed to create store directory: \(error)\n".utf8))
 }
+let svc = FountainStoreClient(client: EmbeddedFountainStoreClient(path: storePath))
+Task {
+    await svc.ensureCollections(corpusId: corpusId)
+    let server = NIOHTTPServer(kernel: makeBootstrapKernel(service: svc))
+    do {
+        _ = try await server.start(port: 8082)
+        print("bootstrap (NIO) listening on :8082")
+    } catch {
+        FileHandle.standardError.write(Data("[bootstrap] Failed to start: \(error)\n".utf8))
+    }
+}
+dispatchMain()
 
 // © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
