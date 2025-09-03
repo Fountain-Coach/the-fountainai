@@ -1,183 +1,154 @@
-# ULTRA-LEAN ROOT AGENT DIRECTIVE
+# 🧠 FountainAI Root Agent — **FountainStore Integration (Corpus-First Rule)**
 
-Always default to **Tier-A (lean mode)**:
-- Build only the changed Swift targets.
-- Run only unit + contract tests for those targets.
-- Use caches, incremental builds, and Debug mode (no whole-module optimization).
-- Never run unrelated targets or full apps in Tier-A.
-- Keep each run under 5 minutes. If slower, report slowest targets/tests and suggest splitting or caching.
+_Last updated: 03.09.2025_
 
-Escalate to **Tier-B (full mode)** only when:
-- Core contracts or public APIs changed,
-- Boot/wiring or security primitives changed,
-- Shared core modules with many dependents changed.
+## 0) Scope & Intent
+Codex, your task is to **implement FountainStore as the sole persistence layer**, remodeled around the **corpus** as the basic unit. Every persisted object must live under a corpus, and each corpus is modeled via the **Bootstrapping** and **Baseline Awareness** OpenAPIs. Remove legacy indexer semantics, including the evolved Typesense-like API. Persistence must reflect semantic memory as designed in Bootstrapping + Baseline Awareness.
 
-At the end of every run, output one summary block with:
-- Mode (Tier-A | Tier-B),
-- Impacted targets,
-- Build + test status,
-- Coverage %, durations, flakes,
-- Any slow-build suggestions.
-
-Never expand scope silently. If unsure which targets changed, ask explicitly.
+This file is the **canonical manifest** at the repo root that Codex follows when improving the repository. Keep it up-to-date and machine-actionable.
 
 ---
 
-# Agent Development Cycle — **Lean Testing Mode** (Repo-Root Policy, **Swift-Only**)
-
-> **Purpose:** Make the Codex loop (code → test → learn → improve) **fast by default** across the entire Swift repository (gateway, services, libraries, plugins). Full-suite runs are **explicitly opt-in** and reserved for changes that truly demand them.
-
----
-
-## 0) Outcomes we enforce
-- **90% of iterations** finish using **scoped builds + scoped tests** (seconds to a couple minutes).
-- **Full system runs** happen on **nightlies** and **mainline merges**, or when a change clearly crosses boundaries (see §7).
-- The **agent** receives deterministic **signals** from tests: green/red + structured artifacts (coverage, timing, flakiness, perf deltas) to self-improve without waiting on the entire stack.
+## 1) Golden Rule
+> **Everything is persisted under a corpus.**  
+> All FountainAI services write/read through FountainStore into a corpus tree. The corpus structure is authoritative and defined by Bootstrapping and Baseline Awareness. No dual APIs, no detached indexers, no semantic browser persistence outside the semantic memory engine.
 
 ---
 
-## 1) Scope detection (how we decide what to run)
-The CI dispatcher and local helpers detect scope from file paths in a change set:
+## 2) Deliverables (this PR series)
 
-| Path Pattern | Scope Class | Default Action |
-|---|---|---|
-| `libs/GatewayPlugins/<name>/` | **Swift gateway plugin** | Build & test **that target only**; run **Gateway Contract Suite** |
-| `apps/<name>/` | **Swift application** | Build & test **that app**; run **App Contract Suite**; optional **micro-harness** |
-| `packages/<name>/` or `Sources/<name>/` | **Swift library/package** | Build & unit test the **package**; run **Library Contract Suite** |
-| `openapi/` | **Contracts** | Regenerate stubs (no network), run **contract tests** of impacted dependents |
-| `core/` or `FountainCodex/` | **Core shared** | **Elevate**: scoped dependents + minimal gateway/app smoke |
-| `Configuration/` or infra scripts | **Infra config** | Validate config; don’t run app tests unless schema changes require it |
+### 2.1 Specs & Text Updates
+- Purge all references to external or evolved indexer APIs.  
+- Update Semantic Browser spec to say: **“Artifacts are persisted into FountainStore under a corpus.”**  
+- Ensure Bootstrapping and Baseline Awareness OpenAPIs are referenced as the definitional model for corpus creation, readiness, and baseline anchoring.
 
----
+### 2.2 FountainStore Client (Swift)
+Implement `libs/FountainStoreClient` with corpus-first methods:
+- `createCorpus(id, metadata)`
+- `getCorpus(id)`
+- `deleteCorpus(id)`
+- `putDoc(corpusId, collection, id, body)`
+- `getDoc(corpusId, collection, id)`
+- `deleteDoc(corpusId, collection, id)`
+- `query(corpusId, collection, Query { byId|byIndexEq|prefixScan|filters|sort|limit|offset })`
+- `capabilities()`
+- `snapshot(corpusId)/restore(corpusId)`
+- `backup(corpusId)/compaction(corpusId)`
 
-## 2) Local fast loop (Swift-only)
-Use these patterns per change. Replace `<T>` with your target name.
+### 2.3 Service Wiring
+- **Semantic Browser**: when `/v1/browse` runs with `index.enabled=true`, it must write artifacts into the correct **corpus** inside FountainStore. The corpus context must be obtained from Bootstrapping + Baseline Awareness.  
+- **Launcher/ops**: require corpus-aware environment wiring (`FOUNTAINSTORE_URL`, `FOUNTAINSTORE_API_KEY`). Entry points still route through the Launcher as the golden key.
 
-- Build target `<T>` in Debug, incremental, jobs=8.
-- Test target `<T>` in parallel, filter by `<T>` or keyword.
-- Run contract tests for `<T>`.
-- Run harness for `<T>` (≤120s) if available.
+### 2.4 Collections (per corpus)
+Within each corpus, create collections:
+1) `pages`  
+2) `segments`  
+3) `entities`  
+4) `tables`  
+5) `analyses`
 
-**Golden rule:** If your test uses real network, files outside tmp, or external services, it’s **not** a fast-loop test. Use fakes/mocks and in-memory adapters.
-
----
-
-## 3) Harnesses (tiny Swift executables for manual pokes)
-Every runnable component should provide a **micro-harness** that exposes the *smallest* executable surface for manual validation:
-- **Gateway plugin harness**: registers only its router with a minimal HTTP loop.
-- **App harness**: starts just the changed routes/handlers with in-memory stores.
-- **Library harness**: a CLI that exercises the public API with fixtures.
-
-Harnesses must:
-- Boot in **< 2s** on a dev machine.
-- Avoid global singletons; inject fakes via initializers.
-- Log to temp files; no external sinks in debug.
+All under `/corpora/{corpusId}/collections/{name}`.
 
 ---
 
-## 4) Contract testing (shared Swift suites)
-Reusable XCTest suites adopted via tiny shim tests:
-- **Gateway Contract Suite** — route presence, schema conformance, error codes, idempotency.
-- **App Contract Suite** — request/response shapes, validation errors, pagination.
-- **Library Contract Suite** — API invariants, serialization, error semantics.
+## 3) Capability Negotiation (Ask-for-More)
+Expose and consume neutral corpus-aware capability surface:
 
-**No full stack** required: suites run in-process with fixture payloads.
+**FountainStore** must serve:
+```http
+GET /v1/capabilities
+→ {
+  "corpus": true,
+  "documents": ["upsert","get","delete"],
+  "query": ["byId","byIndexEq","prefixScan","filters","sort"],
+  "transactions": ["snapshot","restore"],
+  "admin": ["health","backup","compaction","metrics"],
+  "experimental": []
+}
+```
 
----
-
-## 5) Dispatcher-based CI (Tier-A fast, Tier-B full)
-**Tier-A (default on PRs & branches):**
-1. Compute impacted Swift targets from paths.
-2. Build **only impacted targets** with cache.
-3. Run **unit + contract suites** for those targets.
-4. Emit structured artifacts: coverage (per target), timing, flaky test list.
-5. If all green → success. No full stack.
-
-**Tier-B (nightly & mainline):**
-1. Full repository build.
-2. Cross-component integration tests.
-3. Minimal E2E smoke.
-4. Publish dashboards; open issues on regressions.
-
-**Never block PRs** on Tier-B unless §7 applies.
+**Clients**:
+1. Resolve corpus context via Bootstrapping + Baseline Awareness.  
+2. Call `/v1/capabilities` on startup.  
+3. If a requested op isn’t present, return `400 NotSupported` upstream with `"need": "query.fullText"` (example), log a **capability request**, and fall back.
 
 ---
 
-## 6) Escalation criteria (when you *must* run the big suite)
-Run full integration + E2E only if your diff:
-- Touches **core shared** modules used across boundaries.
-- Changes **public contracts** (OpenAPI or public API in a non-backward-compatible way).
-- Modifies **boot/wiring** of servers, global middleware, or process lifecycle.
-- Alters **security, auth, or persistence** primitives.
+## 4) Query Model (Phase-1)
+Supported query shapes inside a corpus:
+- **byId**
+- **byIndexEq**
+- **prefixScan**
+- Boolean **filters**, `limit/offset`, `sort`
 
-If none of the above: stay in **Tier-A**.
-
----
-
-## 7) Build Acceleration (Swift-only)
-
-### Strategy
-- Lock dependencies: commit `Package.resolved`.
-- Thin targets: avoid pulling heavy deps into plugins; keep shared DTO kits separate.
-- Dev feature flags: compile out telemetry/exporters/crypto in Debug when not under test.
-
-### Compiler & cache
-- Incremental, parallel, target-scoped builds.
-- Debug only (`-Onone`), **disable WMO** in Debug; reserve `-O`/WMO for Release.
-- Cache `.build/` in CI keyed by OS + `Package.resolved` hash.
-- Consider binary targets for large, stable libs.
-
-### Module hygiene
-- Keep imports local to the target.
-- Move pure logic into micro-targets to maximize cache hits.
-- Avoid unnecessary cross-target references and large resource bundles.
-
-### Slow-build gate
-If a **Tier-A** run exceeds **5 minutes**:
-1. Report the **slowest targets/tests**.
-2. Suggest **splits** (extract DTO kit, cut heavy deps).
-3. Propose enabling a **binary target** or **prebaked Swift toolchain image** for CI.
+No other query shapes are guaranteed. Advanced features require capability negotiation.
 
 ---
 
-## 8) Agent feedback artifacts (for self-improvement)
-All test stages must emit machine-readable artifacts:
-- `artifacts/<target>/junit.xml` — pass/fail
-- `artifacts/<target>/coverage.json` — per-file coverage deltas
-- `artifacts/<target>/durations.json` — slowest N tests
-- `artifacts/<target>/flake.json` — flakiness tracker
+## 5) Configuration & Security
+Environment variables:
+```
+FOUNTAINSTORE_URL
+FOUNTAINSTORE_API_KEY
+```
+- Health at `/v1/health`.  
+- Prometheus metrics at `/metrics`.  
+- All access must resolve a corpus context first.  
+- Launcher remains the **golden key** and links to this file.
 
 ---
 
-## 9) Coding rules that keep Swift tests fast
-- **Protocol-first DI**: inject fakes for I/O, clocks, randomness.
-- **No hidden singletons**.
-- **Pure logic at the edge**: parse/validate → pure decision → serialize.
-- **Hermetic logs**: assert on structured fields; avoid time-dependent checks.
-- **Small targets**: split DTO/contract kits away from heavy deps.
+## 6) Migration (Populate FountainStore)
+One-shot ingest job:
+- For each Bootstrapped corpus, replay Semantic Browser exports (pages/segments/entities/tables/analyses) into the corpus-aware FountainStore structure.  
+- No residual indexer pathways remain.
 
 ---
 
-## 10) Required output format (plain text summary)
-At the end of any run, the agent MUST print a single block:
+## 7) Tests & CI (Lean by Default)
+Follow the **Ultra-Lean Root Agent Directive**:
+- **Tier-A (default)**: build only impacted targets; run only unit + contract tests for those; finish under ~5 minutes; print one summary block.  
+- **Tier-B**: escalate if contracts / public APIs / corpus model changed.
 
-BEGIN SUMMARY
-MODE: Tier-A | Tier-B
-IMPACTED_TARGETS: [T1, T2, …]
-BUILD_STATUS: pass | fail
-TEST_STATUS: pass | fail
-COVERAGE: {T1: <pct>, T2: <pct>}
-DURATIONS_MS: {build_total: <n>, tests_total: <n>, slowest_tests: [<id:ms>…]}
-FLAKES: [<test_id>…]
-SLOW_BUILD_ACTIONS: [suggestion strings, possibly empty]
-END SUMMARY
-
-This is human-readable, uniform, and sufficient for Codex to self-improve.
+**Minimum coverage**:
+- Unit tests for `FountainStoreClient` corpus methods.  
+- Semantic Browser corpus indexing path tests.  
+- Capability fallback tests (NotSupported → degrade & log).  
 
 ---
 
-## 11) TL;DR commands (Swift)
-- Build target `<T>` in Debug, incremental, jobs=8.
-- Test target `<T>` in parallel, filter `<T>`.
-- Run harness for `<T>` if available.
-- Stay Tier-A unless escalation rules apply.
+## 8) Acceptance Checklist
+- [ ] All Typesense/Evolved indexer APIs removed.  
+- [ ] Corpus-first persistence rules applied.  
+- [ ] Semantic Browser writes to corpus collections only.  
+- [ ] Bootstrapping + Baseline Awareness OpenAPIs integrated as corpus model.  
+- [ ] `/v1/capabilities` consumed; requests logged.  
+- [ ] Lean CI (Tier-A) green.  
+- [ ] Launcher/ops docs list `FOUNTAINSTORE_*` env and reference corpus model.
+
+---
+
+## 9) Output Format
+At the end of every Codex run, print:
+
+```json
+{
+  "mode": "Tier-A | Tier-B",
+  "impactedTargets": ["..."],
+  "build": "passed | failed",
+  "tests": "passed | failed",
+  "durations": {"buildSec": 0, "testsSec": 0},
+  "capabilityRequests": [{"need": "query.fullText", "count": 3}]
+}
+```
+
+---
+
+## 10) Placement
+This file **lives at the repository root** as `agent.md` and is the canonical contract for Codex-driven repository improvement.
+
+---
+
+```
+© 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
+```
