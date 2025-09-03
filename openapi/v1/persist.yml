@@ -7,11 +7,22 @@ info:
     semantic artifacts (baselines, drifts, reflections, functions, history).
     Collection schemas for pages, segments, entities, tables, and analyses are
     described in [docs/fountainstore-collections.md](../../docs/fountainstore-collections.md).
-  version: 1.0.1
+  version: 1.0.2
 x-persona: ../personas/persist.md
 servers:
   - url: http://persist.fountain.coach/api/v1
 paths:
+  /capabilities:
+    get:
+      summary: Get supported capabilities
+      operationId: capabilities
+      responses:
+        '200':
+          description: Capability flags for the persistence service.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Capabilities'
 
   /corpora:
     get:
@@ -388,6 +399,32 @@ paths:
 
 components:
   schemas:
+    Capabilities:
+      type: object
+      properties:
+        corpus:
+          type: boolean
+        documents:
+          type: array
+          items:
+            type: string
+        query:
+          type: array
+          items:
+            type: string
+        transactions:
+          type: array
+          items:
+            type: string
+        admin:
+          type: array
+          items:
+            type: string
+        experimental:
+          type: array
+          items:
+            type: string
+
     BaseEntity:
       type: object
       required:
