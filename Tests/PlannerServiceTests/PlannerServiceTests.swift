@@ -4,7 +4,7 @@ import XCTest
 
 final class PlannerServiceTests: XCTestCase {
     func testReasonEndpoint() async throws {
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         let router = PlannerRouter(persistence: svc)
         let reqObj = UserObjectiveRequest(objective: "test goal")
         let data = try JSONEncoder().encode(reqObj)
@@ -16,7 +16,7 @@ final class PlannerServiceTests: XCTestCase {
     }
 
     func testExecuteEndpoint() async throws {
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         let router = PlannerRouter(persistence: svc)
         let step = FunctionCall(name: "step1", arguments: ["a": "1"])
         let execReq = PlanExecutionRequest(objective: "obj", steps: [step])
@@ -30,7 +30,7 @@ final class PlannerServiceTests: XCTestCase {
     }
 
     func testListCorpora() async throws {
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         _ = try await svc.createCorpus(.init(corpusId: "c1"))
         let router = PlannerRouter(persistence: svc)
         let resp = try await router.route(.init(method: "GET", path: "/planner/corpora"))
@@ -40,7 +40,7 @@ final class PlannerServiceTests: XCTestCase {
     }
 
     func testPostReflection() async throws {
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         let router = PlannerRouter(persistence: svc)
         let reqObj = ChatReflectionRequest(corpusId: "c1", message: "hello")
         let data = try JSONEncoder().encode(reqObj)
@@ -51,7 +51,7 @@ final class PlannerServiceTests: XCTestCase {
     }
 
     func testGetReflections() async throws {
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         _ = try await svc.addReflection(.init(corpusId: "c1", reflectionId: "r1", question: "q", content: "a"))
         let router = PlannerRouter(persistence: svc)
         let resp = try await router.route(.init(method: "GET", path: "/planner/reflections/c1"))
@@ -61,7 +61,7 @@ final class PlannerServiceTests: XCTestCase {
     }
 
     func testGetSemanticArc() async throws {
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         _ = try await svc.addReflection(.init(corpusId: "c1", reflectionId: "r1", question: "q", content: "a"))
         let router = PlannerRouter(persistence: svc)
         let resp = try await router.route(.init(method: "GET", path: "/planner/reflections/c1/semantic-arc"))
@@ -71,7 +71,7 @@ final class PlannerServiceTests: XCTestCase {
     }
 
     func testMetricsEndpoint() async throws {
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         let router = PlannerRouter(persistence: svc)
         let resp = try await router.route(.init(method: "GET", path: "/metrics"))
         XCTAssertEqual(resp.status, 200)

@@ -5,7 +5,7 @@ import XCTest
 
 final class AwarenessBootstrapE2ETests: XCTestCase {
     func testBootstrapThenAwarenessSummaryEndToEnd() async throws {
-        let shared = FountainStoreClient(client: MockFountainStoreClient())
+        let shared = FountainStoreClient(client: EmbeddedFountainStoreClient())
         let bootstrap = BootstrapRouter(persistence: shared)
         let awareness = AwarenessRouter(persistence: shared)
 

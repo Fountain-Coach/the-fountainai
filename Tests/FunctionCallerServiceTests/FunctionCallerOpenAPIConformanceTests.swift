@@ -4,7 +4,7 @@ import XCTest
 
 final class FunctionCallerOpenAPIConformanceTests: XCTestCase {
     func testListFunctionsResponseShapeMatchesOpenAPI() async throws {
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         await svc.ensureCollections()
         // Seed a function
         _ = try await svc.addFunction(.init(corpusId: "c1", functionId: "f1", name: "F1", description: "d1", httpMethod: "GET", httpPath: "/f1"))
@@ -27,7 +27,7 @@ final class FunctionCallerOpenAPIConformanceTests: XCTestCase {
     }
 
     func testMetricsEndpointReturnsPlainText() async throws {
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         let router = FunctionCallerRouter(persistence: svc)
         let resp = try await router.route(.init(method: "GET", path: "/metrics"))
         XCTAssertEqual(resp.status, 200)

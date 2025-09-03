@@ -9,7 +9,7 @@ final class ToolsFactoryEndpointsTests: XCTestCase {
             tools: [:],
             operations: []
         )
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         await svc.ensureCollections()
         let router = ToolsFactoryRouter(service: svc, adapters: [:], manifest: manifest, defaultCorpusId: "tf")
 

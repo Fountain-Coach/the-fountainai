@@ -4,7 +4,7 @@ import XCTest
 
 final class BootstrapServiceTests: XCTestCase {
     func testCorpusInitSeedsRoles() async throws {
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         let router = BootstrapRouter(persistence: svc)
         let body = try JSONEncoder().encode(InitIn(corpusId: "c2"))
         let resp = try await router.route(.init(method: "POST", path: "/bootstrap/corpus/init", body: body))
@@ -12,7 +12,7 @@ final class BootstrapServiceTests: XCTestCase {
     }
 
     func testSeedRolesEndpoint() async throws {
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         let router = BootstrapRouter(persistence: svc)
         let body = try JSONEncoder().encode(RoleInitRequest(corpusId: "c3"))
         let resp = try await router.route(.init(method: "POST", path: "/bootstrap/roles/seed", body: body))
@@ -22,7 +22,7 @@ final class BootstrapServiceTests: XCTestCase {
     }
 
     func testSeedRolesShortcutEndpoint() async throws {
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         let router = BootstrapRouter(persistence: svc)
         let body = try JSONEncoder().encode(RoleInitRequest(corpusId: "c8"))
         let resp = try await router.route(.init(method: "POST", path: "/bootstrap/roles", body: body))
@@ -32,7 +32,7 @@ final class BootstrapServiceTests: XCTestCase {
     }
 
     func testBootstrapBaselinePersistsSlices() async throws {
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         let router = BootstrapRouter(persistence: svc)
         _ = try await router.route(.init(method: "POST", path: "/bootstrap/roles", body: try JSONEncoder().encode(RoleInitRequest(corpusId: "c4"))))
         let body = try JSONEncoder().encode(BaselineIn(corpusId: "c4", baselineId: "b42", content: "x"))
@@ -41,7 +41,7 @@ final class BootstrapServiceTests: XCTestCase {
     }
 
     func testSSEBaselineResponseShape() async throws {
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         let kernel = makeBootstrapKernel(service: svc)
         let server = NIOHTTPServer(kernel: kernel)
         let port = try await server.start(port: 0)
@@ -61,7 +61,7 @@ final class BootstrapServiceTests: XCTestCase {
     }
 
     func testMetricsEndpoint() async throws {
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         let router = BootstrapRouter(persistence: svc)
         let resp = try await router.route(.init(method: "GET", path: "/metrics"))
         XCTAssertEqual(resp.status, 200)

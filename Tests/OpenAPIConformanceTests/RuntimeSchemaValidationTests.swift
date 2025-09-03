@@ -13,7 +13,7 @@ final class RuntimeSchemaValidationTests: XCTestCase {
     @MainActor
     func testSummaryMatchesYAMLSchema() async throws {
         // Start awareness via NIO kernel
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         await svc.ensureCollections()
         let router = AwarenessRouter(persistence: svc)
         _ = try await router.route(.init(method: "POST", path: "/corpus/init", body: try JSONEncoder().encode(InitIn(corpusId: "cspec"))))
@@ -40,7 +40,7 @@ final class RuntimeSchemaValidationTests: XCTestCase {
     @MainActor
     func testReflectionsSummaryMatchesSchema() async throws {
         // Start awareness via NIO kernel; seed a reflection
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         await svc.ensureCollections()
         let router = AwarenessRouter(persistence: svc)
         _ = try await router.route(.init(method: "POST", path: "/corpus/init", body: try JSONEncoder().encode(InitIn(corpusId: "rfx"))))
@@ -68,7 +68,7 @@ final class RuntimeSchemaValidationTests: XCTestCase {
     @MainActor
     func testBootstrapRoleDefaultsMatchesSchema() async throws {
         // Start bootstrap via kernel and call /bootstrap/roles/seed
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         await svc.ensureCollections()
         let kernel = makeBootstrapKernel(service: svc)
         let server = NIOHTTPServer(kernel: kernel)
@@ -95,7 +95,7 @@ final class RuntimeSchemaValidationTests: XCTestCase {
 
     @MainActor
     func testBootstrapInitOutMatchesSchema() async throws {
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         await svc.ensureCollections()
         let kernel = makeBootstrapKernel(service: svc)
         let server = NIOHTTPServer(kernel: kernel)
@@ -122,7 +122,7 @@ final class RuntimeSchemaValidationTests: XCTestCase {
 
     @MainActor
     func testHistoryHasTotalAndEvents() async throws {
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         await svc.ensureCollections()
         let router = AwarenessRouter(persistence: svc)
         _ = try await router.route(.init(method: "POST", path: "/corpus/init", body: try JSONEncoder().encode(InitIn(corpusId: "histx"))))

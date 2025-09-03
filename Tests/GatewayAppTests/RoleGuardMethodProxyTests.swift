@@ -11,7 +11,7 @@ final class RoleGuardMethodProxyTests: XCTestCase {
     @MainActor
     func testMethodSpecificRules() async throws {
         // Upstream awareness
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         await svc.ensureCollections()
         let upstream = NIOHTTPServer(kernel: makeAwarenessKernel(service: svc))
         let upstreamPort = try await upstream.start(port: 0)

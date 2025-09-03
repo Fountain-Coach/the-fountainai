@@ -16,7 +16,7 @@ final class FunctionCallerServiceTests: XCTestCase {
     func testListDetailAndInvoke() async throws {
         let stub = try await startStubServer()
         defer { try? await stub.shutdown() }
-        let svc = FountainStoreClient(client: MockFountainStoreClient())
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         let fn = FunctionModel(corpusId: "c1", functionId: "echo", name: "Echo", description: "desc", httpMethod: "POST", httpPath: "http://127.0.0.1:\(stub.port)/echo")
         _ = try await svc.addFunction(fn)
         let router = FunctionCallerRouter(persistence: svc)
