@@ -1,5 +1,14 @@
 import Foundation
 
+public struct Corpus: Codable, Sendable {
+    public let id: String
+    public var metadata: [String: String]
+    public init(id: String, metadata: [String: String] = [:]) {
+        self.id = id
+        self.metadata = metadata
+    }
+}
+
 public struct CorpusCreateRequest: Codable, Sendable {
     public let corpusId: String
     public init(corpusId: String) { self.corpusId = corpusId }
@@ -76,6 +85,52 @@ public struct Role: Codable, Sendable {
         self.corpusId = corpusId
         self.name = name
         self.prompt = prompt
+    }
+}
+
+public struct Query: Sendable {
+    public enum Mode: Sendable {
+        case byId(String)
+        case byIndexEq(String, String)
+        case prefixScan(String, String)
+    }
+    public var mode: Mode?
+    public var filters: [String: String]
+    public var sort: [(field: String, ascending: Bool)]
+    public var limit: Int?
+    public var offset: Int?
+    public init(mode: Mode? = nil, filters: [String: String] = [:], sort: [(field: String, ascending: Bool)] = [], limit: Int? = nil, offset: Int? = nil) {
+        self.mode = mode
+        self.filters = filters
+        self.sort = sort
+        self.limit = limit
+        self.offset = offset
+    }
+}
+
+public struct QueryResponse: Sendable {
+    public let total: Int
+    public let documents: [Data]
+    public init(total: Int, documents: [Data]) {
+        self.total = total
+        self.documents = documents
+    }
+}
+
+public struct Capabilities: Codable, Sendable {
+    public var corpus: Bool
+    public var documents: [String]
+    public var query: [String]
+    public var transactions: [String]
+    public var admin: [String]
+    public var experimental: [String]
+    public init(corpus: Bool = true, documents: [String] = [], query: [String] = [], transactions: [String] = [], admin: [String] = [], experimental: [String] = []) {
+        self.corpus = corpus
+        self.documents = documents
+        self.query = query
+        self.transactions = transactions
+        self.admin = admin
+        self.experimental = experimental
     }
 }
 

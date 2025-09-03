@@ -11,118 +11,112 @@ public actor FountainStoreClient {
         self.client = client
     }
 
-    // MARK: - Collections
-    public func ensureCollections() async {
-        try? await client.createCollection(name: "corpora", fields: [("corpusId", "string")], defaultSortingField: "corpusId")
-        try? await client.createCollection(name: "baselines", fields: [("corpusId", "string"), ("baselineId", "string"), ("content", "string"), ("ts", "float")], defaultSortingField: "baselineId")
-        try? await client.createCollection(name: "reflections", fields: [("corpusId", "string"), ("reflectionId", "string"), ("question", "string"), ("content", "string"), ("ts", "float")], defaultSortingField: "reflectionId")
-        try? await client.createCollection(name: "drifts", fields: [("corpusId", "string"), ("driftId", "string"), ("content", "string"), ("ts", "float")], defaultSortingField: "driftId")
-        try? await client.createCollection(name: "patterns", fields: [("corpusId", "string"), ("patternsId", "string"), ("content", "string"), ("ts", "float")], defaultSortingField: "patternsId")
-        try? await client.createCollection(name: "roles", fields: [("corpusId", "string"), ("name", "string"), ("prompt", "string")], defaultSortingField: "name")
-        try? await client.createCollection(name: "functions", fields: [("corpusId", "string"), ("functionId", "string"), ("name", "string"), ("description", "string"), ("httpMethod", "string"), ("httpPath", "string")], defaultSortingField: "functionId")
+    // MARK: - Corpus
+    public func createCorpus(_ id: String, metadata: [String: String] = [:]) async throws -> CorpusResponse {
+        try await client.createCorpus(id: id, metadata: metadata)
+        return CorpusResponse(corpusId: id, message: "created")
     }
 
-    // MARK: - Corpora
     public func createCorpus(_ req: CorpusCreateRequest) async throws -> CorpusResponse {
-        await ensureCollections()
-        let payload = try JSONEncoder().encode(["corpusId": req.corpusId])
-        try await client.upsert(collectionName: "corpora", document: payload)
-        return CorpusResponse(corpusId: req.corpusId, message: "created")
+        try await createCorpus(req.corpusId)
+    }
+
+    public func getCorpus(_ id: String) async throws -> Corpus? {
+        try await client.getCorpus(id: id)
+    }
+
+    public func deleteCorpus(_ id: String) async throws {
+        try await client.deleteCorpus(id: id)
     }
 
     public func listCorpora(limit: Int = 50, offset: Int = 0) async throws -> (total: Int, corpora: [String]) {
-        await ensureCollections()
-        let data = try await client.exportAll(collectionName: "corpora")
-        let items: [[String: Any]] = Self.parseJSONL(data)
-        let ids = items.compactMap { $0["corpusId"] as? String }.sorted()
-        let total = ids.count
-        let slice = Array(ids.dropFirst(min(offset, total)).prefix(limit))
-        return (total, slice)
+        try await client.listCorpora(limit: limit, offset: offset)
     }
 
-    // MARK: - Baselines
+    // MARK: - Documents
+    public func putDoc(corpusId: String, collection: String, id: String, body: Data) async throws {
+        try await client.putDoc(corpusId: corpusId, collection: collection, id: id, body: body)
+    }
+
+    public func getDoc(corpusId: String, collection: String, id: String) async throws -> Data? {
+        try await client.getDoc(corpusId: corpusId, collection: collection, id: id)
+    }
+
+    public func deleteDoc(corpusId: String, collection: String, id: String) async throws {
+        try await client.deleteDoc(corpusId: corpusId, collection: collection, id: id)
+    }
+
+    public func query(corpusId: String, collection: String, query: Query) async throws -> QueryResponse {
+        try await client.query(corpusId: corpusId, collection: collection, query: query)
+    }
+
+    // MARK: - Capabilities
+    public func capabilities() async throws -> Capabilities {
+        try await client.capabilities()
+    }
+
+    // MARK: - Admin
+    public func snapshot(corpusId: String) async throws { try await client.snapshot(corpusId: corpusId) }
+    public func restore(corpusId: String) async throws { try await client.restore(corpusId: corpusId) }
+    public func backup(corpusId: String) async throws { try await client.backup(corpusId: corpusId) }
+    public func compaction(corpusId: String) async throws { try await client.compaction(corpusId: corpusId) }
+
+    // MARK: - Convenience Helpers
     public func addBaseline(_ baseline: Baseline) async throws -> SuccessResponse {
-        await ensureCollections()
         let payload = try JSONEncoder().encode(baseline)
-        try await client.upsert(collectionName: "baselines", document: payload)
+        try await putDoc(corpusId: baseline.corpusId, collection: "baselines", id: baseline.baselineId, body: payload)
         return SuccessResponse(message: "ok")
     }
 
     public func listBaselines(corpusId: String, limit: Int = 50, offset: Int = 0) async throws -> (total: Int, baselines: [Baseline]) {
-        await ensureCollections()
-        let data = try await client.exportAll(collectionName: "baselines")
-        let items: [[String: Any]] = Self.parseJSONL(data)
-        let filtered = items.filter { ($0["corpusId"] as? String) == corpusId }
-        let decoded: [Baseline] = try filtered.map { try Self.decode($0) }
-        let total = decoded.count
-        let slice = Array(decoded.dropFirst(min(offset, total)).prefix(limit))
-        return (total, slice)
-     }
+        let q = Query(filters: ["corpusId": corpusId], limit: limit, offset: offset)
+        let resp = try await query(corpusId: corpusId, collection: "baselines", query: q)
+        let list = try resp.documents.map { try JSONDecoder().decode(Baseline.self, from: $0) }
+        return (resp.total, list)
+    }
 
-    // MARK: - Reflections
     public func addReflection(_ reflection: Reflection) async throws -> SuccessResponse {
-        await ensureCollections()
         let payload = try JSONEncoder().encode(reflection)
-        try await client.upsert(collectionName: "reflections", document: payload)
+        try await putDoc(corpusId: reflection.corpusId, collection: "reflections", id: reflection.reflectionId, body: payload)
         return SuccessResponse(message: "ok")
     }
 
     public func listReflections(corpusId: String, limit: Int = 50, offset: Int = 0) async throws -> (total: Int, reflections: [Reflection]) {
-        await ensureCollections()
-        let data = try await client.exportAll(collectionName: "reflections")
-        let items: [[String: Any]] = Self.parseJSONL(data)
-        let filtered = items.filter { ($0["corpusId"] as? String) == corpusId }
-        let decoded: [Reflection] = try filtered.map { try Self.decode($0) }
-        let total = decoded.count
-        let slice = Array(decoded.dropFirst(min(offset, total)).prefix(limit))
-        return (total, slice)
-     }
-
-    // MARK: - Drifts
-    public func listDrifts(corpusId: String, limit: Int = 50, offset: Int = 0) async throws -> (total: Int, drifts: [Drift]) {
-        await ensureCollections()
-        let data = try await client.exportAll(collectionName: "drifts")
-        let items: [[String: Any]] = Self.parseJSONL(data)
-        let filtered = items.filter { ($0["corpusId"] as? String) == corpusId }
-        let decoded: [Drift] = try filtered.map { try Self.decode($0) }
-        let total = decoded.count
-        let slice = Array(decoded.dropFirst(min(offset, total)).prefix(limit))
-        return (total, slice)
+        let q = Query(filters: ["corpusId": corpusId], limit: limit, offset: offset)
+        let resp = try await query(corpusId: corpusId, collection: "reflections", query: q)
+        let list = try resp.documents.map { try JSONDecoder().decode(Reflection.self, from: $0) }
+        return (resp.total, list)
     }
 
-    // MARK: - Patterns
-    public func listPatterns(corpusId: String, limit: Int = 50, offset: Int = 0) async throws -> (total: Int, patterns: [Patterns]) {
-        await ensureCollections()
-        let data = try await client.exportAll(collectionName: "patterns")
-        let items: [[String: Any]] = Self.parseJSONL(data)
-        let filtered = items.filter { ($0["corpusId"] as? String) == corpusId }
-        let decoded: [Patterns] = try filtered.map { try Self.decode($0) }
-        let total = decoded.count
-        let slice = Array(decoded.dropFirst(min(offset, total)).prefix(limit))
-        return (total, slice)
-    }
-
-    // MARK: - Drift
     public func addDrift(_ drift: Drift) async throws -> SuccessResponse {
-        await ensureCollections()
         let payload = try JSONEncoder().encode(drift)
-        try await client.upsert(collectionName: "drifts", document: payload)
+        try await putDoc(corpusId: drift.corpusId, collection: "drifts", id: drift.driftId, body: payload)
         return SuccessResponse(message: "ok")
     }
 
-    // MARK: - Patterns
+    public func listDrifts(corpusId: String, limit: Int = 50, offset: Int = 0) async throws -> (total: Int, drifts: [Drift]) {
+        let q = Query(filters: ["corpusId": corpusId], limit: limit, offset: offset)
+        let resp = try await query(corpusId: corpusId, collection: "drifts", query: q)
+        let list = try resp.documents.map { try JSONDecoder().decode(Drift.self, from: $0) }
+        return (resp.total, list)
+    }
+
     public func addPatterns(_ patterns: Patterns) async throws -> SuccessResponse {
-        await ensureCollections()
         let payload = try JSONEncoder().encode(patterns)
-        try await client.upsert(collectionName: "patterns", document: payload)
+        try await putDoc(corpusId: patterns.corpusId, collection: "patterns", id: patterns.patternsId, body: payload)
         return SuccessResponse(message: "ok")
     }
 
-    // MARK: - Roles
+    public func listPatterns(corpusId: String, limit: Int = 50, offset: Int = 0) async throws -> (total: Int, patterns: [Patterns]) {
+        let q = Query(filters: ["corpusId": corpusId], limit: limit, offset: offset)
+        let resp = try await query(corpusId: corpusId, collection: "patterns", query: q)
+        let list = try resp.documents.map { try JSONDecoder().decode(Patterns.self, from: $0) }
+        return (resp.total, list)
+    }
+
     public func addRole(_ role: Role) async throws -> SuccessResponse {
-        await ensureCollections()
         let payload = try JSONEncoder().encode(role)
-        try await client.upsert(collectionName: "roles", document: payload)
+        try await putDoc(corpusId: role.corpusId, collection: "roles", id: role.name, body: payload)
         return SuccessResponse(message: "ok")
     }
 
@@ -131,52 +125,48 @@ public actor FountainStoreClient {
         return SuccessResponse(message: "seeded")
     }
 
-    // MARK: - Functions
     public func addFunction(_ function: FunctionModel) async throws -> SuccessResponse {
-        await ensureCollections()
         let payload = try JSONEncoder().encode(function)
-        try await client.upsert(collectionName: "functions", document: payload)
+        try await putDoc(corpusId: function.corpusId, collection: "functions", id: function.functionId, body: payload)
         return SuccessResponse(message: "ok")
     }
 
     public func listFunctions(limit: Int = 50, offset: Int = 0, q: String? = nil) async throws -> (total: Int, functions: [FunctionModel]) {
-        await ensureCollections()
-        let page = max(offset / max(limit, 1) + 1, 1)
-        let perPage = max(limit, 1)
-        let (total, results) = try await client.searchFunctions(q: (q?.isEmpty == false ? q! : "*"), filterBy: nil, page: page, perPage: perPage)
-        return (total, results)
+        let resp = try await query(corpusId: "", collection: "functions", query: Query())
+        var list = try resp.documents.map { try JSONDecoder().decode(FunctionModel.self, from: $0) }
+        if let q = q, !q.isEmpty, q != "*" {
+            let needle = q.lowercased()
+            list = list.filter { fn in
+                [fn.name, fn.description, fn.httpPath, fn.functionId, fn.corpusId]
+                    .contains { $0.lowercased().contains(needle) }
+            }
+        }
+        let total = list.count
+        let slice = Array(list.dropFirst(min(offset, total)).prefix(limit))
+        return (total, slice)
     }
 
     public func getFunctionDetails(functionId: String) async throws -> FunctionModel? {
-        let (_, list) = try await listFunctions(limit: Int.max, offset: 0)
-        return list.first { $0.functionId == functionId }
+        let resp = try await query(corpusId: "", collection: "functions", query: Query(mode: .byId(functionId)))
+        return resp.documents.first.flatMap { try? JSONDecoder().decode(FunctionModel.self, from: $0) }
     }
 
     public func listFunctions(corpusId: String, limit: Int = 50, offset: Int = 0, q: String? = nil) async throws -> (total: Int, functions: [FunctionModel]) {
-        await ensureCollections()
-        let page = max(offset / max(limit, 1) + 1, 1)
-        let perPage = max(limit, 1)
-        let filterBy = "corpusId:=\(corpusId)"
-        let (total, results) = try await client.searchFunctions(q: (q?.isEmpty == false ? q! : "*"), filterBy: filterBy, page: page, perPage: perPage)
-        return (total, results)
-    }
-
-    // MARK: - Helpers
-    static func parseJSONL(_ data: Data) -> [[String: Any]] {
-        let str = String(data: data, encoding: .utf8) ?? ""
-        var out: [[String: Any]] = []
-        for line in str.split(separator: "\n") {
-            if let d = String(line).data(using: .utf8), let obj = try? JSONSerialization.jsonObject(with: d) as? [String: Any] {
-                out.append(obj)
+        let qobj = Query(filters: ["corpusId": corpusId])
+        let resp = try await query(corpusId: corpusId, collection: "functions", query: qobj)
+        var list = try resp.documents.map { try JSONDecoder().decode(FunctionModel.self, from: $0) }
+        if let q = q, !q.isEmpty, q != "*" {
+            let needle = q.lowercased()
+            list = list.filter { fn in
+                [fn.name, fn.description, fn.httpPath, fn.functionId, fn.corpusId]
+                    .contains { $0.lowercased().contains(needle) }
             }
         }
-        return out
-    }
-
-    static func decode<T: Decodable>(_ obj: [String: Any]) throws -> T {
-        let data = try JSONSerialization.data(withJSONObject: obj)
-        return try JSONDecoder().decode(T.self, from: data)
+        let total = list.count
+        let slice = Array(list.dropFirst(min(offset, total)).prefix(limit))
+        return (total, slice)
     }
 }
 
 // © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
+
