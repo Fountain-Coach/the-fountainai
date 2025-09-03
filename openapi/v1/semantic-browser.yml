@@ -466,7 +466,7 @@ components:
         tablesCollection:
           type: string
           default: tables
-        typesense:
+        store:
           type: object
           description: Minimal FountainStore connection details.
           properties:

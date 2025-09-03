@@ -64,7 +64,8 @@ let fullTargets: [Target] = [
             .product(name: "Crypto", package: "swift-crypto"),
             .product(name: "Logging", package: "swift-log"),
             .product(name: "Atomics", package: "swift-atomics"),
-            "FountainStoreClient"
+            "FountainStoreClient",
+            .product(name: "FountainStore", package: "fountain-store")
         ],
         path: "libs/FountainRuntime",
         exclude: ["DNS/README.md"]
@@ -469,7 +470,8 @@ let leanTargets: [Target] = [
             .product(name: "Crypto", package: "swift-crypto"),
             .product(name: "Logging", package: "swift-log"),
             .product(name: "Atomics", package: "swift-atomics"),
-            "FountainStoreClient"
+            "FountainStoreClient",
+            .product(name: "FountainStore", package: "fountain-store")
         ],
         path: "libs/FountainRuntime",
         exclude: ["DNS/README.md"]
@@ -676,6 +678,7 @@ let package = Package(
         .package(url: "https://github.com/Fountain-Coach/midi2.git", from: "0.3.1"),
         .package(url: "https://github.com/apple/swift-numerics.git", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.3.0"),
+        .package(url: "https://github.com/Fountain-Coach/Fountain-Store.git", from: "0.1.0"),
         .package(path: "libs/OpenAPICurator"),
     ],
     targets: targets
