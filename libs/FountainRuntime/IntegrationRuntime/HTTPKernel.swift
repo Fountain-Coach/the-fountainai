@@ -1,4 +1,5 @@
 import Foundation
+import FountainStoreClient
 
 /// Minimal async HTTP router used by lightweight servers.
 public struct HTTPKernel: @unchecked Sendable {
@@ -15,7 +16,12 @@ public struct HTTPKernel: @unchecked Sendable {
     /// - Parameter request: Incoming request object.
     /// - Throws: Rethrows any error produced by the routing closure.
     public func handle(_ request: HTTPRequest) async throws -> HTTPResponse {
-        try await router(request)
+        do {
+            return try await router(request)
+        } catch PersistenceError.notSupported(let need) {
+            let body = (try? JSONEncoder().encode(["error": "not-supported", "need": need])) ?? Data()
+            return HTTPResponse(status: 400, headers: ["Content-Type": "application/json"], body: body)
+        }
     }
 }
 
