@@ -1,5 +1,6 @@
 import Foundation
 import FountainStoreClient
+import FountainStore
 
 /// Minimal async HTTP router used by lightweight servers.
 public struct HTTPKernel: @unchecked Sendable {
