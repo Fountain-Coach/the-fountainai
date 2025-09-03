@@ -1,11 +1,12 @@
 openapi: 3.1.0
 info:
   title: Semantic Browser & Dissector API
-  version: 0.2.0
+  version: 0.2.1
   summary: >
     A Swift-only, JS-capable semantic browser that (1) renders a page, (2) snapshots network+DOM,
     (3) semantically dissects rendered content into blocks/entities/claims/tables with span-level citations,
     and (4) optionally persists artifacts into FountainStore under a corpus defined by Bootstrapping and Baseline Awareness.
+    See [docs/fountainstore-collections.md](../../docs/fountainstore-collections.md) for collection schemas.
   contact:
     name: FountainAI
     url: https://fountain.coach
@@ -114,7 +115,7 @@ paths:
     post:
       operationId: indexAnalysis
       tags: [Index]
-      summary: Persist Analysis-derived artifacts (page/segments/entities/tables) into FountainStore under a corpus.
+      summary: Persist Analysis-derived artifacts (page/segments/entities/tables/analyses) into FountainStore collections under a corpus.
       requestBody:
         required: true
         content:
