@@ -6,9 +6,10 @@ import LauncherSignature
 
 verifyLauncherSignature()
 
+let corpusId = ProcessInfo.processInfo.environment["DEFAULT_CORPUS_ID"] ?? "tools-factory"
 let svc = FountainStoreClient(client: MockFountainStoreClient())
 Task {
-    await svc.ensureCollections()
+    await svc.ensureCollections(corpusId: corpusId)
     let kernel = makePersistKernel(service: svc)
     let server = NIOHTTPServer(kernel: kernel)
     do {
