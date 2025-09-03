@@ -1,6 +1,6 @@
 # 🧠 seeding
 
-Codex-managed Typesense schema + feedback registry for FountainAI.
+FountainStore seeding utilities and feedback registry for FountainAI.
 
 ```
 © 2025 Contexter alias Benedikt Eickhoff, https://fountain.coach. All rights reserved.

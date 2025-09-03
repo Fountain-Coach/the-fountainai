@@ -1,14 +1,12 @@
 # 🤖 agent.md
 
-This agent manages Typesense collections, schemas, and Codex tuning logic.
+This agent manages FountainStore seeding utilities and corpus replay logic.
 
 ## Seeding
 
 The repository contains `the-four-stars.txt`, a simplified version of
-Shakespeare's works used for search evaluation. The recommended import
-workflow is documented in
-[`seeding/four-stars-seeding.md`](seeding/four-stars-seeding.md).
-
+Shakespeare's works used for search evaluation. Use `replay_exports.py`
+to load Semantic Browser exports into each Bootstrapped corpus.
 
 ````text
 ©\ 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
