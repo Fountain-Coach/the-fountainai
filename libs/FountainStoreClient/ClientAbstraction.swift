@@ -27,8 +27,18 @@ public final class MockFountainStoreClient: FountainStoreClientProtocol, @unchec
     private struct StoredCorpus { var metadata: [String: String]; var collections: [String: [String: Data]] }
     private var corpora: [String: StoredCorpus] = [:]
     private var snapshots: [String: StoredCorpus] = [:]
+    private let caps: Capabilities
 
-    public init() {}
+    public init(caps: Capabilities = Capabilities(
+        corpus: true,
+        documents: ["upsert", "get", "delete"],
+        query: ["byId", "byIndexEq", "prefixScan", "filters", "sort"],
+        transactions: ["snapshot", "restore"],
+        admin: ["health", "backup", "compaction", "metrics"],
+        experimental: []
+    )) {
+        self.caps = caps
+    }
 
     // MARK: - Corpus
     public func createCorpus(id: String, metadata: [String: String]) async throws {
@@ -135,16 +145,7 @@ public final class MockFountainStoreClient: FountainStoreClientProtocol, @unchec
     }
 
     // MARK: - Capabilities
-    public func capabilities() async throws -> Capabilities {
-        Capabilities(
-            corpus: true,
-            documents: ["upsert", "get", "delete"],
-            query: ["byId", "byIndexEq", "prefixScan", "filters", "sort"],
-            transactions: ["snapshot", "restore"],
-            admin: ["health", "backup", "compaction", "metrics"],
-            experimental: []
-        )
-    }
+    public func capabilities() async throws -> Capabilities { caps }
 
     // MARK: - Admin
     public func snapshot(corpusId: String) async throws {

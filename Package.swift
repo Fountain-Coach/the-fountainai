@@ -63,7 +63,8 @@ let fullTargets: [Target] = [
             "Yams",
             .product(name: "Crypto", package: "swift-crypto"),
             .product(name: "Logging", package: "swift-log"),
-            .product(name: "Atomics", package: "swift-atomics")
+            .product(name: "Atomics", package: "swift-atomics"),
+            "FountainStoreClient"
         ],
         path: "libs/FountainRuntime",
         exclude: ["DNS/README.md"]
@@ -417,7 +418,7 @@ let fullTargets: [Target] = [
     ),
     .testTarget(
         name: "FountainRuntimeTests",
-        dependencies: ["FountainRuntime", .product(name: "NIOHTTP1", package: "swift-nio")],
+        dependencies: ["FountainRuntime", "FountainStoreClient", .product(name: "NIOHTTP1", package: "swift-nio")],
         path: "Tests/FountainRuntimeTests"
     ),
     .testTarget(
@@ -467,7 +468,8 @@ let leanTargets: [Target] = [
             "Yams",
             .product(name: "Crypto", package: "swift-crypto"),
             .product(name: "Logging", package: "swift-log"),
-            .product(name: "Atomics", package: "swift-atomics")
+            .product(name: "Atomics", package: "swift-atomics"),
+            "FountainStoreClient"
         ],
         path: "libs/FountainRuntime",
         exclude: ["DNS/README.md"]
@@ -599,7 +601,7 @@ let leanTargets: [Target] = [
     ),
     .testTarget(
         name: "FountainRuntimeTests",
-        dependencies: ["FountainRuntime", .product(name: "NIOHTTP1", package: "swift-nio")],
+        dependencies: ["FountainRuntime", "FountainStoreClient", .product(name: "NIOHTTP1", package: "swift-nio")],
         path: "Tests/FountainRuntimeTests"
     ),
     .testTarget(

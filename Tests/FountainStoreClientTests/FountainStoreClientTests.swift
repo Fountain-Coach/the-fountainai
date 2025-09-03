@@ -36,6 +36,19 @@ final class FountainStoreClientTests: XCTestCase {
         XCTAssertTrue(caps.documents.contains("upsert"))
     }
 
+    func testMissingCapability() async throws {
+        let caps = Capabilities(corpus: true, documents: ["upsert", "get", "delete"], query: [], transactions: [], admin: [], experimental: [])
+        let client = FountainStoreClient(client: MockFountainStoreClient(caps: caps))
+        do {
+            _ = try await client.query(corpusId: "c1", collection: "pages", query: Query(mode: .byId("p1")))
+            XCTFail("expected notSupported")
+        } catch PersistenceError.notSupported(let need) {
+            XCTAssertEqual(need, "query.byId")
+        }
+        let metrics = await client.capabilityRequests
+        XCTAssertEqual(metrics["query.byId"], 1)
+    }
+
     func testCollectionHelpers() async throws {
         let client = FountainStoreClient(client: MockFountainStoreClient())
         _ = try await client.createCorpus("c2")

@@ -2,17 +2,54 @@ import Foundation
 
 public enum PersistenceError: Error, Equatable {
     case invalidData
+    case notSupported(need: String)
 }
 
 public actor FountainStoreClient {
     private let client: FountainStoreClientProtocol
+    private var caps: Capabilities?
+    private var capabilityCounters: [String: Int] = [:]
 
     public init(client: FountainStoreClientProtocol) {
         self.client = client
+        Task { try? await self.loadCapabilities() }
+    }
+
+    public var capabilityRequests: [String: Int] { capabilityCounters }
+
+    private func loadCapabilities() async throws -> Capabilities {
+        if let c = caps { return c }
+        let fetched = try await client.capabilities()
+        caps = fetched
+        return fetched
+    }
+
+    private func hasCapability(_ c: Capabilities, need: String) -> Bool {
+        let parts = need.split(separator: ".")
+        if parts.count == 1 { return parts[0] == "corpus" ? c.corpus : false }
+        guard parts.count == 2 else { return false }
+        let group = parts[0], op = parts[1]
+        switch group {
+        case "documents": return c.documents.contains(String(op))
+        case "query": return c.query.contains(String(op))
+        case "transactions": return c.transactions.contains(String(op))
+        case "admin": return c.admin.contains(String(op))
+        case "experimental": return c.experimental.contains(String(op))
+        default: return false
+        }
+    }
+
+    private func requireCapability(_ need: String) async throws {
+        let c = try await loadCapabilities()
+        if hasCapability(c, need: need) { return }
+        capabilityCounters[need, default: 0] += 1
+        print("capability request: need=\(need)")
+        throw PersistenceError.notSupported(need: need)
     }
 
     // MARK: - Corpus
     public func createCorpus(_ id: String, metadata: [String: String] = [:]) async throws -> CorpusResponse {
+        try await requireCapability("corpus")
         try await client.createCorpus(id: id, metadata: metadata)
         return CorpusResponse(corpusId: id, message: "created")
     }
@@ -22,44 +59,72 @@ public actor FountainStoreClient {
     }
 
     public func getCorpus(_ id: String) async throws -> Corpus? {
-        try await client.getCorpus(id: id)
+        try await requireCapability("corpus")
+        return try await client.getCorpus(id: id)
     }
 
     public func deleteCorpus(_ id: String) async throws {
+        try await requireCapability("corpus")
         try await client.deleteCorpus(id: id)
     }
 
     public func listCorpora(limit: Int = 50, offset: Int = 0) async throws -> (total: Int, corpora: [String]) {
-        try await client.listCorpora(limit: limit, offset: offset)
+        try await requireCapability("corpus")
+        return try await client.listCorpora(limit: limit, offset: offset)
     }
 
     // MARK: - Documents
     public func putDoc(corpusId: String, collection: String, id: String, body: Data) async throws {
+        try await requireCapability("documents.upsert")
         try await client.putDoc(corpusId: corpusId, collection: collection, id: id, body: body)
     }
 
     public func getDoc(corpusId: String, collection: String, id: String) async throws -> Data? {
-        try await client.getDoc(corpusId: corpusId, collection: collection, id: id)
+        try await requireCapability("documents.get")
+        return try await client.getDoc(corpusId: corpusId, collection: collection, id: id)
     }
 
     public func deleteDoc(corpusId: String, collection: String, id: String) async throws {
+        try await requireCapability("documents.delete")
         try await client.deleteDoc(corpusId: corpusId, collection: collection, id: id)
     }
 
     public func query(corpusId: String, collection: String, query: Query) async throws -> QueryResponse {
-        try await client.query(corpusId: corpusId, collection: collection, query: query)
+        if let mode = query.mode {
+            switch mode {
+            case .byId: try await requireCapability("query.byId")
+            case .byIndexEq: try await requireCapability("query.byIndexEq")
+            case .prefixScan: try await requireCapability("query.prefixScan")
+            }
+        }
+        if !query.filters.isEmpty { try await requireCapability("query.filters") }
+        if !query.sort.isEmpty { try await requireCapability("query.sort") }
+        return try await client.query(corpusId: corpusId, collection: collection, query: query)
     }
 
     // MARK: - Capabilities
-    public func capabilities() async throws -> Capabilities {
-        try await client.capabilities()
-    }
+    public func capabilities() async throws -> Capabilities { try await loadCapabilities() }
 
     // MARK: - Admin
-    public func snapshot(corpusId: String) async throws { try await client.snapshot(corpusId: corpusId) }
-    public func restore(corpusId: String) async throws { try await client.restore(corpusId: corpusId) }
-    public func backup(corpusId: String) async throws { try await client.backup(corpusId: corpusId) }
-    public func compaction(corpusId: String) async throws { try await client.compaction(corpusId: corpusId) }
+    public func snapshot(corpusId: String) async throws {
+        try await requireCapability("transactions.snapshot")
+        try await client.snapshot(corpusId: corpusId)
+    }
+
+    public func restore(corpusId: String) async throws {
+        try await requireCapability("transactions.restore")
+        try await client.restore(corpusId: corpusId)
+    }
+
+    public func backup(corpusId: String) async throws {
+        try await requireCapability("admin.backup")
+        try await client.backup(corpusId: corpusId)
+    }
+
+    public func compaction(corpusId: String) async throws {
+        try await requireCapability("admin.compaction")
+        try await client.compaction(corpusId: corpusId)
+    }
 
     // MARK: - Convenience Helpers
     public func addPage(_ page: Page) async throws -> SuccessResponse {
