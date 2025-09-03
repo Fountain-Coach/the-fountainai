@@ -40,6 +40,47 @@ final class SemanticBrowserIndexTests: XCTestCase {
 
         try await server.stop()
     }
+
+    func testIndexWritesToBackend() async throws {
+        final class RecordingBackend: SemanticMemoryService.Backend, @unchecked Sendable {
+            var pages: [SemanticMemoryService.PageDoc] = []
+            var segments: [SemanticMemoryService.SegmentDoc] = []
+            var entities: [SemanticMemoryService.EntityDoc] = []
+            func upsert(page: SemanticMemoryService.PageDoc) { pages.append(page) }
+            func upsert(segment: SemanticMemoryService.SegmentDoc) { segments.append(segment) }
+            func upsert(entity: SemanticMemoryService.EntityDoc) { entities.append(entity) }
+            func searchPages(q: String?, host: String?, lang: String?, limit: Int, offset: Int) -> (Int, [SemanticMemoryService.PageDoc]) { (0, []) }
+            func searchSegments(q: String?, kind: String?, entity: String?, limit: Int, offset: Int) -> (Int, [SemanticMemoryService.SegmentDoc]) { (0, []) }
+            func searchEntities(q: String?, type: String?, limit: Int, offset: Int) -> (Int, [SemanticMemoryService.EntityDoc]) { (0, []) }
+        }
+        let backend = RecordingBackend()
+        let svc = SemanticMemoryService(backend: backend)
+        let kernel = makeSemanticKernel(service: svc)
+        let server = NIOHTTPServer(kernel: kernel)
+        let port = try await server.start(port: 0)
+
+        let payload: [String: Any] = [
+            "analysis": [
+                "page": ["id": "p1", "url": "https://ex.com/1", "host": "ex.com", "title": "One"],
+                "segments": [["id": "s1", "pageId": "p1", "kind": "paragraph", "text": "hello"]],
+                "entities": [["id": "e1", "name": "Foo", "type": "PERSON"]]
+            ]
+        ]
+        var req = URLRequest(url: URL(string: "http://127.0.0.1:\(port)/v1/index")!)
+        req.httpMethod = "POST"
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.httpBody = try JSONSerialization.data(withJSONObject: payload)
+        _ = try await URLSession.shared.data(for: req)
+
+        let stored = backend.pages.first?.id
+        XCTAssertEqual(stored, "p1")
+        let segStored = backend.segments.first?.id
+        XCTAssertEqual(segStored, "s1")
+        let entStored = backend.entities.first?.id
+        XCTAssertEqual(entStored, "e1")
+
+        try await server.stop()
+    }
 }
 
 // © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.

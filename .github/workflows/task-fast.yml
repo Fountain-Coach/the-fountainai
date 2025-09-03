@@ -16,9 +16,16 @@ jobs:
             ~/.swiftpm
           key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
           restore-keys: ${{ runner.os }}-spm-
-      - name: Build (Debug, fast)
-        run: swift build -c debug -Xswiftc -Onone -Xswiftc -enable-testing -Xswiftc -warnings-as-errors
-      - name: Determine impacted targets
-        run: bash Scripts/impacted-targets.sh | tee impacted-filters.txt
-      - name: Run filtered unit tests
-        run: xargs -I {} swift test --parallel --filter {} < impacted-filters.txt
+      - name: Build & Test (Tier-A)
+        run: |
+          set -e
+          bash Scripts/impacted-targets.sh | tee impacted-filters.txt
+          build_start=$(date +%s)
+          if swift build -c debug -Xswiftc -Onone -Xswiftc -enable-testing -Xswiftc -warnings-as-errors; then build=passed; else build=failed; fi
+          build_end=$(date +%s)
+          test_start=$(date +%s)
+          if xargs -I {} swift test --parallel --filter {} < impacted-filters.txt; then tests=passed; else tests=failed; fi
+          test_end=$(date +%s)
+          filters_json=$(sed 's/.*/"&"/' impacted-filters.txt | paste -sd, -)
+          echo "{ \"mode\": \"Tier-A\", \"impactedTargets\": [${filters_json}], \"build\": \"${build}\", \"tests\": \"${tests}\", \"durations\": {\"buildSec\": $((build_end-build_start)), \"testsSec\": $((test_end-test_start))}, \"capabilityRequests\": [] }"
+          if [ \"$build\" != \"passed\" ] || [ \"$tests\" != \"passed\" ]; then exit 1; fi
