@@ -1,12 +1,12 @@
 # Tools Factory Quick Start
 
-This service registers tools (functions) from an OpenAPI document and lists them from a Typesense-backed persistence layer.
+This service registers tools (functions) from an OpenAPI document and lists them from FountainStore.
 
 ## Run the service
 
 ```bash
-export TYPESENSE_URL=http://localhost:8108
-export TYPESENSE_API_KEY=ts_api_key
+export FOUNTAINSTORE_URL=http://localhost:8108
+export FOUNTAINSTORE_API_KEY=fs_api_key
 # optional corpus id (defaults to tools-factory)
 export TOOLS_FACTORY_CORPUS_ID=my-corpus
 

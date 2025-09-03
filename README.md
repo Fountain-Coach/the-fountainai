@@ -8,7 +8,7 @@ Budget is checked by the [Budget Breaker](openapi/personas/budget-breaker.md) pe
 
 Behind the scenes, the [Role Health Checker](openapi/personas/role-health-check.md) keeps the ensemble in shape through [role-health-check-gateway.yml](openapi/v1/role-health-check-gateway.yml) and [RoleHealthCheckGatewayPlugin+GatewayPlugin.swift](apps/GatewayServer/GatewayApp/RoleHealthCheckGatewayPlugin+GatewayPlugin.swift). Once the gates are cleared, the [LLM Gateway](openapi/v2/llm-gateway.yml) invites the language model via [LLMGatewayPlugin+GatewayPlugin.swift](apps/GatewayServer/GatewayApp/LLMGatewayPlugin+GatewayPlugin.swift).
 
-Props and past performances are stored by the [Persistence Service](openapi/personas/persist.md) described in [persist.yml](openapi/v1/persist.yml) and performed in [apps/PersistServer](apps/PersistServer). It searches its library through the [Typesense API](openapi/personas/typesense.md) defined in [typesense.yml](openapi/typesense.yml) and implemented in [libs/TypesensePersistence](libs/TypesensePersistence).
+Props and past performances are stored in FountainStore by the [Persistence Service](openapi/personas/persist.md) described in [persist.yml](openapi/v1/persist.yml) and performed in [apps/PersistServer](apps/PersistServer).
 
 Even the supporting cast has roles: the Bootstrap service seeds characters like [Drift](openapi/personas/drift.md) and [Semantic Arc](openapi/personas/semantic-arc.md) using [bootstrap.yml](openapi/v1/bootstrap.yml) so every play starts with the right troupe.
 

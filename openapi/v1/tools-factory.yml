@@ -4,7 +4,7 @@ info:
   title: FountainAI Tools Factory Service
   description: |
     Service that registers new tools (function definitions) and stores
-    them in the shared Typesense collection used by the Function Caller
+    them in the shared FountainStore corpus used by the Function Caller
     Service.
   version: 1.0.0
 servers:
@@ -158,4 +158,4 @@ components:
                 error_code: validation_error
                 message: Invalid input parameters
 
-© 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
+# © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.

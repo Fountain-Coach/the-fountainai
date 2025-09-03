@@ -6,9 +6,9 @@
 
 2. **README maintenance**  
    - After adding or updating a spec, update `openapi/README.md`.  
-   - Maintain two tables:  
+   - Maintain two tables:
      - **Gateway Plugins** – all plugin specs for the Gateway layer, with owner and completion status.
-     - **Persistence/Typesense** – specs for the Typesense-based persistence layer.
+     - **Persistence/FountainStore** – specs for the FountainStore persistence layer.
    - Mark the status column (e.g., ✅/❌) to reflect task completion.
    - Do **not** delete or rewrite existing spec links—only append entries so the README remains a versioned index of every OpenAPI document.
 
@@ -19,4 +19,4 @@
 4. **Repository linkage**  
    - Each new gateway spec should have a corresponding Swift package under `libs/GatewayPlugins/` and a registration file `+GatewayPlugin.swift` in `apps/GatewayServer/GatewayApp`.
 
-Following these guidelines keeps OpenAPI specs discoverable, versioned, and consistently integrated with the Gateway and Typesense layers.
+Following these guidelines keeps OpenAPI specs discoverable, versioned, and consistently integrated with the Gateway and FountainStore layers.

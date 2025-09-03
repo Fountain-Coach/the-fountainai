@@ -1,12 +1,12 @@
 # Semantic Browser Service
 
-A Swift service that fetches and renders web pages (with optional CDP headless browser), snapshots DOM+network, performs light semantic dissection into blocks/entities with span‑level offsets, and optionally indexes derived artifacts into Typesense. Designed to be pragmatic, vendor‑neutral, and production‑ready.
+A Swift service that fetches and renders web pages (with optional CDP headless browser), snapshots DOM+network, performs light semantic dissection into blocks/entities with span‑level offsets, and optionally persists derived artifacts into FountainStore under a corpus. Designed to be pragmatic, vendor‑neutral, and production‑ready.
 
 ## Highlights
 - Snapshot: `snapshot.html` and normalized `snapshot.text` with final URL, status, content type, and timing.
 - Analyze: DOM‑like segmentation (headings/paragraphs/code/tables) with stable spans into `rendered.text`, baseline entities with mention spans.
 - Browse: One‑shot snapshot → analyze → optional index.
-- Storage: Filesystem artifact store with TTL (no cloud lock‑in). Optional Typesense catalog for artifact metadata.
+- Storage: Filesystem artifact store with TTL (no cloud lock‑in). FountainStore catalog for artifact metadata.
 - Safety: API key auth, request size/time limits, SSRF allow/deny + CIDR, redirect pinning, concurrency caps (global + per‑host) with 429.
 - Observability: Spec‑pure health, Prometheus metrics, admin diagnostics (browser pool, host gate, network capture, artifacts).
 
@@ -26,7 +26,7 @@ Key endpoints (spec‑compliant):
 Admin and diagnostics (non‑spec):
 - GET `/v1/admin/healthx` → verbose health (capture+SSRF config, hostGate stats) and runs a TTL GC pass
 - GET `/v1/admin/snapshots/{snapshotId}/network` → captured request method/headers/status (CDP)
-- GET `/v1/admin/artifacts?{pageId|analysisId}&kind=&limit=` → Typesense artifact catalog search
+- GET `/v1/admin/artifacts?{pageId|analysisId}&kind=&limit=` → FountainStore artifact catalog search
 - GET `/metrics` → Prometheus text exposition
 
 ## Request/Response Examples
@@ -88,9 +88,9 @@ Artifacts (filesystem store):
 - `ARTIFACT_TTL_DAYS` (default: `7`)
 - `ARTIFACT_MAX_BYTES` (optional budget)
 
-Typesense (optional catalog; core search already uses Typesense via backend):
-- `SB_TYPESENSE_URLS` or `TYPESENSE_URLS`
-- `SB_TYPESENSE_API_KEY` or `TYPESENSE_API_KEY`
+FountainStore configuration:
+- `SB_FOUNTAINSTORE_URLS` or `FOUNTAINSTORE_URLS`
+- `SB_FOUNTAINSTORE_API_KEY` or `FOUNTAINSTORE_API_KEY`
 
 ## Running
 Local (Swift):
@@ -112,7 +112,7 @@ docker run --rm -p 8006:8006 \
 - Set resource limits; add liveness `/v1/health` and readiness probes.
 - Pin `SB_CDP_URL` to a hardened headless Chrome if you need JS/Network capture.
 - Mount `ARTIFACT_ROOT` on persistent storage; set `ARTIFACT_TTL_DAYS` per needs.
-- Enable Typesense catalog for artifact metadata querying.
+- Ensure FountainStore catalog is configured for artifact metadata querying.
 - Watch `/metrics` counters: `*_requests_total/_error_total`, `*_latency_ms_*`, `artifact_*`, and pool gauges.
 
 ## Security Notes
