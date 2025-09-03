@@ -5,7 +5,7 @@ info:
   summary: >
     A Swift-only, JS-capable semantic browser that (1) renders a page, (2) snapshots network+DOM,
     (3) semantically dissects rendered content into blocks/entities/claims/tables with span-level citations,
-    and (4) optionally indexes derived objects (pages/segments/entities/tables) into Typesense.
+    and (4) optionally persists artifacts into FountainStore under a corpus defined by Bootstrapping and Baseline Awareness.
   contact:
     name: FountainAI
     url: https://fountain.coach
@@ -21,7 +21,7 @@ tags:
   - name: Analyze
     description: Turn a Snapshot into a normalized Analysis (blocks, entities, claims, tables, summaries).
   - name: Index
-    description: Upsert derived objects into Typesense. Typesense is a query index, not a source of truth.
+    description: Persist derived artifacts into FountainStore under a corpus defined by Bootstrapping and Baseline Awareness.
   - name: Query
     description: Query previously indexed pages, segments, entities, and tables.
   - name: Export
@@ -40,8 +40,8 @@ paths:
       summary: Navigate to a URL, snapshot the rendered page, optionally analyze and index in a single call.
       description: >
         Executes JavaScript (via a headless browser), waits for page readiness, captures DOM and network
-        responses, optionally runs semantic dissection and Typesense indexing. Returns the Snapshot and,
-        if requested, the Analysis and Index summary.
+        responses, optionally runs semantic dissection and persists artifacts into FountainStore under a corpus
+        as shaped by Bootstrapping and Baseline Awareness. Returns the Snapshot and, if requested, the Analysis and Index summary.
       requestBody:
         required: true
         content:
@@ -114,7 +114,7 @@ paths:
     post:
       operationId: indexAnalysis
       tags: [Index]
-      summary: Upsert Analysis-derived objects (page/segments/entities/tables) into Typesense.
+      summary: Persist Analysis-derived artifacts (page/segments/entities/tables) into FountainStore under a corpus.
       requestBody:
         required: true
         content:
@@ -133,7 +133,7 @@ paths:
     get:
       operationId: queryPages
       tags: [Query]
-      summary: Search previously indexed pages in Typesense.
+      summary: Search previously persisted pages in FountainStore.
       parameters:
         - name: q
           in: query
@@ -183,7 +183,7 @@ paths:
         - name: id
           in: path
           required: true
-          description: Page document ID (Typesense or canonical ID).
+          description: Page document ID (FountainStore or canonical ID).
           schema: { type: string }
       responses:
         "200":
@@ -367,7 +367,7 @@ components:
       content:
         application/json: { schema: { $ref: "#/components/schemas/Error" } }
     UpstreamError:
-      description: Upstream service error (e.g., Typesense unavailable)
+      description: Upstream service error (e.g., FountainStore unavailable)
       content:
         application/json: { schema: { $ref: "#/components/schemas/Error" } }
     ServerError:
@@ -395,7 +395,7 @@ components:
         labels:
           type: array
           items: { type: string }
-          description: Optional labels to tag the page in Typesense facets.
+          description: Optional labels to tag the page in FountainStore facets.
 
     BrowseResponse:
       type: object
@@ -467,7 +467,7 @@ components:
           default: tables
         typesense:
           type: object
-          description: Minimal Typesense connection details.
+          description: Minimal FountainStore connection details.
           properties:
             url: { type: string, format: uri }
             apiKey: { type: string }
@@ -685,7 +685,7 @@ components:
                 maxItems: 2
                 description: Optional [rowIndex, colIndex] when citing a table cell
 
-    # -------- Index (Typesense-shaped docs) --------
+    # -------- Index (FountainStore docs) --------
     PageDoc:
       type: object
       properties:

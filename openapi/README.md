@@ -18,7 +18,6 @@ Persona definitions for Gateway plugins live in `personas/` and are referenced v
 | Role Health Check Gateway Plugin | 1.0.0 | Contexter alias Benedikt Eickhoff | [v1/role-health-check-gateway.yml](v1/role-health-check-gateway.yml) |
 | Semantic Browser & Dissector API | 0.2.0 | Contexter alias Benedikt Eickhoff | [v1/semantic-browser.yml](v1/semantic-browser.yml) |
 | Tools Factory Service | 1.0.0 | Contexter alias Benedikt Eickhoff | [v1/tools-factory.yml](v1/tools-factory.yml) |
-| Typesense API | 28.0 | Contexter alias Benedikt Eickhoff | [typesense.yml](typesense.yml) |
 | Rate Limiter Gateway Plugin | 1.0.0 | Contexter alias Benedikt Eickhoff | [v1/rate-limiter-gateway.yml](v1/rate-limiter-gateway.yml) |
 | Payload Inspection Gateway Plugin | 1.0.0 | Contexter alias Benedikt Eickhoff | [v1/payload-inspection-gateway.yml](v1/payload-inspection-gateway.yml) |
 | Budget Breaker Gateway Plugin | 1.0.0 | Contexter alias Benedikt Eickhoff | [v1/budget-breaker-gateway.yml](v1/budget-breaker-gateway.yml) |
@@ -40,12 +39,11 @@ Persona definitions for Gateway plugins live in `personas/` and are referenced v
 | Destructive Guardian Gateway Plugin | Contexter alias Benedikt Eickhoff | ✅ | [v1/destructive-guardian-gateway.yml](v1/destructive-guardian-gateway.yml) |
 | Security Sentinel Gateway Plugin | Contexter alias Benedikt Eickhoff | ✅ | [v1/security-sentinel-gateway.yml](v1/security-sentinel-gateway.yml) |
 
-## Persistence/Typesense
+## Persistence/FountainStore
 
 | Service | Owner | Status | Spec |
 | --- | --- | --- | --- |
 | Persistence Service | Contexter alias Benedikt Eickhoff | ✅ | [v1/persist.yml](v1/persist.yml) |
-| Typesense API | Contexter alias Benedikt Eickhoff | ✅ | [typesense.yml](typesense.yml) |
 
 ## Personas
 
@@ -59,7 +57,6 @@ The following personas drive Gateway plugin behaviour via the LLM:
 - [Destructive Guardian Persona](personas/destructive-guardian.md) – [Spec](v1/destructive-guardian-gateway.yml)
 - [Role Health Check Persona](personas/role-health-check.md) – [Spec](v1/role-health-check-gateway.yml)
 - [Persistence Service Persona](personas/persist.md) – [Spec](v1/persist.yml)
-- [Typesense API Persona](personas/typesense.md) – [Spec](typesense.yml)
 
 ### Default Roles
 

@@ -1,7 +1,7 @@
 ---
 openapi: 3.1.0
 info:
-  title: FountainAI Persistence Service (Typesense-backed)
+  title: FountainStore Persistence Service
   description: >
     Persistence and semantic indexing API for FountainAI corpora and related
     semantic artifacts (baselines, drifts, reflections, functions, history).
@@ -502,4 +502,4 @@ components:
                 type: string
                 description: Human-readable error message.
 
-© 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
+# © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
