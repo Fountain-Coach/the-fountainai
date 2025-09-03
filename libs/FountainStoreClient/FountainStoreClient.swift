@@ -62,6 +62,71 @@ public actor FountainStoreClient {
     public func compaction(corpusId: String) async throws { try await client.compaction(corpusId: corpusId) }
 
     // MARK: - Convenience Helpers
+    public func addPage(_ page: Page) async throws -> SuccessResponse {
+        let payload = try JSONEncoder().encode(page)
+        try await putDoc(corpusId: page.corpusId, collection: "pages", id: page.pageId, body: payload)
+        return SuccessResponse(message: "ok")
+    }
+
+    public func listPages(corpusId: String, limit: Int = 50, offset: Int = 0) async throws -> (total: Int, pages: [Page]) {
+        let q = Query(filters: ["corpusId": corpusId], limit: limit, offset: offset)
+        let resp = try await query(corpusId: corpusId, collection: "pages", query: q)
+        let list = try resp.documents.map { try JSONDecoder().decode(Page.self, from: $0) }
+        return (resp.total, list)
+    }
+
+    public func addSegment(_ segment: Segment) async throws -> SuccessResponse {
+        let payload = try JSONEncoder().encode(segment)
+        try await putDoc(corpusId: segment.corpusId, collection: "segments", id: segment.segmentId, body: payload)
+        return SuccessResponse(message: "ok")
+    }
+
+    public func listSegments(corpusId: String, limit: Int = 50, offset: Int = 0) async throws -> (total: Int, segments: [Segment]) {
+        let q = Query(filters: ["corpusId": corpusId], limit: limit, offset: offset)
+        let resp = try await query(corpusId: corpusId, collection: "segments", query: q)
+        let list = try resp.documents.map { try JSONDecoder().decode(Segment.self, from: $0) }
+        return (resp.total, list)
+    }
+
+    public func addEntity(_ entity: Entity) async throws -> SuccessResponse {
+        let payload = try JSONEncoder().encode(entity)
+        try await putDoc(corpusId: entity.corpusId, collection: "entities", id: entity.entityId, body: payload)
+        return SuccessResponse(message: "ok")
+    }
+
+    public func listEntities(corpusId: String, limit: Int = 50, offset: Int = 0) async throws -> (total: Int, entities: [Entity]) {
+        let q = Query(filters: ["corpusId": corpusId], limit: limit, offset: offset)
+        let resp = try await query(corpusId: corpusId, collection: "entities", query: q)
+        let list = try resp.documents.map { try JSONDecoder().decode(Entity.self, from: $0) }
+        return (resp.total, list)
+    }
+
+    public func addTable(_ table: Table) async throws -> SuccessResponse {
+        let payload = try JSONEncoder().encode(table)
+        try await putDoc(corpusId: table.corpusId, collection: "tables", id: table.tableId, body: payload)
+        return SuccessResponse(message: "ok")
+    }
+
+    public func listTables(corpusId: String, limit: Int = 50, offset: Int = 0) async throws -> (total: Int, tables: [Table]) {
+        let q = Query(filters: ["corpusId": corpusId], limit: limit, offset: offset)
+        let resp = try await query(corpusId: corpusId, collection: "tables", query: q)
+        let list = try resp.documents.map { try JSONDecoder().decode(Table.self, from: $0) }
+        return (resp.total, list)
+    }
+
+    public func addAnalysis(_ analysis: AnalysisRecord) async throws -> SuccessResponse {
+        let payload = try JSONEncoder().encode(analysis)
+        try await putDoc(corpusId: analysis.corpusId, collection: "analyses", id: analysis.analysisId, body: payload)
+        return SuccessResponse(message: "ok")
+    }
+
+    public func listAnalyses(corpusId: String, limit: Int = 50, offset: Int = 0) async throws -> (total: Int, analyses: [AnalysisRecord]) {
+        let q = Query(filters: ["corpusId": corpusId], limit: limit, offset: offset)
+        let resp = try await query(corpusId: corpusId, collection: "analyses", query: q)
+        let list = try resp.documents.map { try JSONDecoder().decode(AnalysisRecord.self, from: $0) }
+        return (resp.total, list)
+    }
+
     public func addBaseline(_ baseline: Baseline) async throws -> SuccessResponse {
         let payload = try JSONEncoder().encode(baseline)
         try await putDoc(corpusId: baseline.corpusId, collection: "baselines", id: baseline.baselineId, body: payload)

@@ -88,6 +88,80 @@ public struct Role: Codable, Sendable {
     }
 }
 
+public struct Page: Codable, Sendable {
+    public let corpusId: String
+    public let pageId: String
+    public let url: String
+    public let host: String
+    public let title: String
+
+    public init(corpusId: String, pageId: String, url: String, host: String, title: String) {
+        self.corpusId = corpusId
+        self.pageId = pageId
+        self.url = url
+        self.host = host
+        self.title = title
+    }
+}
+
+public struct Segment: Codable, Sendable {
+    public let corpusId: String
+    public let segmentId: String
+    public let pageId: String
+    public let kind: String
+    public let text: String
+
+    public init(corpusId: String, segmentId: String, pageId: String, kind: String, text: String) {
+        self.corpusId = corpusId
+        self.segmentId = segmentId
+        self.pageId = pageId
+        self.kind = kind
+        self.text = text
+    }
+}
+
+public struct Entity: Codable, Sendable {
+    public let corpusId: String
+    public let entityId: String
+    public let name: String
+    public let type: String
+
+    public init(corpusId: String, entityId: String, name: String, type: String) {
+        self.corpusId = corpusId
+        self.entityId = entityId
+        self.name = name
+        self.type = type
+    }
+}
+
+public struct Table: Codable, Sendable {
+    public let corpusId: String
+    public let tableId: String
+    public let pageId: String
+    public let csv: String
+
+    public init(corpusId: String, tableId: String, pageId: String, csv: String) {
+        self.corpusId = corpusId
+        self.tableId = tableId
+        self.pageId = pageId
+        self.csv = csv
+    }
+}
+
+public struct AnalysisRecord: Codable, Sendable {
+    public let corpusId: String
+    public let analysisId: String
+    public let pageId: String
+    public let summary: String
+
+    public init(corpusId: String, analysisId: String, pageId: String, summary: String) {
+        self.corpusId = corpusId
+        self.analysisId = analysisId
+        self.pageId = pageId
+        self.summary = summary
+    }
+}
+
 public struct Query: Sendable {
     public enum Mode: Sendable {
         case byId(String)
