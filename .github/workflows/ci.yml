@@ -41,23 +41,60 @@ jobs:
       - name: Check FountainCodex imports
         run: Scripts/check_no_codex.sh
       - name: Build
-        run: swift build
+        continue-on-error: true
+        run: |
+          start=$(date +%s)
+          if swift build; then
+            echo "BUILD_STATUS=passed" >> "$GITHUB_ENV"
+          else
+            echo "BUILD_STATUS=failed" >> "$GITHUB_ENV"
+          fi
+          end=$(date +%s)
+          echo "BUILD_SEC=$(( end - start ))" >> "$GITHUB_ENV"
       - name: Coverage
-        run: Scripts/coverage.sh ${{ env.MIN_COVERAGE }}
+        continue-on-error: true
+        run: |
+          start=$(date +%s)
+          if Scripts/coverage.sh ${{ env.MIN_COVERAGE }}; then
+            echo "TEST_STATUS=passed" >> "$GITHUB_ENV"
+          else
+            echo "TEST_STATUS=failed" >> "$GITHUB_ENV"
+          fi
+          end=$(date +%s)
+          echo "TESTS_SEC=$(( end - start ))" >> "$GITHUB_ENV"
       - name: Test SPS
+        continue-on-error: true
         working-directory: sps
-        run: swift test --enable-code-coverage
+        run: |
+          start=$(date +%s)
+          if swift test --enable-code-coverage; then
+            sps_status=passed
+          else
+            sps_status=failed
+          fi
+          end=$(date +%s)
+          if [[ "${TEST_STATUS}" == "passed" && "$sps_status" == "passed" ]]; then
+            echo "TEST_STATUS=passed" >> "$GITHUB_ENV"
+          else
+            echo "TEST_STATUS=failed" >> "$GITHUB_ENV"
+          fi
+          prev=${TESTS_SEC:-0}
+          echo "TESTS_SEC=$(( prev + end - start ))" >> "$GITHUB_ENV"
+      - name: Emit CI summary
+        if: always()
+        run: Scripts/ci-summary.sh
       - name: Verify licenses
+        if: env.BUILD_STATUS == 'passed' && env.TEST_STATUS == 'passed'
         run: Scripts/verify-licenses.sh
       - name: Generate Coverage
-        if: runner.os == 'Linux'
+        if: runner.os == 'Linux' && env.TEST_STATUS == 'passed'
         run: |
           TEST_BINARY=$(find .build -name '*.xctest' | head -n 1)
           llvm-cov export -format=lcov "$TEST_BINARY" -instr-profile "$CODECOV_DIR/default.profdata" > coverage.lcov
           COVERAGE=$(lcov --summary coverage.lcov 2>/dev/null | grep lines | awk '{print $2}' | sed 's/%//')
           curl -s "https://img.shields.io/badge/Coverage-${COVERAGE}%25-blue" -o coverage-badge.svg
       - name: Upload Coverage
-        if: runner.os == 'Linux'
+        if: runner.os == 'Linux' && env.TEST_STATUS == 'passed'
         uses: actions/upload-artifact@v4
         with:
           name: coverage
@@ -66,16 +103,22 @@ jobs:
             coverage-badge.svg
             coverage-targets.txt
       - name: Install supply chain tools
-        if: runner.os == 'Linux'
+        if: runner.os == 'Linux' && env.BUILD_STATUS == 'passed' && env.TEST_STATUS == 'passed'
         run: |
           curl -sSfL https://raw.githubusercontent.com/sigstore/cosign/main/install.sh | sudo sh -s -- -b /usr/local/bin
           curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sudo sh -s -- -b /usr/local/bin
           curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sudo sh -s -- -b /usr/local/bin
       - name: Pre-deployment verification
-        if: runner.os == 'Linux'
+        if: runner.os == 'Linux' && env.BUILD_STATUS == 'passed' && env.TEST_STATUS == 'passed'
         env:
           COSIGN_PUBLIC_KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
         run: Scripts/predeploy.sh "$CONTAINER_IMAGE"
+      - name: Check build and test status
+        if: always()
+        run: |
+          if [[ "$BUILD_STATUS" != "passed" || "$TEST_STATUS" != "passed" ]]; then
+            exit 1
+          fi
 
   typesense-integration:
     name: Typesense Integration Tests (macOS)
