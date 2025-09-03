@@ -1,4 +1,5 @@
 # Swift Sandbox
+> **Legacy:** Retained for historical reference after sandbox tooling was removed.
 
 Quick-start guide for building and exercising the sandboxed Tool Server.
 

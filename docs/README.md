@@ -2,6 +2,7 @@
 
 This directory collects generated documentation derived from inline `///` comments.
 As modules gain documentation, brief summaries are added here.
+Legacy or superseded documents now reside in the `legacy/` subdirectory for reference.
 
 ## Current Highlights
 - **PublishingFrontend** – lightweight static HTTP server for serving the `/Public` directory.
