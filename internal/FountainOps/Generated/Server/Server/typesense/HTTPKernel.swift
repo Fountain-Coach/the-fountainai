@@ -5,7 +5,7 @@ public struct HTTPKernel {
     let proxyKey: String?
 
     public init(handlers: Handlers = Handlers(),
-                proxyKey: String? = ProcessInfo.processInfo.environment["TYPESENSE_PROXY_KEY"]) {
+                proxyKey: String? = ProcessInfo.processInfo.environment["FOUNTAINSTORE_PROXY_KEY"]) {
         self.router = Router(handlers: handlers)
         self.proxyKey = proxyKey
     }

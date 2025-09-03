@@ -12,8 +12,8 @@ private struct BaselineList: Codable {
     let baselines: [Baseline]
 }
 
-/// Optional remote Typesense configuration loaded from the environment.
-/// When `TYPESENSE_URL` is set the client will persist data using HTTP
+/// Optional remote FountainStore configuration loaded from the environment.
+/// When `FOUNTAINSTORE_URL` is set the client will persist data using HTTP
 /// requests instead of the in-memory store.
 
 /// Minimal in-memory representation of a Typesense service used for testing.
@@ -55,9 +55,9 @@ public actor TypesenseClient {
                 self.functions = cached
             }
         }
-        if let url = ProcessInfo.processInfo.environment["TYPESENSE_URL"] {
+        if let url = ProcessInfo.processInfo.environment["FOUNTAINSTORE_URL"] {
             self.baseURL = URL(string: url)
-            self.apiKey = ProcessInfo.processInfo.environment["TYPESENSE_API_KEY"]
+            self.apiKey = ProcessInfo.processInfo.environment["FOUNTAINSTORE_API_KEY"]
         } else {
             self.baseURL = nil
             self.apiKey = nil

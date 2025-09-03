@@ -25,7 +25,7 @@ LAUNCH_DEMO="${LAUNCH_DEMO:-1}"
 # Step 1: verify required environment variables
 if [[ "$CHECK_ENV" == "1" ]]; then
   echo "==> Checking environment variables"
-  REQUIRED_VARS=(OPENAI_API_KEY TYPESENSE_URL TYPESENSE_API_KEY)
+  REQUIRED_VARS=(OPENAI_API_KEY FOUNTAINSTORE_URL FOUNTAINSTORE_API_KEY)
   for var in "${REQUIRED_VARS[@]}"; do
     if [[ -z "${!var:-}" ]]; then
       echo "Missing required env var: $var" >&2

@@ -32,12 +32,11 @@ This README covers operations and deployment. For the golden-key specification a
 | Bootstrap              | `bootstrap`            | 8002  | Corpus and rules initializer |
 | Planner                | `planner`              | 8003  | Delegates tasks and goals |
 | Function Caller        | `function-caller`      | 8004  | Maps operationIds to HTTP |
-| Persist                | `persist`              | 8005  | Typesense-backed corpus storage |
+| Persist                | `persist`              | 8005  | FountainStore-backed corpus storage |
 | **LLM Gateway**        | `llm-gateway`          | 8006  | Connects to external LLMs (OpenAI, Claude) |
 | Semantic Browser       | `semantic-browser`     | 8007  | Headless browsing and semantic dissection |
 | **Gateway**            | `fountain-gateway`     | 8010  | HTTPS, authentication, route proxying |
 | Tools Factory          | `tools-factory`        | 8011  | Registers callable OpenAPI tools |
-| Typesense              | `typesense`            | 8100  | Swift-native wrapper around Typesense |
 
 ---
 
@@ -99,7 +98,6 @@ The launcher expects the following executables to exist on disk. Install each se
 | Semantic Browser     | `/usr/local/bin/semantic-browser`         |
 | Gateway              | `/usr/local/bin/fountain-gateway`         |
 | Tools Factory        | `/usr/local/bin/tools-factory`            |
-| Typesense            | `/usr/local/bin/typesense`                |
 
 ---
 

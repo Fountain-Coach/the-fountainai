@@ -10,9 +10,9 @@ public enum TypesenseServiceError: LocalizedError {
 
     public var errorDescription: String? {
         switch self {
-        case .missingURL: return "TYPESENSE_URL environment variable is not set"
-        case .missingAPIKey: return "TYPESENSE_API_KEY environment variable is not set"
-        case .invalidURL(let value): return "TYPESENSE_URL is invalid: \(value)"
+        case .missingURL: return "FOUNTAINSTORE_URL environment variable is not set"
+        case .missingAPIKey: return "FOUNTAINSTORE_API_KEY environment variable is not set"
+        case .invalidURL(let value): return "FOUNTAINSTORE_URL is invalid: \(value)"
         }
     }
 }
@@ -22,16 +22,16 @@ public final actor TypesenseService {
 
     public init(environment: [String: String] = ProcessInfo.processInfo.environment,
                 session: HTTPSession = URLSession.shared) throws {
-        guard let urlString = environment["TYPESENSE_URL"], !urlString.isEmpty else {
+        guard let urlString = environment["FOUNTAINSTORE_URL"], !urlString.isEmpty else {
             throw TypesenseServiceError.missingURL
         }
-        guard let apiKey = environment["TYPESENSE_API_KEY"], !apiKey.isEmpty else {
+        guard let apiKey = environment["FOUNTAINSTORE_API_KEY"], !apiKey.isEmpty else {
             throw TypesenseServiceError.missingAPIKey
         }
         guard let url = URL(string: urlString) else {
             throw TypesenseServiceError.invalidURL(urlString)
         }
-        self.client = APIClient(baseURL: url, session: session, defaultHeaders: ["X-TYPESENSE-API-KEY": apiKey])
+        self.client = APIClient(baseURL: url, session: session, defaultHeaders: ["X-FOUNTAINSTORE-API-KEY": apiKey])
     }
 
     public func listCollections() async throws -> getCollectionsResponse {
