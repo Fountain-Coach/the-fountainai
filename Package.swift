@@ -26,7 +26,8 @@ let fullProducts: [Product] = [
     .library(name: "ToolsFactoryService", targets: ["ToolsFactoryService"]),
     .executable(name: "openapi-curator-cli", targets: ["openapi-curator-cli"]),
     .executable(name: "openapi-curator-service", targets: ["openapi-curator-service"]),
-    .library(name: "GatewayPersonaOrchestrator", targets: ["GatewayPersonaOrchestrator"])]
+    .library(name: "GatewayPersonaOrchestrator", targets: ["GatewayPersonaOrchestrator"]),
+    .executable(name: "semantic-browser-server", targets: ["semantic-browser-server"])]
 
 let leanProducts: [Product] = [
     .library(name: "FountainCodex", targets: ["FountainCodex"]),
@@ -40,7 +41,8 @@ let leanProducts: [Product] = [
     .library(name: "DestructiveGuardianGatewayPlugin", targets: ["DestructiveGuardianGatewayPlugin"]),
     .library(name: "RoleHealthCheckGatewayPlugin", targets: ["RoleHealthCheckGatewayPlugin"]),
     .library(name: "SecuritySentinelGatewayPlugin", targets: ["SecuritySentinelGatewayPlugin"]),
-    .library(name: "GatewayPersonaOrchestrator", targets: ["GatewayPersonaOrchestrator"])
+    .library(name: "GatewayPersonaOrchestrator", targets: ["GatewayPersonaOrchestrator"]),
+    .executable(name: "semantic-browser-server", targets: ["semantic-browser-server"])
 ]
 
 var products: [Product] = LEAN ? leanProducts : fullProducts
@@ -92,6 +94,15 @@ let fullTargets: [Target] = [
         name: "openapi-curator-service",
         dependencies: ["FountainRuntime", "OpenAPICurator", "Yams", "LauncherSignature"],
         path: "apps/OpenAPICuratorService"
+    ),
+    .executableTarget(
+        name: "semantic-browser-server",
+        dependencies: [
+            .product(name: "SemanticBrowser", package: "semantic-browser"),
+            "LauncherSignature"
+        ],
+        path: "apps/SemanticBrowserServer",
+        exclude: ["README.md"]
     ),
         .executableTarget(
         name: "gateway-server",
@@ -444,6 +455,11 @@ let fullTargets: [Target] = [
         path: "Tests/MIDI2Tests"
     ),
     .testTarget(
+        name: "SemanticBrowserTests",
+        dependencies: [.product(name: "SemanticBrowser", package: "semantic-browser")],
+        path: "Tests/SemanticBrowserTests"
+    ),
+    .testTarget(
         name: "OpenAPICuratorTests",
         dependencies: [.product(name: "OpenAPICurator", package: "OpenAPICurator")],
         path: "Tests/OpenAPICuratorTests",
@@ -483,6 +499,15 @@ let leanTargets: [Target] = [
     .target(
         name: "FountainStoreClient",
         path: "libs/FountainStoreClient"
+    ),
+    .executableTarget(
+        name: "semantic-browser-server",
+        dependencies: [
+            .product(name: "SemanticBrowser", package: "semantic-browser"),
+            "LauncherSignature"
+        ],
+        path: "apps/SemanticBrowserServer",
+        exclude: ["README.md"]
     ),
     .executableTarget(
         name: "gateway-server",
@@ -628,6 +653,11 @@ let leanTargets: [Target] = [
         path: "Tests/MIDI2Tests"
     ),
     .testTarget(
+        name: "SemanticBrowserTests",
+        dependencies: [.product(name: "SemanticBrowser", package: "semantic-browser")],
+        path: "Tests/SemanticBrowserTests"
+    ),
+    .testTarget(
         name: "ResourceLoaderTests",
         dependencies: ["ResourceLoader"],
         path: "Tests/ResourceLoaderTests"
@@ -679,6 +709,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-numerics.git", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.3.0"),
         .package(url: "https://github.com/Fountain-Coach/Fountain-Store.git", from: "0.1.0"),
+        .package(url: "https://github.com/Fountain-Coach/semantic-browser.git", exact: "0.0.2"),
         .package(path: "libs/OpenAPICurator"),
     ],
     targets: targets
