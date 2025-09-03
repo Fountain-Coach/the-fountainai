@@ -1,4 +1,5 @@
 # 🧠 Swift Sandbox Agent Manifest
+> **Legacy:** Retained for historical reference after sandbox tooling was removed.
 
 **Last Updated:** September 15, 2025
 **Scope:** `Swift-Sandbox`

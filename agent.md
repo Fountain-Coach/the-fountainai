@@ -118,7 +118,7 @@ Follow the **Ultra-Lean Root Agent Directive**:
 ---
 
 ## 8) Acceptance Checklist
-- [ ] All Typesense/Evolved indexer APIs removed.  
+- [x] All Typesense/Evolved indexer APIs removed.  
 - [ ] Corpus-first persistence rules applied.  
 - [ ] Semantic Browser writes to corpus collections only.  
 - [ ] Bootstrapping + Baseline Awareness OpenAPIs integrated as corpus model.  

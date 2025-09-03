@@ -1,4 +1,5 @@
 # Toolsmith in Gateway/Codex Orchestration
+> **Legacy:** Retained for historical reference after sandbox tooling was removed.
 
 This guide shows how the Gateway/Codex loop imports and drives `toolsmith` to execute sandboxed tools.
 

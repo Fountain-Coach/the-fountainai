@@ -1,4 +1,5 @@
 # FountainAI Tool Sandbox (Ubuntu) — Requirements & Implementation Paper
+> **Legacy:** Retained for historical reference after sandbox tooling was removed.
 **Version:** 0.9 (August 18, 2025)  
 **Audience:** Architecture/Platform, Tooling, Security, CI/Deploy, and LLM Gateway / reasoning engine stakeholders
 **Authors:** FountainAI Platform (with GPT-5 Pro)  
