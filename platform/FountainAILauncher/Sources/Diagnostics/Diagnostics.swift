@@ -15,7 +15,7 @@ enum DiagnosticsError: Error, CustomStringConvertible {
 }
 
 struct Diagnostics {
-    static let requiredKeys = ["OPENAI_API_KEY", "TYPESENSE_URL", "TYPESENSE_API_KEY"]
+    static let requiredKeys = ["OPENAI_API_KEY", "FOUNTAINSTORE_URL", "FOUNTAINSTORE_API_KEY"]
 
     static func loadEnv() throws {
         let url = URL(fileURLWithPath: ".env")

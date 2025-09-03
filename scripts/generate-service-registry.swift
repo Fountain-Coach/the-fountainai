@@ -25,8 +25,7 @@ let templates: [Template] = [
     Template(name: "LLM Gateway", binary: "llm-gateway", port: 8006, healthPath: "/metrics", shouldRestart: true),
     Template(name: "Semantic Browser", binary: "semantic-browser", port: 8007, healthPath: "/metrics", shouldRestart: true),
     Template(name: "Gateway", binary: "fountain-gateway", port: 8010, healthPath: "/metrics", shouldRestart: true),
-    Template(name: "Tools Factory", binary: "tools-factory", port: 8011, healthPath: "/metrics", shouldRestart: true),
-    Template(name: "Typesense", binary: "typesense", port: 8100, healthPath: "/metrics", shouldRestart: true)
+    Template(name: "Tools Factory", binary: "tools-factory", port: 8011, healthPath: "/metrics", shouldRestart: true)
 ]
 
 let servicesDir = ProcessInfo.processInfo.environment["FOUNTAINAI_SERVICES_DIR"] ?? "/usr/local/bin"

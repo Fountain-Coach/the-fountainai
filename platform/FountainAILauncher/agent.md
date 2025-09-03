@@ -18,8 +18,8 @@ For runtime usage and deployment instructions, consult [README.md](README.md).
 ## 🧱 Build-Time Responsibilities
 1. Load `.env` (or injected environment) and verify required secrets:
    - `OPENAI_API_KEY`
-   - `TYPESENSE_URL`
-   - `TYPESENSE_API_KEY`
+   - `FOUNTAINSTORE_URL`
+   - `FOUNTAINSTORE_API_KEY`
    - any gateway credentials and TLS config
 2. Run diagnostics equivalent to `scripts/start-diagnostics.swift`.
 3. Execute `swift build --configuration release` for every package.

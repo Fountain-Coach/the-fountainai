@@ -61,12 +61,5 @@
     "binaryPath" : "\/usr\/local\/bin\/tools-factory",
     "port" : 8011,
     "shouldRestart" : true
-  },
-  {
-    "healthPath" : "\/metrics",
-    "name" : "Typesense",
-    "binaryPath" : "\/usr\/local\/bin\/typesense",
-    "port" : 8100,
-    "shouldRestart" : true
   }
 ]

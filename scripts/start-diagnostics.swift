@@ -45,7 +45,7 @@ if fm.fileExists(atPath: servicesURL.path) {
     fail("Services configuration not found at \(servicesURL.path)")
 }
 
-let requiredEnv = ["OPENAI_API_KEY", "TYPESENSE_URL", "TYPESENSE_API_KEY"]
+let requiredEnv = ["OPENAI_API_KEY", "FOUNTAINSTORE_URL", "FOUNTAINSTORE_API_KEY"]
 let env = ProcessInfo.processInfo.environment
 for key in requiredEnv {
     if let value = env[key], !value.isEmpty {
