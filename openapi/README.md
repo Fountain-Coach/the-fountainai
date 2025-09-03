@@ -12,7 +12,7 @@ Persona definitions for Gateway plugins live in `personas/` and are referenced v
 | Function Caller Service | 1.0.0 | Contexter alias Benedikt Eickhoff | [v1/function-caller.yml](v1/function-caller.yml) |
 | Gateway | 1.0.0 | Contexter alias Benedikt Eickhoff | [v1/gateway.yml](v1/gateway.yml) |
 | LLM Gateway | 2.0.0 | Contexter alias Benedikt Eickhoff | [v2/llm-gateway.yml](v2/llm-gateway.yml) |
-| Persistence Service | 1.0.1 | Contexter alias Benedikt Eickhoff | [v1/persist.yml](v1/persist.yml) |
+| Persistence Service | 1.0.2 | Contexter alias Benedikt Eickhoff | [v1/persist.yml](v1/persist.yml) |
 | Planner Service | 1.0.0 | Contexter alias Benedikt Eickhoff | [v1/planner.yml](v1/planner.yml) |
 | Planner Service (legacy alias) | 1.0.0 | Contexter alias Benedikt Eickhoff | [v0/planner.yml](v0/planner.yml) |
 | Role Health Check Gateway Plugin | 1.0.0 | Contexter alias Benedikt Eickhoff | [v1/role-health-check-gateway.yml](v1/role-health-check-gateway.yml) |

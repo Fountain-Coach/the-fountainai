@@ -139,6 +139,22 @@ final class PersistServerTests: XCTestCase {
         try await server.stop()
     }
 
+    func testCapabilitiesEndpoint() async throws {
+        let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
+        await svc.ensureCollections()
+        let kernel = makePersistKernel(service: svc)
+        let server = NIOHTTPServer(kernel: kernel)
+        let port = try await server.start(port: 0)
+
+        let (data, resp) = try await URLSession.shared.data(from: URL(string: "http://127.0.0.1:\(port)/capabilities")!)
+        XCTAssertEqual((resp as? HTTPURLResponse)?.statusCode, 200)
+        let caps = try JSONDecoder().decode(Capabilities.self, from: data)
+        XCTAssertTrue(caps.corpus)
+        XCTAssertTrue(caps.documents.contains("upsert"))
+
+        try await server.stop()
+    }
+
     func testMetricsEndpoint() async throws {
         let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
         await svc.ensureCollections()

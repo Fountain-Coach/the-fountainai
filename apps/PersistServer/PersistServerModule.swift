@@ -27,6 +27,11 @@ public func makePersistKernel(service svc: FountainStoreClient) -> HTTPKernel {
             case ("GET", ["metrics"]):
                 return await metrics_metrics_get()
 
+            case ("GET", ["capabilities"]):
+                let caps = try await svc.capabilities()
+                let json = try JSONEncoder().encode(caps)
+                return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: json)
+
             case ("GET", ["corpora"]):
                 let qp = queryParams(from: req.path)
                 let limit = min(max(Int(qp["limit"] ?? "50") ?? 50, 1), 200)
