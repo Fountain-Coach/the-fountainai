@@ -396,6 +396,11 @@ let fullTargets: [Target] = [
         path: "Tests/ResourceLoaderTests"
     ),
     .testTarget(
+        name: "FountainStoreClientTests",
+        dependencies: ["FountainStoreClient"],
+        path: "Tests/FountainStoreClientTests"
+    ),
+    .testTarget(
         name: "OpenAPIConformanceTests",
         dependencies: ["Yams", "AwarenessService", "BootstrapService", "FountainStoreClient", "FountainRuntime", "RoleHealthCheckGatewayPlugin"],
         path: "Tests/OpenAPIConformanceTests"
@@ -622,6 +627,11 @@ let leanTargets: [Target] = [
         name: "ResourceLoaderTests",
         dependencies: ["ResourceLoader"],
         path: "Tests/ResourceLoaderTests"
+    ),
+    .testTarget(
+        name: "FountainStoreClientTests",
+        dependencies: ["FountainStoreClient"],
+        path: "Tests/FountainStoreClientTests"
     ),
     .testTarget(
         name: "ToolServerTests",
