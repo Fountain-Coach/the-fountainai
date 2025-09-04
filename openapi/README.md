@@ -3,6 +3,8 @@
 Versioned service definitions live here. Each YAML file describes a FountainAI service interface.
 Persona definitions for Gateway plugins live in `personas/` and are referenced via `x-persona` in the specs.
 
+For a repository-wide index of OpenAPI coverage, see [../OPENAPI_COVERAGE.md](../OPENAPI_COVERAGE.md).
+
 | Service | Version | Owner | Spec |
 | --- | --- | --- | --- |
 | Auth Gateway Plugin | 1.0.0 | Contexter alias Benedikt Eickhoff | [v1/auth-gateway.yml](v1/auth-gateway.yml) |
