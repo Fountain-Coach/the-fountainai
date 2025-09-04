@@ -63,6 +63,21 @@ final class AwarenessServiceTests: XCTestCase {
             XCTAssertNotNil(first["phase"]) ; XCTAssertNotNil(first["weight"]) ; XCTAssertNotNil(first["pct"])
         }
     }
+
+    func testStreamHistoryAnalyticsSSE() async throws {
+        let router = makeRouter()
+        let resp = try await router.route(.init(method: "GET", path: "/corpus/history/stream?sse=1"))
+        XCTAssertEqual(resp.status, 200)
+        XCTAssertEqual(resp.headers["Content-Type"], "text/event-stream")
+    }
+
+    func testMetricsUptime() async throws {
+        let router = makeRouter()
+        let resp = try await router.route(.init(method: "GET", path: "/metrics"))
+        XCTAssertEqual(resp.status, 200)
+        let text = String(decoding: resp.body, as: UTF8.self)
+        XCTAssertTrue(text.starts(with: "awareness_uptime_seconds"))
+    }
 }
 
 // © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
