@@ -3,9 +3,16 @@ import Foundation
 import FoundationNetworking
 #endif
 
+/// Minimal interface required for supervising services.
+public protocol SupervisorProtocol: AnyObject, Sendable {
+    func restart(service: Service)
+}
+
+extension Supervisor: SupervisorProtocol {}
+
 /// Periodically probes service health endpoints and restarts failing services.
 public final class HealthMonitor {
-    private let supervisor: Supervisor
+    private let supervisor: SupervisorProtocol
     private var timer: DispatchSourceTimer?
     private let interval: TimeInterval
 
@@ -13,7 +20,7 @@ public final class HealthMonitor {
     /// - Parameters:
     ///   - supervisor: Supervisor used for restarting services.
     ///   - interval: Time between health checks in seconds.
-    public init(supervisor: Supervisor, interval: TimeInterval = 5) {
+    public init(supervisor: SupervisorProtocol, interval: TimeInterval = 5) {
         self.supervisor = supervisor
         self.interval = interval
     }
