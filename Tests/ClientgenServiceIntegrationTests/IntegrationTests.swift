@@ -2,10 +2,10 @@ import XCTest
 import Foundation
 
 /// Prerequisites: built executable in .build/debug; no special environment variables.
-final class PublishingFrontendIntegrationTests: XCTestCase {
+final class ClientgenServiceIntegrationTests: XCTestCase {
     func testShowsHelp() throws {
         let process = Process()
-        process.executableURL = URL(fileURLWithPath: ".build/debug/publishing-frontend")
+        process.executableURL = URL(fileURLWithPath: ".build/debug/clientgen-service")
         process.arguments = ["--help"]
         let pipe = Pipe()
         process.standardOutput = pipe
@@ -18,7 +18,7 @@ final class PublishingFrontendIntegrationTests: XCTestCase {
 
     func testShowsVersion() throws {
         let process = Process()
-        process.executableURL = URL(fileURLWithPath: ".build/debug/publishing-frontend")
+        process.executableURL = URL(fileURLWithPath: ".build/debug/clientgen-service")
         process.arguments = ["--version"]
         let pipe = Pipe()
         process.standardOutput = pipe
@@ -31,7 +31,7 @@ final class PublishingFrontendIntegrationTests: XCTestCase {
 
     func testInvalidArgumentsFail() throws {
         let process = Process()
-        process.executableURL = URL(fileURLWithPath: ".build/debug/publishing-frontend")
+        process.executableURL = URL(fileURLWithPath: ".build/debug/clientgen-service")
         process.arguments = ["--bogus"]
         let pipe = Pipe()
         process.standardError = pipe

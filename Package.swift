@@ -15,6 +15,7 @@ let fullProducts: [Product] = [
     .library(name: "FlexBridge", targets: ["FlexBridge"]),
     .library(name: "SSEOverMIDI", targets: ["SSEOverMIDI"]),
     .executable(name: "gateway-server", targets: ["gateway-server"]),
+    .executable(name: "clientgen-service", targets: ["clientgen-service"]),
     .executable(name: "publishing-frontend", targets: ["publishing-frontend"]),
     .executable(name: "flexctl", targets: ["flexctl"]),
     .executable(name: "tools-factory-server", targets: ["tools-factory-server"]),
@@ -80,6 +81,11 @@ let fullTargets: [Target] = [
         name: "FountainStoreClient",
         dependencies: [.product(name: "FountainStore", package: "fountain-store")],
         path: "libs/FountainStoreClient"
+    ),
+    .executableTarget(
+        name: "clientgen-service",
+        dependencies: [],
+        path: "apps/ClientgenService/clientgen-service"
     ),
     .executableTarget(
         name: "sse-client",
@@ -292,6 +298,11 @@ let fullTargets: [Target] = [
         name: "SSEClientIntegrationTests",
         dependencies: ["sse-client"],
         path: "Tests/SSEClientIntegrationTests"
+    ),
+    .testTarget(
+        name: "ClientgenServiceIntegrationTests",
+        dependencies: ["clientgen-service"],
+        path: "Tests/ClientgenServiceIntegrationTests"
     ),
     .testTarget(
         name: "OpenAPICuratorCLIIntegrationTests",
