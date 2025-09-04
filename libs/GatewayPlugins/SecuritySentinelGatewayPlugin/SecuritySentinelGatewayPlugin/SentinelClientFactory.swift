@@ -2,8 +2,10 @@ import Foundation
 
 /// Factory that provides the Security Sentinel client.
 public enum SentinelClientFactory {
-    /// Create a client capable of consulting the Security Sentinel service.
-    public static func make() -> SecuritySentinelClient {
+    /// Closure producing ``SecuritySentinelClient`` instances.
+    ///
+    /// Tests may override this to supply mock clients.
+    nonisolated(unsafe) public static var make: () -> SecuritySentinelClient = {
         LLMSecuritySentinelClient()
     }
 }
