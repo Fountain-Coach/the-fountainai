@@ -4,14 +4,12 @@ import Foundation
 
 final class FountainStoreClientTests: XCTestCase {
     private func makeClient(caps: Capabilities? = nil) -> FountainStoreClient {
-        let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         let embedded: EmbeddedFountainStoreClient
         if let c = caps {
-            embedded = EmbeddedFountainStoreClient(path: dir.path, caps: c)
+            embedded = EmbeddedFountainStoreClient(caps: c)
         } else {
-            embedded = EmbeddedFountainStoreClient(path: dir.path)
+            embedded = EmbeddedFountainStoreClient()
         }
-        addTeardownBlock { try? FileManager.default.removeItem(at: dir) }
         return FountainStoreClient(client: embedded)
     }
 

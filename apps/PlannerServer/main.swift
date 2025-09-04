@@ -8,13 +8,7 @@ import LauncherSignature
 verifyLauncherSignature()
 
 let corpusId = ProcessInfo.processInfo.environment["DEFAULT_CORPUS_ID"] ?? "tools-factory"
-let storePath = ProcessInfo.processInfo.environment["FOUNTAIN_STORE_PATH"] ?? "./data/fountain-store"
-do {
-    try FileManager.default.createDirectory(atPath: storePath, withIntermediateDirectories: true)
-} catch {
-    FileHandle.standardError.write(Data("[planner] Failed to create store directory: \(error)\n".utf8))
-}
-let svc = FountainStoreClient(client: EmbeddedFountainStoreClient(path: storePath))
+let svc = FountainStoreClient(client: EmbeddedFountainStoreClient())
 Task {
     await svc.ensureCollections(corpusId: corpusId)
     let kernel = makePlannerKernel(service: svc)
