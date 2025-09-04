@@ -85,7 +85,7 @@ public func loadPublishingConfig() throws -> PublishingConfig {
 }
 
 // Basic content-type resolution for common static assets.
-private func mimeType(forPath path: String) -> String {
+func mimeType(forPath path: String) -> String {
     switch URL(fileURLWithPath: path).pathExtension.lowercased() {
     case "html", "htm": return "text/html"
     case "css": return "text/css"
