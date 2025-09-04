@@ -407,7 +407,8 @@ let fullTargets: [Target] = [
     .testTarget(
         name: "ResourceLoaderTests",
         dependencies: ["ResourceLoader"],
-        path: "Tests/ResourceLoaderTests"
+        path: "Tests/ResourceLoaderTests",
+        resources: [.process("Resources")]
     ),
     .testTarget(
         name: "FountainStoreClientTests",
@@ -682,7 +683,8 @@ let leanTargets: [Target] = [
     .testTarget(
         name: "ResourceLoaderTests",
         dependencies: ["ResourceLoader"],
-        path: "Tests/ResourceLoaderTests"
+        path: "Tests/ResourceLoaderTests",
+        resources: [.process("Resources")]
     ),
     .testTarget(
         name: "FountainStoreClientTests",
