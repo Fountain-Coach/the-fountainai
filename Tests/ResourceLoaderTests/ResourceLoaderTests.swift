@@ -7,6 +7,15 @@ import Darwin
 #endif
 
 final class ResourceLoaderTests: XCTestCase {
+    func testValidFile() throws {
+        let bundle = Bundle.module
+        let expectedURL = bundle.url(forResource: "valid", withExtension: "txt")!
+        let url = try ResourceLoader.url("valid", ext: "txt", subdir: nil, bundle: bundle)
+        XCTAssertEqual(url, expectedURL)
+        let data = try ResourceLoader.data("valid", ext: "txt", subdir: nil, bundle: bundle)
+        XCTAssertEqual(data, try Data(contentsOf: expectedURL))
+    }
+
     func testMissingFile() throws {
         XCTAssertThrowsError(try ResourceLoader.url("no-such-file", ext: "txt", subdir: nil, bundle: Bundle(for: Self.self))) { error in
             guard case ResourceError.missing(let path) = error else {
