@@ -430,6 +430,11 @@ let fullTargets: [Target] = [
         resources: [.process("Resources")]
     ),
     .testTarget(
+        name: "TokenValidationTests",
+        dependencies: ["gateway-server", .product(name: "Crypto", package: "swift-crypto")],
+        path: "Tests/TokenValidationTests"
+    ),
+    .testTarget(
         name: "FountainStoreClientTests",
         dependencies: ["FountainStoreClient"],
         path: "Tests/FountainStoreClientTests"
@@ -731,6 +736,11 @@ let leanTargets: [Target] = [
         dependencies: ["ResourceLoader"],
         path: "Tests/ResourceLoaderTests",
         resources: [.process("Resources")]
+    ),
+    .testTarget(
+        name: "TokenValidationTests",
+        dependencies: ["gateway-server", .product(name: "Crypto", package: "swift-crypto")],
+        path: "Tests/TokenValidationTests"
     ),
     .testTarget(
         name: "FountainStoreClientTests",
