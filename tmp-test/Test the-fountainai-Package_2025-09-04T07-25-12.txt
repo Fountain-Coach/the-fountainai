@@ -1,0 +1,314 @@
+
+Showing All Issues
+Launch actions
+Test Suite 'All tests' started at 2025-09-04 07:26:33.622.
+Test Suite 'GatewayPluginsTests.xctest' started at 2025-09-04 07:26:33.623.
+Test Suite 'AuthGatewayPluginTests' started at 2025-09-04 07:26:33.623.
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testClaimsUsesLLM]' started.
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/GatewayPluginsTests/AuthGatewayPluginTests.swift:52: error: -[GatewayPluginsTests.AuthGatewayPluginTests testClaimsUsesLLM] : XCTUnwrap failed: expected non-nil value of type "Data"
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testClaimsUsesLLM]' failed (5.868 seconds).
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testLLMErrorFallsBack]' started.
+2025-09-04 07:26:39.492218+0200 xctest[21934:7509138] [Default] Task <E77D1556-E57F-4C05-8CBD-3AE753D76A8B>.<2> finished with error [-1011] Error Domain=NSURLErrorDomain Code=-1011 "(null)" UserInfo={_NSURLErrorRelatedURLSessionTaskErrorKey=(
+    "LocalDataTask <E77D1556-E57F-4C05-8CBD-3AE753D76A8B>.<2>"
+), _NSURLErrorFailingURLSessionTaskErrorKey=LocalDataTask <E77D1556-E57F-4C05-8CBD-3AE753D76A8B>.<2>}
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testLLMErrorFallsBack]' passed (0.001 seconds).
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testValidateUsesLLM]' started.
+2025-09-04 07:26:39.524781+0200 xctest[21934:7509142] [connection] nw_socket_handle_socket_event [C1.1.1:2] Socket SO_ERROR [61: Connection refused]
+2025-09-04 07:26:39.525063+0200 xctest[21934:7509142] [connection] nw_protocol_socket_set_no_wake_from_sleep [C1.1.1:2] setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.525077+0200 xctest[21934:7509142] [] nw_protocol_socket_set_no_wake_from_sleep setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.525106+0200 xctest[21934:7509142] [connection] nw_endpoint_flow_failed_with_error [C1.1.1 ::1.8080 in_progress socket-flow (satisfied (Path is satisfied), viable, interface: lo0)] already failing, returning
+2025-09-04 07:26:39.839317+0200 xctest[21934:7509142] [connection] nw_socket_handle_socket_event [C1.1.2:2] Socket SO_ERROR [61: Connection refused]
+2025-09-04 07:26:39.839334+0200 xctest[21934:7509142] [connection] nw_protocol_socket_set_no_wake_from_sleep [C1.1.2:2] setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.839339+0200 xctest[21934:7509142] [] nw_protocol_socket_set_no_wake_from_sleep setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.839361+0200 xctest[21934:7509142] [connection] nw_endpoint_flow_failed_with_error [C1.1.2 127.0.0.1:8080 in_progress socket-flow (satisfied (Path is satisfied), viable, interface: lo0)] already failing, returning
+2025-09-04 07:26:39.839406+0200 xctest[21934:7509142] [connection] nw_endpoint_flow_failed_with_error [C1.1.2 127.0.0.1:8080 cancelled socket-flow ((null))] already failing, returning
+2025-09-04 07:26:39.843188+0200 xctest[21934:7509142] [Default] Connection 1: received failure notification
+2025-09-04 07:26:39.843558+0200 xctest[21934:7509142] [Default] Connection 1: failed to connect 1:61, reason -1
+2025-09-04 07:26:39.843563+0200 xctest[21934:7509142] [Default] Connection 1: encountered error(1:61)
+2025-09-04 07:26:39.843684+0200 xctest[21934:7509142] [Default] Task <1A4761A4-D232-477C-8A21-59E133F725C6>.<3> HTTP load failed, 0/0 bytes (error code: -1004 [1:61])
+2025-09-04 07:26:39.844923+0200 xctest[21934:7509281] [Default] Task <1A4761A4-D232-477C-8A21-59E133F725C6>.<3> finished with error [-1004] Error Domain=NSURLErrorDomain Code=-1004 "Verbindung zum Server konnte nicht hergestellt werden." UserInfo={_kCFStreamErrorCodeKey=61, NSUnderlyingError=0x6000028482d0 {Error Domain=kCFErrorDomainCFNetwork Code=-1004 "(null)" UserInfo={_NSURLErrorNWPathKey=satisfied (Path is satisfied), interface: lo0, _kCFStreamErrorCodeKey=61, _kCFStreamErrorDomainKey=1}}, _NSURLErrorFailingURLSessionTaskErrorKey=LocalDataTask <1A4761A4-D232-477C-8A21-59E133F725C6>.<3>, _NSURLErrorRelatedURLSessionTaskErrorKey=(
+    "LocalDataTask <1A4761A4-D232-477C-8A21-59E133F725C6>.<3>"
+), NSLocalizedDescription=Verbindung zum Server konnte nicht hergestellt werden., NSErrorFailingURLStringKey=http://localhost:8080/chat, NSErrorFailingURLKey=http://localhost:8080/chat, _kCFStreamErrorDomainKey=1}
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testValidateUsesLLM]' passed (0.353 seconds).
+Test Suite 'AuthGatewayPluginTests' failed at 2025-09-04 07:26:39.846.
+	 Executed 3 tests, with 1 failure (0 unexpected) in 6.222 (6.223) seconds
+Test Suite 'PayloadInspectionGatewayPluginTests' started at 2025-09-04 07:26:39.846.
+Test Case '-[GatewayPluginsTests.PayloadInspectionGatewayPluginTests testInspectionUsesLLM]' started.
+2025-09-04 07:26:39.847690+0200 xctest[21934:7509142] [connection] nw_socket_handle_socket_event [C2.1.1:2] Socket SO_ERROR [61: Connection refused]
+2025-09-04 07:26:39.847702+0200 xctest[21934:7509142] [connection] nw_protocol_socket_set_no_wake_from_sleep [C2.1.1:2] setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.863876+0200 xctest[21934:7509142] [] nw_protocol_socket_set_no_wake_from_sleep setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.863913+0200 xctest[21934:7509142] [connection] nw_endpoint_flow_failed_with_error [C2.1.1 ::1.8080 in_progress socket-flow (satisfied (Path is satisfied), viable, interface: lo0)] already failing, returning
+2025-09-04 07:26:39.864221+0200 xctest[21934:7509142] [connection] nw_socket_handle_socket_event [C2.1.2:2] Socket SO_ERROR [61: Connection refused]
+2025-09-04 07:26:39.864263+0200 xctest[21934:7509142] [connection] nw_protocol_socket_set_no_wake_from_sleep [C2.1.2:2] setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.864269+0200 xctest[21934:7509142] [] nw_protocol_socket_set_no_wake_from_sleep setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.864286+0200 xctest[21934:7509142] [connection] nw_endpoint_flow_failed_with_error [C2.1.2 127.0.0.1:8080 in_progress socket-flow (satisfied (Path is satisfied), viable, interface: lo0)] already failing, returning
+2025-09-04 07:26:39.864335+0200 xctest[21934:7509142] [connection] nw_endpoint_flow_failed_with_error [C2.1.2 127.0.0.1:8080 cancelled socket-flow ((null))] already failing, returning
+2025-09-04 07:26:39.864631+0200 xctest[21934:7509142] [Default] Connection 2: received failure notification
+2025-09-04 07:26:39.864645+0200 xctest[21934:7509142] [Default] Connection 2: failed to connect 1:61, reason -1
+2025-09-04 07:26:39.864648+0200 xctest[21934:7509142] [Default] Connection 2: encountered error(1:61)
+2025-09-04 07:26:39.864768+0200 xctest[21934:7509142] [Default] Task <D3C7272E-F026-4D24-8359-09F3D1812A4F>.<4> HTTP load failed, 0/0 bytes (error code: -1004 [1:61])
+2025-09-04 07:26:39.864852+0200 xctest[21934:7509140] [Default] Task <D3C7272E-F026-4D24-8359-09F3D1812A4F>.<4> finished with error [-1004] Error Domain=NSURLErrorDomain Code=-1004 "Verbindung zum Server konnte nicht hergestellt werden." UserInfo={_kCFStreamErrorCodeKey=61, NSUnderlyingError=0x600002854720 {Error Domain=kCFErrorDomainCFNetwork Code=-1004 "(null)" UserInfo={_NSURLErrorNWPathKey=satisfied (Path is satisfied), interface: lo0, _kCFStreamErrorCodeKey=61, _kCFStreamErrorDomainKey=1}}, _NSURLErrorFailingURLSessionTaskErrorKey=LocalDataTask <D3C7272E-F026-4D24-8359-09F3D1812A4F>.<4>, _NSURLErrorRelatedURLSessionTaskErrorKey=(
+    "LocalDataTask <D3C7272E-F026-4D24-8359-09F3D1812A4F>.<4>"
+), NSLocalizedDescription=Verbindung zum Server konnte nicht hergestellt werden., NSErrorFailingURLStringKey=http://localhost:8080/chat, NSErrorFailingURLKey=http://localhost:8080/chat, _kCFStreamErrorDomainKey=1}
+Test Case '-[GatewayPluginsTests.PayloadInspectionGatewayPluginTests testInspectionUsesLLM]' passed (0.020 seconds).
+Test Case '-[GatewayPluginsTests.PayloadInspectionGatewayPluginTests testLLMFailureFallsBack]' started.
+2025-09-04 07:26:39.867218+0200 xctest[21934:7509138] [connection] nw_socket_handle_socket_event [C3.1.1:2] Socket SO_ERROR [61: Connection refused]
+2025-09-04 07:26:39.867228+0200 xctest[21934:7509138] [connection] nw_protocol_socket_set_no_wake_from_sleep [C3.1.1:2] setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.867233+0200 xctest[21934:7509138] [] nw_protocol_socket_set_no_wake_from_sleep setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.867248+0200 xctest[21934:7509138] [connection] nw_endpoint_flow_failed_with_error [C3.1.1 ::1.9 in_progress socket-flow (satisfied (Path is satisfied), viable, interface: lo0)] already failing, returning
+2025-09-04 07:26:39.868259+0200 xctest[21934:7509138] [connection] nw_socket_handle_socket_event [C3.1.2:2] Socket SO_ERROR [61: Connection refused]
+2025-09-04 07:26:39.868268+0200 xctest[21934:7509138] [connection] nw_protocol_socket_set_no_wake_from_sleep [C3.1.2:2] setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.868272+0200 xctest[21934:7509138] [] nw_protocol_socket_set_no_wake_from_sleep setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.868283+0200 xctest[21934:7509138] [connection] nw_endpoint_flow_failed_with_error [C3.1.2 127.0.0.1:9 in_progress socket-flow (satisfied (Path is satisfied), viable, interface: lo0)] already failing, returning
+2025-09-04 07:26:39.868341+0200 xctest[21934:7509138] [connection] nw_endpoint_flow_failed_with_error [C3.1.2 127.0.0.1:9 cancelled socket-flow ((null))] already failing, returning
+2025-09-04 07:26:39.869877+0200 xctest[21934:7509138] [Default] Connection 3: received failure notification
+2025-09-04 07:26:39.869885+0200 xctest[21934:7509138] [Default] Connection 3: failed to connect 1:61, reason -1
+2025-09-04 07:26:39.869888+0200 xctest[21934:7509138] [Default] Connection 3: encountered error(1:61)
+2025-09-04 07:26:39.869954+0200 xctest[21934:7509138] [Default] Task <4A058F66-2475-413E-B126-DD091EDDB671>.<5> HTTP load failed, 0/0 bytes (error code: -1004 [1:61])
+2025-09-04 07:26:39.870023+0200 xctest[21934:7509280] [Default] Task <4A058F66-2475-413E-B126-DD091EDDB671>.<5> finished with error [-1004] Error Domain=NSURLErrorDomain Code=-1004 "Verbindung zum Server konnte nicht hergestellt werden." UserInfo={_kCFStreamErrorCodeKey=61, NSUnderlyingError=0x600002848e40 {Error Domain=kCFErrorDomainCFNetwork Code=-1004 "(null)" UserInfo={_NSURLErrorNWPathKey=satisfied (Path is satisfied), interface: lo0, _kCFStreamErrorCodeKey=61, _kCFStreamErrorDomainKey=1}}, _NSURLErrorFailingURLSessionTaskErrorKey=LocalDataTask <4A058F66-2475-413E-B126-DD091EDDB671>.<5>, _NSURLErrorRelatedURLSessionTaskErrorKey=(
+    "LocalDataTask <4A058F66-2475-413E-B126-DD091EDDB671>.<5>"
+), NSLocalizedDescription=Verbindung zum Server konnte nicht hergestellt werden., NSErrorFailingURLStringKey=http://localhost:9/chat, NSErrorFailingURLKey=http://localhost:9/chat, _kCFStreamErrorDomainKey=1}
+Test Case '-[GatewayPluginsTests.PayloadInspectionGatewayPluginTests testLLMFailureFallsBack]' passed (0.005 seconds).
+Test Case '-[GatewayPluginsTests.PayloadInspectionGatewayPluginTests testMissingBodyReturns400]' started.
+Test Case '-[GatewayPluginsTests.PayloadInspectionGatewayPluginTests testMissingBodyReturns400]' passed (0.001 seconds).
+Test Case '-[GatewayPluginsTests.PayloadInspectionGatewayPluginTests testPayloadExceedingMaxSizeReturns413]' started.
+Test Case '-[GatewayPluginsTests.PayloadInspectionGatewayPluginTests testPayloadExceedingMaxSizeReturns413]' passed (0.001 seconds).
+Test Suite 'PayloadInspectionGatewayPluginTests' passed at 2025-09-04 07:26:39.872.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.026 (0.027) seconds
+Test Suite 'RateLimiterGatewayPluginTests' started at 2025-09-04 07:26:39.873.
+Test Case '-[GatewayPluginsTests.RateLimiterGatewayPluginTests testAllowThrottleResetAndStats]' started.
+Test Case '-[GatewayPluginsTests.RateLimiterGatewayPluginTests testAllowThrottleResetAndStats]' passed (0.002 seconds).
+Test Suite 'RateLimiterGatewayPluginTests' passed at 2025-09-04 07:26:39.875.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'GatewayPluginsTests.xctest' failed at 2025-09-04 07:26:39.875.
+	 Executed 8 tests, with 1 failure (0 unexpected) in 6.250 (6.252) seconds
+Test Suite 'All tests' failed at 2025-09-04 07:26:39.875.
+	 Executed 8 tests, with 1 failure (0 unexpected) in 6.250 (6.253) seconds
+Test Suite 'All tests' started at 2025-09-04 07:26:33.622.
+Test Suite 'GatewayPluginsTests.xctest' started at 2025-09-04 07:26:33.623.
+Test Suite 'AuthGatewayPluginTests' started at 2025-09-04 07:26:33.623.
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testClaimsUsesLLM]' started.
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/GatewayPluginsTests/AuthGatewayPluginTests.swift:52: error: -[GatewayPluginsTests.AuthGatewayPluginTests testClaimsUsesLLM] : XCTUnwrap failed: expected non-nil value of type "Data"
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testClaimsUsesLLM]' failed (5.868 seconds).
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testLLMErrorFallsBack]' started.
+2025-09-04 07:26:39.492218+0200 xctest[21934:7509138] [Default] Task <E77D1556-E57F-4C05-8CBD-3AE753D76A8B>.<2> finished with error [-1011] Error Domain=NSURLErrorDomain Code=-1011 "(null)" UserInfo={_NSURLErrorRelatedURLSessionTaskErrorKey=(
+    "LocalDataTask <E77D1556-E57F-4C05-8CBD-3AE753D76A8B>.<2>"
+), _NSURLErrorFailingURLSessionTaskErrorKey=LocalDataTask <E77D1556-E57F-4C05-8CBD-3AE753D76A8B>.<2>}
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testLLMErrorFallsBack]' passed (0.001 seconds).
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testValidateUsesLLM]' started.
+2025-09-04 07:26:39.524781+0200 xctest[21934:7509142] [connection] nw_socket_handle_socket_event [C1.1.1:2] Socket SO_ERROR [61: Connection refused]
+2025-09-04 07:26:39.525063+0200 xctest[21934:7509142] [connection] nw_protocol_socket_set_no_wake_from_sleep [C1.1.1:2] setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.525077+0200 xctest[21934:7509142] [] nw_protocol_socket_set_no_wake_from_sleep setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.525106+0200 xctest[21934:7509142] [connection] nw_endpoint_flow_failed_with_error [C1.1.1 ::1.8080 in_progress socket-flow (satisfied (Path is satisfied), viable, interface: lo0)] already failing, returning
+2025-09-04 07:26:39.839317+0200 xctest[21934:7509142] [connection] nw_socket_handle_socket_event [C1.1.2:2] Socket SO_ERROR [61: Connection refused]
+2025-09-04 07:26:39.839334+0200 xctest[21934:7509142] [connection] nw_protocol_socket_set_no_wake_from_sleep [C1.1.2:2] setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.839339+0200 xctest[21934:7509142] [] nw_protocol_socket_set_no_wake_from_sleep setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.839361+0200 xctest[21934:7509142] [connection] nw_endpoint_flow_failed_with_error [C1.1.2 127.0.0.1:8080 in_progress socket-flow (satisfied (Path is satisfied), viable, interface: lo0)] already failing, returning
+2025-09-04 07:26:39.839406+0200 xctest[21934:7509142] [connection] nw_endpoint_flow_failed_with_error [C1.1.2 127.0.0.1:8080 cancelled socket-flow ((null))] already failing, returning
+2025-09-04 07:26:39.843188+0200 xctest[21934:7509142] [Default] Connection 1: received failure notification
+2025-09-04 07:26:39.843558+0200 xctest[21934:7509142] [Default] Connection 1: failed to connect 1:61, reason -1
+2025-09-04 07:26:39.843563+0200 xctest[21934:7509142] [Default] Connection 1: encountered error(1:61)
+2025-09-04 07:26:39.843684+0200 xctest[21934:7509142] [Default] Task <1A4761A4-D232-477C-8A21-59E133F725C6>.<3> HTTP load failed, 0/0 bytes (error code: -1004 [1:61])
+2025-09-04 07:26:39.844923+0200 xctest[21934:7509281] [Default] Task <1A4761A4-D232-477C-8A21-59E133F725C6>.<3> finished with error [-1004] Error Domain=NSURLErrorDomain Code=-1004 "Verbindung zum Server konnte nicht hergestellt werden." UserInfo={_kCFStreamErrorCodeKey=61, NSUnderlyingError=0x6000028482d0 {Error Domain=kCFErrorDomainCFNetwork Code=-1004 "(null)" UserInfo={_NSURLErrorNWPathKey=satisfied (Path is satisfied), interface: lo0, _kCFStreamErrorCodeKey=61, _kCFStreamErrorDomainKey=1}}, _NSURLErrorFailingURLSessionTaskErrorKey=LocalDataTask <1A4761A4-D232-477C-8A21-59E133F725C6>.<3>, _NSURLErrorRelatedURLSessionTaskErrorKey=(
+    "LocalDataTask <1A4761A4-D232-477C-8A21-59E133F725C6>.<3>"
+), NSLocalizedDescription=Verbindung zum Server konnte nicht hergestellt werden., NSErrorFailingURLStringKey=http://localhost:8080/chat, NSErrorFailingURLKey=http://localhost:8080/chat, _kCFStreamErrorDomainKey=1}
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testValidateUsesLLM]' passed (0.353 seconds).
+Test Suite 'AuthGatewayPluginTests' failed at 2025-09-04 07:26:39.846.
+	 Executed 3 tests, with 1 failure (0 unexpected) in 6.222 (6.223) seconds
+Test Suite 'PayloadInspectionGatewayPluginTests' started at 2025-09-04 07:26:39.846.
+Test Case '-[GatewayPluginsTests.PayloadInspectionGatewayPluginTests testInspectionUsesLLM]' started.
+2025-09-04 07:26:39.847690+0200 xctest[21934:7509142] [connection] nw_socket_handle_socket_event [C2.1.1:2] Socket SO_ERROR [61: Connection refused]
+2025-09-04 07:26:39.847702+0200 xctest[21934:7509142] [connection] nw_protocol_socket_set_no_wake_from_sleep [C2.1.1:2] setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.863876+0200 xctest[21934:7509142] [] nw_protocol_socket_set_no_wake_from_sleep setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.863913+0200 xctest[21934:7509142] [connection] nw_endpoint_flow_failed_with_error [C2.1.1 ::1.8080 in_progress socket-flow (satisfied (Path is satisfied), viable, interface: lo0)] already failing, returning
+2025-09-04 07:26:39.864221+0200 xctest[21934:7509142] [connection] nw_socket_handle_socket_event [C2.1.2:2] Socket SO_ERROR [61: Connection refused]
+2025-09-04 07:26:39.864263+0200 xctest[21934:7509142] [connection] nw_protocol_socket_set_no_wake_from_sleep [C2.1.2:2] setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.864269+0200 xctest[21934:7509142] [] nw_protocol_socket_set_no_wake_from_sleep setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.864286+0200 xctest[21934:7509142] [connection] nw_endpoint_flow_failed_with_error [C2.1.2 127.0.0.1:8080 in_progress socket-flow (satisfied (Path is satisfied), viable, interface: lo0)] already failing, returning
+2025-09-04 07:26:39.864335+0200 xctest[21934:7509142] [connection] nw_endpoint_flow_failed_with_error [C2.1.2 127.0.0.1:8080 cancelled socket-flow ((null))] already failing, returning
+2025-09-04 07:26:39.864631+0200 xctest[21934:7509142] [Default] Connection 2: received failure notification
+2025-09-04 07:26:39.864645+0200 xctest[21934:7509142] [Default] Connection 2: failed to connect 1:61, reason -1
+2025-09-04 07:26:39.864648+0200 xctest[21934:7509142] [Default] Connection 2: encountered error(1:61)
+2025-09-04 07:26:39.864768+0200 xctest[21934:7509142] [Default] Task <D3C7272E-F026-4D24-8359-09F3D1812A4F>.<4> HTTP load failed, 0/0 bytes (error code: -1004 [1:61])
+2025-09-04 07:26:39.864852+0200 xctest[21934:7509140] [Default] Task <D3C7272E-F026-4D24-8359-09F3D1812A4F>.<4> finished with error [-1004] Error Domain=NSURLErrorDomain Code=-1004 "Verbindung zum Server konnte nicht hergestellt werden." UserInfo={_kCFStreamErrorCodeKey=61, NSUnderlyingError=0x600002854720 {Error Domain=kCFErrorDomainCFNetwork Code=-1004 "(null)" UserInfo={_NSURLErrorNWPathKey=satisfied (Path is satisfied), interface: lo0, _kCFStreamErrorCodeKey=61, _kCFStreamErrorDomainKey=1}}, _NSURLErrorFailingURLSessionTaskErrorKey=LocalDataTask <D3C7272E-F026-4D24-8359-09F3D1812A4F>.<4>, _NSURLErrorRelatedURLSessionTaskErrorKey=(
+    "LocalDataTask <D3C7272E-F026-4D24-8359-09F3D1812A4F>.<4>"
+), NSLocalizedDescription=Verbindung zum Server konnte nicht hergestellt werden., NSErrorFailingURLStringKey=http://localhost:8080/chat, NSErrorFailingURLKey=http://localhost:8080/chat, _kCFStreamErrorDomainKey=1}
+Test Case '-[GatewayPluginsTests.PayloadInspectionGatewayPluginTests testInspectionUsesLLM]' passed (0.020 seconds).
+Test Case '-[GatewayPluginsTests.PayloadInspectionGatewayPluginTests testLLMFailureFallsBack]' started.
+2025-09-04 07:26:39.867218+0200 xctest[21934:7509138] [connection] nw_socket_handle_socket_event [C3.1.1:2] Socket SO_ERROR [61: Connection refused]
+2025-09-04 07:26:39.867228+0200 xctest[21934:7509138] [connection] nw_protocol_socket_set_no_wake_from_sleep [C3.1.1:2] setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.867233+0200 xctest[21934:7509138] [] nw_protocol_socket_set_no_wake_from_sleep setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.867248+0200 xctest[21934:7509138] [connection] nw_endpoint_flow_failed_with_error [C3.1.1 ::1.9 in_progress socket-flow (satisfied (Path is satisfied), viable, interface: lo0)] already failing, returning
+2025-09-04 07:26:39.868259+0200 xctest[21934:7509138] [connection] nw_socket_handle_socket_event [C3.1.2:2] Socket SO_ERROR [61: Connection refused]
+2025-09-04 07:26:39.868268+0200 xctest[21934:7509138] [connection] nw_protocol_socket_set_no_wake_from_sleep [C3.1.2:2] setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.868272+0200 xctest[21934:7509138] [] nw_protocol_socket_set_no_wake_from_sleep setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.868283+0200 xctest[21934:7509138] [connection] nw_endpoint_flow_failed_with_error [C3.1.2 127.0.0.1:9 in_progress socket-flow (satisfied (Path is satisfied), viable, interface: lo0)] already failing, returning
+2025-09-04 07:26:39.868341+0200 xctest[21934:7509138] [connection] nw_endpoint_flow_failed_with_error [C3.1.2 127.0.0.1:9 cancelled socket-flow ((null))] already failing, returning
+2025-09-04 07:26:39.869877+0200 xctest[21934:7509138] [Default] Connection 3: received failure notification
+2025-09-04 07:26:39.869885+0200 xctest[21934:7509138] [Default] Connection 3: failed to connect 1:61, reason -1
+2025-09-04 07:26:39.869888+0200 xctest[21934:7509138] [Default] Connection 3: encountered error(1:61)
+2025-09-04 07:26:39.869954+0200 xctest[21934:7509138] [Default] Task <4A058F66-2475-413E-B126-DD091EDDB671>.<5> HTTP load failed, 0/0 bytes (error code: -1004 [1:61])
+2025-09-04 07:26:39.870023+0200 xctest[21934:7509280] [Default] Task <4A058F66-2475-413E-B126-DD091EDDB671>.<5> finished with error [-1004] Error Domain=NSURLErrorDomain Code=-1004 "Verbindung zum Server konnte nicht hergestellt werden." UserInfo={_kCFStreamErrorCodeKey=61, NSUnderlyingError=0x600002848e40 {Error Domain=kCFErrorDomainCFNetwork Code=-1004 "(null)" UserInfo={_NSURLErrorNWPathKey=satisfied (Path is satisfied), interface: lo0, _kCFStreamErrorCodeKey=61, _kCFStreamErrorDomainKey=1}}, _NSURLErrorFailingURLSessionTaskErrorKey=LocalDataTask <4A058F66-2475-413E-B126-DD091EDDB671>.<5>, _NSURLErrorRelatedURLSessionTaskErrorKey=(
+    "LocalDataTask <4A058F66-2475-413E-B126-DD091EDDB671>.<5>"
+), NSLocalizedDescription=Verbindung zum Server konnte nicht hergestellt werden., NSErrorFailingURLStringKey=http://localhost:9/chat, NSErrorFailingURLKey=http://localhost:9/chat, _kCFStreamErrorDomainKey=1}
+Test Case '-[GatewayPluginsTests.PayloadInspectionGatewayPluginTests testLLMFailureFallsBack]' passed (0.005 seconds).
+Test Case '-[GatewayPluginsTests.PayloadInspectionGatewayPluginTests testMissingBodyReturns400]' started.
+Test Case '-[GatewayPluginsTests.PayloadInspectionGatewayPluginTests testMissingBodyReturns400]' passed (0.001 seconds).
+Test Case '-[GatewayPluginsTests.PayloadInspectionGatewayPluginTests testPayloadExceedingMaxSizeReturns413]' started.
+Test Case '-[GatewayPluginsTests.PayloadInspectionGatewayPluginTests testPayloadExceedingMaxSizeReturns413]' passed (0.001 seconds).
+Test Suite 'PayloadInspectionGatewayPluginTests' passed at 2025-09-04 07:26:39.872.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.026 (0.027) seconds
+Test Suite 'RateLimiterGatewayPluginTests' started at 2025-09-04 07:26:39.873.
+Test Case '-[GatewayPluginsTests.RateLimiterGatewayPluginTests testAllowThrottleResetAndStats]' started.
+Test Case '-[GatewayPluginsTests.RateLimiterGatewayPluginTests testAllowThrottleResetAndStats]' passed (0.002 seconds).
+Test Suite 'RateLimiterGatewayPluginTests' passed at 2025-09-04 07:26:39.875.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'GatewayPluginsTests.xctest' failed at 2025-09-04 07:26:39.875.
+	 Executed 8 tests, with 1 failure (0 unexpected) in 6.250 (6.252) seconds
+Test Suite 'All tests' failed at 2025-09-04 07:26:39.875.
+	 Executed 8 tests, with 1 failure (0 unexpected) in 6.250 (6.253) seconds
+Test Suite 'GatewayPluginsTests.xctest' started at 2025-09-04 07:26:33.623.
+Test Suite 'AuthGatewayPluginTests' started at 2025-09-04 07:26:33.623.
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testClaimsUsesLLM]' started.
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/GatewayPluginsTests/AuthGatewayPluginTests.swift:52: error: -[GatewayPluginsTests.AuthGatewayPluginTests testClaimsUsesLLM] : XCTUnwrap failed: expected non-nil value of type "Data"
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testClaimsUsesLLM]' failed (5.868 seconds).
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testLLMErrorFallsBack]' started.
+2025-09-04 07:26:39.492218+0200 xctest[21934:7509138] [Default] Task <E77D1556-E57F-4C05-8CBD-3AE753D76A8B>.<2> finished with error [-1011] Error Domain=NSURLErrorDomain Code=-1011 "(null)" UserInfo={_NSURLErrorRelatedURLSessionTaskErrorKey=(
+    "LocalDataTask <E77D1556-E57F-4C05-8CBD-3AE753D76A8B>.<2>"
+), _NSURLErrorFailingURLSessionTaskErrorKey=LocalDataTask <E77D1556-E57F-4C05-8CBD-3AE753D76A8B>.<2>}
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testLLMErrorFallsBack]' passed (0.001 seconds).
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testValidateUsesLLM]' started.
+2025-09-04 07:26:39.524781+0200 xctest[21934:7509142] [connection] nw_socket_handle_socket_event [C1.1.1:2] Socket SO_ERROR [61: Connection refused]
+2025-09-04 07:26:39.525063+0200 xctest[21934:7509142] [connection] nw_protocol_socket_set_no_wake_from_sleep [C1.1.1:2] setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.525077+0200 xctest[21934:7509142] [] nw_protocol_socket_set_no_wake_from_sleep setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.525106+0200 xctest[21934:7509142] [connection] nw_endpoint_flow_failed_with_error [C1.1.1 ::1.8080 in_progress socket-flow (satisfied (Path is satisfied), viable, interface: lo0)] already failing, returning
+2025-09-04 07:26:39.839317+0200 xctest[21934:7509142] [connection] nw_socket_handle_socket_event [C1.1.2:2] Socket SO_ERROR [61: Connection refused]
+2025-09-04 07:26:39.839334+0200 xctest[21934:7509142] [connection] nw_protocol_socket_set_no_wake_from_sleep [C1.1.2:2] setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.839339+0200 xctest[21934:7509142] [] nw_protocol_socket_set_no_wake_from_sleep setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.839361+0200 xctest[21934:7509142] [connection] nw_endpoint_flow_failed_with_error [C1.1.2 127.0.0.1:8080 in_progress socket-flow (satisfied (Path is satisfied), viable, interface: lo0)] already failing, returning
+2025-09-04 07:26:39.839406+0200 xctest[21934:7509142] [connection] nw_endpoint_flow_failed_with_error [C1.1.2 127.0.0.1:8080 cancelled socket-flow ((null))] already failing, returning
+2025-09-04 07:26:39.843188+0200 xctest[21934:7509142] [Default] Connection 1: received failure notification
+2025-09-04 07:26:39.843558+0200 xctest[21934:7509142] [Default] Connection 1: failed to connect 1:61, reason -1
+2025-09-04 07:26:39.843563+0200 xctest[21934:7509142] [Default] Connection 1: encountered error(1:61)
+2025-09-04 07:26:39.843684+0200 xctest[21934:7509142] [Default] Task <1A4761A4-D232-477C-8A21-59E133F725C6>.<3> HTTP load failed, 0/0 bytes (error code: -1004 [1:61])
+2025-09-04 07:26:39.844923+0200 xctest[21934:7509281] [Default] Task <1A4761A4-D232-477C-8A21-59E133F725C6>.<3> finished with error [-1004] Error Domain=NSURLErrorDomain Code=-1004 "Verbindung zum Server konnte nicht hergestellt werden." UserInfo={_kCFStreamErrorCodeKey=61, NSUnderlyingError=0x6000028482d0 {Error Domain=kCFErrorDomainCFNetwork Code=-1004 "(null)" UserInfo={_NSURLErrorNWPathKey=satisfied (Path is satisfied), interface: lo0, _kCFStreamErrorCodeKey=61, _kCFStreamErrorDomainKey=1}}, _NSURLErrorFailingURLSessionTaskErrorKey=LocalDataTask <1A4761A4-D232-477C-8A21-59E133F725C6>.<3>, _NSURLErrorRelatedURLSessionTaskErrorKey=(
+    "LocalDataTask <1A4761A4-D232-477C-8A21-59E133F725C6>.<3>"
+), NSLocalizedDescription=Verbindung zum Server konnte nicht hergestellt werden., NSErrorFailingURLStringKey=http://localhost:8080/chat, NSErrorFailingURLKey=http://localhost:8080/chat, _kCFStreamErrorDomainKey=1}
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testValidateUsesLLM]' passed (0.353 seconds).
+Test Suite 'AuthGatewayPluginTests' failed at 2025-09-04 07:26:39.846.
+	 Executed 3 tests, with 1 failure (0 unexpected) in 6.222 (6.223) seconds
+Test Suite 'PayloadInspectionGatewayPluginTests' started at 2025-09-04 07:26:39.846.
+Test Case '-[GatewayPluginsTests.PayloadInspectionGatewayPluginTests testInspectionUsesLLM]' started.
+2025-09-04 07:26:39.847690+0200 xctest[21934:7509142] [connection] nw_socket_handle_socket_event [C2.1.1:2] Socket SO_ERROR [61: Connection refused]
+2025-09-04 07:26:39.847702+0200 xctest[21934:7509142] [connection] nw_protocol_socket_set_no_wake_from_sleep [C2.1.1:2] setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.863876+0200 xctest[21934:7509142] [] nw_protocol_socket_set_no_wake_from_sleep setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.863913+0200 xctest[21934:7509142] [connection] nw_endpoint_flow_failed_with_error [C2.1.1 ::1.8080 in_progress socket-flow (satisfied (Path is satisfied), viable, interface: lo0)] already failing, returning
+2025-09-04 07:26:39.864221+0200 xctest[21934:7509142] [connection] nw_socket_handle_socket_event [C2.1.2:2] Socket SO_ERROR [61: Connection refused]
+2025-09-04 07:26:39.864263+0200 xctest[21934:7509142] [connection] nw_protocol_socket_set_no_wake_from_sleep [C2.1.2:2] setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.864269+0200 xctest[21934:7509142] [] nw_protocol_socket_set_no_wake_from_sleep setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.864286+0200 xctest[21934:7509142] [connection] nw_endpoint_flow_failed_with_error [C2.1.2 127.0.0.1:8080 in_progress socket-flow (satisfied (Path is satisfied), viable, interface: lo0)] already failing, returning
+2025-09-04 07:26:39.864335+0200 xctest[21934:7509142] [connection] nw_endpoint_flow_failed_with_error [C2.1.2 127.0.0.1:8080 cancelled socket-flow ((null))] already failing, returning
+2025-09-04 07:26:39.864631+0200 xctest[21934:7509142] [Default] Connection 2: received failure notification
+2025-09-04 07:26:39.864645+0200 xctest[21934:7509142] [Default] Connection 2: failed to connect 1:61, reason -1
+2025-09-04 07:26:39.864648+0200 xctest[21934:7509142] [Default] Connection 2: encountered error(1:61)
+2025-09-04 07:26:39.864768+0200 xctest[21934:7509142] [Default] Task <D3C7272E-F026-4D24-8359-09F3D1812A4F>.<4> HTTP load failed, 0/0 bytes (error code: -1004 [1:61])
+2025-09-04 07:26:39.864852+0200 xctest[21934:7509140] [Default] Task <D3C7272E-F026-4D24-8359-09F3D1812A4F>.<4> finished with error [-1004] Error Domain=NSURLErrorDomain Code=-1004 "Verbindung zum Server konnte nicht hergestellt werden." UserInfo={_kCFStreamErrorCodeKey=61, NSUnderlyingError=0x600002854720 {Error Domain=kCFErrorDomainCFNetwork Code=-1004 "(null)" UserInfo={_NSURLErrorNWPathKey=satisfied (Path is satisfied), interface: lo0, _kCFStreamErrorCodeKey=61, _kCFStreamErrorDomainKey=1}}, _NSURLErrorFailingURLSessionTaskErrorKey=LocalDataTask <D3C7272E-F026-4D24-8359-09F3D1812A4F>.<4>, _NSURLErrorRelatedURLSessionTaskErrorKey=(
+    "LocalDataTask <D3C7272E-F026-4D24-8359-09F3D1812A4F>.<4>"
+), NSLocalizedDescription=Verbindung zum Server konnte nicht hergestellt werden., NSErrorFailingURLStringKey=http://localhost:8080/chat, NSErrorFailingURLKey=http://localhost:8080/chat, _kCFStreamErrorDomainKey=1}
+Test Case '-[GatewayPluginsTests.PayloadInspectionGatewayPluginTests testInspectionUsesLLM]' passed (0.020 seconds).
+Test Case '-[GatewayPluginsTests.PayloadInspectionGatewayPluginTests testLLMFailureFallsBack]' started.
+2025-09-04 07:26:39.867218+0200 xctest[21934:7509138] [connection] nw_socket_handle_socket_event [C3.1.1:2] Socket SO_ERROR [61: Connection refused]
+2025-09-04 07:26:39.867228+0200 xctest[21934:7509138] [connection] nw_protocol_socket_set_no_wake_from_sleep [C3.1.1:2] setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.867233+0200 xctest[21934:7509138] [] nw_protocol_socket_set_no_wake_from_sleep setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.867248+0200 xctest[21934:7509138] [connection] nw_endpoint_flow_failed_with_error [C3.1.1 ::1.9 in_progress socket-flow (satisfied (Path is satisfied), viable, interface: lo0)] already failing, returning
+2025-09-04 07:26:39.868259+0200 xctest[21934:7509138] [connection] nw_socket_handle_socket_event [C3.1.2:2] Socket SO_ERROR [61: Connection refused]
+2025-09-04 07:26:39.868268+0200 xctest[21934:7509138] [connection] nw_protocol_socket_set_no_wake_from_sleep [C3.1.2:2] setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.868272+0200 xctest[21934:7509138] [] nw_protocol_socket_set_no_wake_from_sleep setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.868283+0200 xctest[21934:7509138] [connection] nw_endpoint_flow_failed_with_error [C3.1.2 127.0.0.1:9 in_progress socket-flow (satisfied (Path is satisfied), viable, interface: lo0)] already failing, returning
+2025-09-04 07:26:39.868341+0200 xctest[21934:7509138] [connection] nw_endpoint_flow_failed_with_error [C3.1.2 127.0.0.1:9 cancelled socket-flow ((null))] already failing, returning
+2025-09-04 07:26:39.869877+0200 xctest[21934:7509138] [Default] Connection 3: received failure notification
+2025-09-04 07:26:39.869885+0200 xctest[21934:7509138] [Default] Connection 3: failed to connect 1:61, reason -1
+2025-09-04 07:26:39.869888+0200 xctest[21934:7509138] [Default] Connection 3: encountered error(1:61)
+2025-09-04 07:26:39.869954+0200 xctest[21934:7509138] [Default] Task <4A058F66-2475-413E-B126-DD091EDDB671>.<5> HTTP load failed, 0/0 bytes (error code: -1004 [1:61])
+2025-09-04 07:26:39.870023+0200 xctest[21934:7509280] [Default] Task <4A058F66-2475-413E-B126-DD091EDDB671>.<5> finished with error [-1004] Error Domain=NSURLErrorDomain Code=-1004 "Verbindung zum Server konnte nicht hergestellt werden." UserInfo={_kCFStreamErrorCodeKey=61, NSUnderlyingError=0x600002848e40 {Error Domain=kCFErrorDomainCFNetwork Code=-1004 "(null)" UserInfo={_NSURLErrorNWPathKey=satisfied (Path is satisfied), interface: lo0, _kCFStreamErrorCodeKey=61, _kCFStreamErrorDomainKey=1}}, _NSURLErrorFailingURLSessionTaskErrorKey=LocalDataTask <4A058F66-2475-413E-B126-DD091EDDB671>.<5>, _NSURLErrorRelatedURLSessionTaskErrorKey=(
+    "LocalDataTask <4A058F66-2475-413E-B126-DD091EDDB671>.<5>"
+), NSLocalizedDescription=Verbindung zum Server konnte nicht hergestellt werden., NSErrorFailingURLStringKey=http://localhost:9/chat, NSErrorFailingURLKey=http://localhost:9/chat, _kCFStreamErrorDomainKey=1}
+Test Case '-[GatewayPluginsTests.PayloadInspectionGatewayPluginTests testLLMFailureFallsBack]' passed (0.005 seconds).
+Test Case '-[GatewayPluginsTests.PayloadInspectionGatewayPluginTests testMissingBodyReturns400]' started.
+Test Case '-[GatewayPluginsTests.PayloadInspectionGatewayPluginTests testMissingBodyReturns400]' passed (0.001 seconds).
+Test Case '-[GatewayPluginsTests.PayloadInspectionGatewayPluginTests testPayloadExceedingMaxSizeReturns413]' started.
+Test Case '-[GatewayPluginsTests.PayloadInspectionGatewayPluginTests testPayloadExceedingMaxSizeReturns413]' passed (0.001 seconds).
+Test Suite 'PayloadInspectionGatewayPluginTests' passed at 2025-09-04 07:26:39.872.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.026 (0.027) seconds
+Test Suite 'RateLimiterGatewayPluginTests' started at 2025-09-04 07:26:39.873.
+Test Case '-[GatewayPluginsTests.RateLimiterGatewayPluginTests testAllowThrottleResetAndStats]' started.
+Test Case '-[GatewayPluginsTests.RateLimiterGatewayPluginTests testAllowThrottleResetAndStats]' passed (0.002 seconds).
+Test Suite 'RateLimiterGatewayPluginTests' passed at 2025-09-04 07:26:39.875.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'GatewayPluginsTests.xctest' failed at 2025-09-04 07:26:39.875.
+	 Executed 8 tests, with 1 failure (0 unexpected) in 6.250 (6.252) seconds
+Test Suite 'AuthGatewayPluginTests' started at 2025-09-04 07:26:33.623.
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testClaimsUsesLLM]' started.
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testClaimsUsesLLM]' started.
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/GatewayPluginsTests/AuthGatewayPluginTests.swift:52: error: -[GatewayPluginsTests.AuthGatewayPluginTests testClaimsUsesLLM] : XCTUnwrap failed: expected non-nil value of type "Data"
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testClaimsUsesLLM]' failed (5.868 seconds).
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/GatewayPluginsTests/AuthGatewayPluginTests.swift:52: error: -[GatewayPluginsTests.AuthGatewayPluginTests testClaimsUsesLLM] : XCTUnwrap failed: expected non-nil value of type "Data"
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testClaimsUsesLLM]' failed (5.868 seconds).
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testLLMErrorFallsBack]' started.
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testLLMErrorFallsBack]' started.
+2025-09-04 07:26:39.492218+0200 xctest[21934:7509138] [Default] Task <E77D1556-E57F-4C05-8CBD-3AE753D76A8B>.<2> finished with error [-1011] Error Domain=NSURLErrorDomain Code=-1011 "(null)" UserInfo={_NSURLErrorRelatedURLSessionTaskErrorKey=(
+    "LocalDataTask <E77D1556-E57F-4C05-8CBD-3AE753D76A8B>.<2>"
+), _NSURLErrorFailingURLSessionTaskErrorKey=LocalDataTask <E77D1556-E57F-4C05-8CBD-3AE753D76A8B>.<2>}
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testLLMErrorFallsBack]' passed (0.001 seconds).
+2025-09-04 07:26:39.492218+0200 xctest[21934:7509138] [Default] Task <E77D1556-E57F-4C05-8CBD-3AE753D76A8B>.<2> finished with error [-1011] Error Domain=NSURLErrorDomain Code=-1011 "(null)" UserInfo={_NSURLErrorRelatedURLSessionTaskErrorKey=(
+    "LocalDataTask <E77D1556-E57F-4C05-8CBD-3AE753D76A8B>.<2>"
+), _NSURLErrorFailingURLSessionTaskErrorKey=LocalDataTask <E77D1556-E57F-4C05-8CBD-3AE753D76A8B>.<2>}
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testLLMErrorFallsBack]' passed (0.001 seconds).
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testValidateUsesLLM]' started.
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testValidateUsesLLM]' started.
+2025-09-04 07:26:39.524781+0200 xctest[21934:7509142] [connection] nw_socket_handle_socket_event [C1.1.1:2] Socket SO_ERROR [61: Connection refused]
+2025-09-04 07:26:39.525063+0200 xctest[21934:7509142] [connection] nw_protocol_socket_set_no_wake_from_sleep [C1.1.1:2] setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.525077+0200 xctest[21934:7509142] [] nw_protocol_socket_set_no_wake_from_sleep setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.525106+0200 xctest[21934:7509142] [connection] nw_endpoint_flow_failed_with_error [C1.1.1 ::1.8080 in_progress socket-flow (satisfied (Path is satisfied), viable, interface: lo0)] already failing, returning
+2025-09-04 07:26:39.839317+0200 xctest[21934:7509142] [connection] nw_socket_handle_socket_event [C1.1.2:2] Socket SO_ERROR [61: Connection refused]
+2025-09-04 07:26:39.839334+0200 xctest[21934:7509142] [connection] nw_protocol_socket_set_no_wake_from_sleep [C1.1.2:2] setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.839339+0200 xctest[21934:7509142] [] nw_protocol_socket_set_no_wake_from_sleep setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.839361+0200 xctest[21934:7509142] [connection] nw_endpoint_flow_failed_with_error [C1.1.2 127.0.0.1:8080 in_progress socket-flow (satisfied (Path is satisfied), viable, interface: lo0)] already failing, returning
+2025-09-04 07:26:39.839406+0200 xctest[21934:7509142] [connection] nw_endpoint_flow_failed_with_error [C1.1.2 127.0.0.1:8080 cancelled socket-flow ((null))] already failing, returning
+2025-09-04 07:26:39.843188+0200 xctest[21934:7509142] [Default] Connection 1: received failure notification
+2025-09-04 07:26:39.843558+0200 xctest[21934:7509142] [Default] Connection 1: failed to connect 1:61, reason -1
+2025-09-04 07:26:39.843563+0200 xctest[21934:7509142] [Default] Connection 1: encountered error(1:61)
+2025-09-04 07:26:39.843684+0200 xctest[21934:7509142] [Default] Task <1A4761A4-D232-477C-8A21-59E133F725C6>.<3> HTTP load failed, 0/0 bytes (error code: -1004 [1:61])
+2025-09-04 07:26:39.844923+0200 xctest[21934:7509281] [Default] Task <1A4761A4-D232-477C-8A21-59E133F725C6>.<3> finished with error [-1004] Error Domain=NSURLErrorDomain Code=-1004 "Verbindung zum Server konnte nicht hergestellt werden." UserInfo={_kCFStreamErrorCodeKey=61, NSUnderlyingError=0x6000028482d0 {Error Domain=kCFErrorDomainCFNetwork Code=-1004 "(null)" UserInfo={_NSURLErrorNWPathKey=satisfied (Path is satisfied), interface: lo0, _kCFStreamErrorCodeKey=61, _kCFStreamErrorDomainKey=1}}, _NSURLErrorFailingURLSessionTaskErrorKey=LocalDataTask <1A4761A4-D232-477C-8A21-59E133F725C6>.<3>, _NSURLErrorRelatedURLSessionTaskErrorKey=(
+    "LocalDataTask <1A4761A4-D232-477C-8A21-59E133F725C6>.<3>"
+), NSLocalizedDescription=Verbindung zum Server konnte nicht hergestellt werden., NSErrorFailingURLStringKey=http://localhost:8080/chat, NSErrorFailingURLKey=http://localhost:8080/chat, _kCFStreamErrorDomainKey=1}
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testValidateUsesLLM]' passed (0.353 seconds).
+2025-09-04 07:26:39.524781+0200 xctest[21934:7509142] [connection] nw_socket_handle_socket_event [C1.1.1:2] Socket SO_ERROR [61: Connection refused]
+2025-09-04 07:26:39.525063+0200 xctest[21934:7509142] [connection] nw_protocol_socket_set_no_wake_from_sleep [C1.1.1:2] setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.525077+0200 xctest[21934:7509142] [] nw_protocol_socket_set_no_wake_from_sleep setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.525106+0200 xctest[21934:7509142] [connection] nw_endpoint_flow_failed_with_error [C1.1.1 ::1.8080 in_progress socket-flow (satisfied (Path is satisfied), viable, interface: lo0)] already failing, returning
+2025-09-04 07:26:39.839317+0200 xctest[21934:7509142] [connection] nw_socket_handle_socket_event [C1.1.2:2] Socket SO_ERROR [61: Connection refused]
+2025-09-04 07:26:39.839334+0200 xctest[21934:7509142] [connection] nw_protocol_socket_set_no_wake_from_sleep [C1.1.2:2] setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.839339+0200 xctest[21934:7509142] [] nw_protocol_socket_set_no_wake_from_sleep setsockopt SO_NOWAKEFROMSLEEP failed [22: Invalid argument]
+2025-09-04 07:26:39.839361+0200 xctest[21934:7509142] [connection] nw_endpoint_flow_failed_with_error [C1.1.2 127.0.0.1:8080 in_progress socket-flow (satisfied (Path is satisfied), viable, interface: lo0)] already failing, returning
+2025-09-04 07:26:39.839406+0200 xctest[21934:7509142] [connection] nw_endpoint_flow_failed_with_error [C1.1.2 127.0.0.1:8080 cancelled socket-flow ((null))] already failing, returning
+2025-09-04 07:26:39.843188+0200 xctest[21934:7509142] [Default] Connection 1: received failure notification
+2025-09-04 07:26:39.843558+0200 xctest[21934:7509142] [Default] Connection 1: failed to connect 1:61, reason -1
+2025-09-04 07:26:39.843563+0200 xctest[21934:7509142] [Default] Connection 1: encountered error(1:61)
+2025-09-04 07:26:39.843684+0200 xctest[21934:7509142] [Default] Task <1A4761A4-D232-477C-8A21-59E133F725C6>.<3> HTTP load failed, 0/0 bytes (error code: -1004 [1:61])
+2025-09-04 07:26:39.844923+0200 xctest[21934:7509281] [Default] Task <1A4761A4-D232-477C-8A21-59E133F725C6>.<3> finished with error [-1004] Error Domain=NSURLErrorDomain Code=-1004 "Verbindung zum Server konnte nicht hergestellt werden." UserInfo={_kCFStreamErrorCodeKey=61, NSUnderlyingError=0x6000028482d0 {Error Domain=kCFErrorDomainCFNetwork Code=-1004 "(null)" UserInfo={_NSURLErrorNWPathKey=satisfied (Path is satisfied), interface: lo0, _kCFStreamErrorCodeKey=61, _kCFStreamErrorDomainKey=1}}, _NSURLErrorFailingURLSessionTaskErrorKey=LocalDataTask <1A4761A4-D232-477C-8A21-59E133F725C6>.<3>, _NSURLErrorRelatedURLSessionTaskErrorKey=(
+    "LocalDataTask <1A4761A4-D232-477C-8A21-59E133F725C6>.<3>"
+), NSLocalizedDescription=Verbindung zum Server konnte nicht hergestellt werden., NSErrorFailingURLStringKey=http://localhost:8080/chat, NSErrorFailingURLKey=http://localhost:8080/chat, _kCFStreamErrorDomainKey=1}
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testValidateUsesLLM]' passed (0.353 seconds).
+Test Suite 'AuthGatewayPluginTests' failed at 2025-09-04 07:26:39.846.
+	 Executed 3 tests, with 1 failure (0 unexpected) in 6.222 (6.223) seconds
+Test Suite 'AuthGatewayPluginTests' failed at 2025-09-04 07:26:39.846.
+	 Executed 3 tests, with 1 failure (0 unexpected) in 6.222 (6.223) seconds
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testClaimsUsesLLM]' started.
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/GatewayPluginsTests/AuthGatewayPluginTests.swift:52: error: -[GatewayPluginsTests.AuthGatewayPluginTests testClaimsUsesLLM] : XCTUnwrap failed: expected non-nil value of type "Data"
+Test Case '-[GatewayPluginsTests.AuthGatewayPluginTests testClaimsUsesLLM]' failed (5.868 seconds).
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/GatewayPluginsTests/AuthGatewayPluginTests.swift:52: XCTUnwrap failed: expected non-nil value of type "Data"
+
+
+
+Testing Complete    04.09.25, 07:27    139.7 seconds
