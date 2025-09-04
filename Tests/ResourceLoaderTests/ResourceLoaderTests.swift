@@ -35,21 +35,17 @@ final class ResourceLoaderTests: XCTestCase {
         }
     }
 
-    func testPermissionDenied() throws {
+    func testUnreadableFile() throws {
         let tempDir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
         try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true)
-        let fileURL = tempDir.appendingPathComponent("unreadable.txt")
-        try "secret".write(to: fileURL, atomically: true, encoding: .utf8)
-        try FileManager.default.setAttributes([.posixPermissions: 0o000], ofItemAtPath: fileURL.path)
-        let original = geteuid()
-        guard seteuid(65534) == 0 else { throw XCTSkip("unable to drop privileges") }
-        defer { _ = seteuid(original) }
-        let bundle = Bundle(url: tempDir)!
+        let resourceDir = tempDir.appendingPathComponent("unreadable.txt", isDirectory: true)
+        try FileManager.default.createDirectory(at: resourceDir, withIntermediateDirectories: true)
+        let bundle = Bundle(path: tempDir.path)!
         XCTAssertThrowsError(try ResourceLoader.data("unreadable", ext: "txt", subdir: nil, bundle: bundle)) { error in
             guard case ResourceError.unreadable(let desc, _) = error else {
                 return XCTFail("Expected ResourceError.unreadable, got \(error)")
             }
-            XCTAssertEqual(desc, fileURL.path)
+            XCTAssertEqual(desc, resourceDir.path)
             XCTAssertTrue(error.localizedDescription.contains("Failed to read resource"))
         }
     }
