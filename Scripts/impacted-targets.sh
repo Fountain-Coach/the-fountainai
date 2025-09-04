@@ -15,8 +15,7 @@ while IFS= read -r f; do
   top=$(echo "$f" | awk -F'/' '{print $1}')
   mod=$(echo "$f" | awk -F'/' '{print $2}')
   case "$top" in
-    libs) name="$mod" ;;
-    apps) name="$mod" ;;
+    libs|services|tools) name="$mod" ;;
     *)    name="" ;;
   esac
   if [[ -n "${name}" ]]; then

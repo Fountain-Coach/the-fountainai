@@ -2,7 +2,7 @@
 
 The gateway can enforce role-based access rules via the built-in `RoleGuardPlugin`.
 
-- Location: `apps/GatewayServer/GatewayApp/RoleGuardPlugin.swift`
+- Location: `services/GatewayServer/GatewayApp/RoleGuardPlugin.swift`
 - Load rules from YAML at `Configuration/roleguard.yml` or path in env `ROLE_GUARD_PATH`.
 
 Example `Configuration/roleguard.yml`:

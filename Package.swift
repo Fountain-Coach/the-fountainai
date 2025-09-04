@@ -85,22 +85,23 @@ let fullTargets: [Target] = [
     .executableTarget(
         name: "clientgen-service",
         dependencies: [],
-        path: "apps/ClientgenService/clientgen-service"
+        path: "tools/ClientgenService/clientgen-service"
     ),
     .executableTarget(
         name: "sse-client",
         dependencies: [],
-        path: "apps/SSEClient"
+        path: "tools/SSEClient"
     ),
     .executableTarget(
         name: "openapi-curator-cli",
         dependencies: ["OpenAPICurator", "Yams"],
-        path: "apps/OpenAPICuratorCLI"
+        path: "tools/OpenAPICuratorCLI"
     ),
     .executableTarget(
         name: "openapi-curator-service",
         dependencies: ["FountainRuntime", "OpenAPICurator", "Yams", "LauncherSignature"],
-        path: "apps/OpenAPICuratorService"
+        path: "services/OpenAPICuratorService",
+        exclude: ["README.md"]
     ),
     .executableTarget(
         name: "semantic-browser-server",
@@ -108,7 +109,7 @@ let fullTargets: [Target] = [
             .product(name: "SemanticBrowser", package: "semantic-browser"),
             "LauncherSignature"
         ],
-        path: "apps/SemanticBrowserServer",
+        path: "services/SemanticBrowserServer",
         exclude: ["README.md"]
     ),
         .executableTarget(
@@ -130,7 +131,8 @@ let fullTargets: [Target] = [
             .product(name: "X509", package: "swift-certificates"),
             "Yams"
         ],
-        path: "apps/GatewayServer"
+        path: "services/GatewayServer",
+        exclude: ["README.md"]
     ),
     .target(
         name: "LLMGatewayPlugin",
@@ -214,7 +216,7 @@ let fullTargets: [Target] = [
     .executableTarget(
         name: "publishing-frontend",
         dependencies: ["PublishingFrontend"],
-        path: "apps/PublishingFrontendCLI"
+        path: "tools/PublishingFrontendCLI"
     ),
     .target(name: "ResourceLoader", path: "libs/ResourceLoader"),
     .target(
@@ -237,7 +239,7 @@ let fullTargets: [Target] = [
     .executableTarget(
         name: "flexctl",
         dependencies: ["MIDI2Core", .product(name: "MIDI2", package: "midi2")],
-        path: "apps/Flexctl",
+        path: "tools/Flexctl",
         resources: [.process("flexctl/Resources")]
     ),
     .target(
@@ -267,32 +269,38 @@ let fullTargets: [Target] = [
     .executableTarget(
         name: "tools-factory-server",
         dependencies: ["FountainRuntime", "ToolsFactoryService", "FountainStoreClient", "LauncherSignature"],
-        path: "apps/ToolsFactoryServer"
+        path: "services/ToolsFactoryServer",
+        exclude: ["README.md"]
     ),
     .executableTarget(
         name: "planner-server",
         dependencies: ["FountainRuntime", "FountainStoreClient", "PlannerService", "Yams", "LauncherSignature"],
-        path: "apps/PlannerServer"
+        path: "services/PlannerServer",
+        exclude: ["README.md"]
     ),
     .executableTarget(
         name: "function-caller-server",
         dependencies: ["FountainRuntime", "FountainStoreClient", "FunctionCallerService", "Yams", "LauncherSignature"],
-        path: "apps/FunctionCallerServer"
+        path: "services/FunctionCallerServer",
+        exclude: ["README.md"]
     ),
     .executableTarget(
         name: "persist-server",
         dependencies: ["FountainRuntime", "FountainStoreClient", "Yams", "LauncherSignature"],
-        path: "apps/PersistServer"
+        path: "services/PersistServer",
+        exclude: ["README.md"]
     ),
     .executableTarget(
         name: "baseline-awareness-server",
         dependencies: ["FountainStoreClient", "AwarenessService", "LauncherSignature"],
-        path: "apps/BaselineAwarenessServer"
+        path: "services/BaselineAwarenessServer",
+        exclude: ["README.md"]
     ),
     .executableTarget(
         name: "bootstrap-server",
         dependencies: ["FountainStoreClient", "BootstrapService", "LauncherSignature"],
-        path: "apps/BootstrapServer"
+        path: "services/BootstrapServer",
+        exclude: ["README.md"]
     ),
     .testTarget(
         name: "SSEClientIntegrationTests",
@@ -535,7 +543,7 @@ let leanTargets: [Target] = [
             .product(name: "SemanticBrowser", package: "semantic-browser"),
             "LauncherSignature"
         ],
-        path: "apps/SemanticBrowserServer",
+        path: "services/SemanticBrowserServer",
         exclude: ["README.md"]
     ),
     .executableTarget(
@@ -557,7 +565,8 @@ let leanTargets: [Target] = [
             .product(name: "X509", package: "swift-certificates"),
             "Yams"
         ],
-        path: "apps/GatewayServer"
+        path: "services/GatewayServer",
+        exclude: ["README.md"]
     ),
     .target(
         name: "LLMGatewayPlugin",
