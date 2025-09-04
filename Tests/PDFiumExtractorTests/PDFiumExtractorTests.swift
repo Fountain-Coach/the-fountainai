@@ -13,15 +13,17 @@ final class PDFiumExtractorTests: XCTestCase {
         XCTAssertEqual(rect.height, 4)
     }
 
-    func testExtractionUnsupportedPlatformThrows() {
-        let extractor = PDFiumExtractor()
+    func testUnsupportedPlatformError() {
+        let mock = MockPDFium(isAvailable: false)
+        let extractor = PDFiumExtractor(pdfium: mock)
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("dummy.pdf")
-        try? Data().write(to: url)
-        XCTAssertThrowsError(try extractor.extractText(from: url))
+        XCTAssertThrowsError(try extractor.extractText(from: url, useOCR: false)) { error in
+            XCTAssertEqual(error as? PDFiumExtractorError, .unsupportedPlatform)
+        }
     }
 
     func testOpenFailedError() {
-        let mock = MockPDFium(openSuccess: false)
+        let mock = MockPDFium(isAvailable: true, openSuccess: false)
         let extractor = PDFiumExtractor(pdfium: mock)
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("dummy.pdf")
         XCTAssertThrowsError(try extractor.extractText(from: url, useOCR: false)) { error in
@@ -30,7 +32,7 @@ final class PDFiumExtractorTests: XCTestCase {
     }
 
     func testSuccessfulExtraction() throws {
-        let mock = MockPDFium(openSuccess: true)
+        let mock = MockPDFium(isAvailable: true, openSuccess: true)
         let extractor = PDFiumExtractor(pdfium: mock)
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("dummy.pdf")
         let fragments = try extractor.extractText(from: url, useOCR: false)
@@ -40,9 +42,12 @@ final class PDFiumExtractorTests: XCTestCase {
 }
 
 private final class MockPDFium: PDFiumLibrary {
-    let isAvailable = true
+    let isAvailable: Bool
     let openSuccess: Bool
-    init(openSuccess: Bool) { self.openSuccess = openSuccess }
+    init(isAvailable: Bool = true, openSuccess: Bool = true) {
+        self.isAvailable = isAvailable
+        self.openSuccess = openSuccess
+    }
     func loadDocument(_ path: String, _ password: UnsafePointer<CChar>?) -> FPDFDocument? {
         openSuccess ? FPDFDocument(bitPattern: 1) : nil
     }
