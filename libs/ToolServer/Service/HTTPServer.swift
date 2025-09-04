@@ -23,7 +23,10 @@ public class HTTPServer: URLProtocol {
         let strongSelf = self
         Task { @Sendable in
             do {
-                let resp = try await kernel.handle(req)
+                var resp = try await kernel.handle(req)
+                if resp.headers["Content-Length"] == nil {
+                    resp.headers["Content-Length"] = String(resp.body.count)
+                }
                 let httpResponse = HTTPURLResponse(url: url, statusCode: resp.status, httpVersion: "HTTP/1.1", headerFields: resp.headers)!
                 client?.urlProtocol(strongSelf, didReceive: httpResponse, cacheStoragePolicy: .notAllowed)
                 client?.urlProtocol(strongSelf, didLoad: resp.body)
