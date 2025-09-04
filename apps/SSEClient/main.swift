@@ -126,7 +126,16 @@ class FilteringSSEClient: SSEClient {
 }
 
 // Entry
+let usage = "Usage: sse-client [--event name]* [--pretty] [--field path] [--format text|json|raw] [--timeout secs] [--max-retries n] <url>\n"
 let args = Array(CommandLine.arguments.dropFirst())
+if args.contains("--help") || args.contains("-h") {
+    if let data = usage.data(using: .utf8) { FileHandle.standardOutput.write(data) }
+    exit(0)
+}
+if args.contains("--version") {
+    if let data = "sse-client 0.0.0\n".data(using: .utf8) { FileHandle.standardOutput.write(data) }
+    exit(0)
+}
 var filters: [String] = []
 var pretty = false
 var fieldPath: String? = nil
@@ -143,12 +152,11 @@ while i < args.count {
     if a == "--format", i+1 < args.count, let f = OutputFormat(rawValue: args[i+1]) { format = f; i += 2; continue }
     if a == "--timeout", i+1 < args.count, let t = TimeInterval(args[i+1]) { timeout = t; i += 2; continue }
     if a == "--max-retries", i+1 < args.count, let m = Int(args[i+1]) { maxRetries = m; i += 2; continue }
+    if a.hasPrefix("-") { if let data = usage.data(using: .utf8) { FileHandle.standardError.write(data) }; exit(2) }
     urlString = a; i += 1
 }
 guard let raw = urlString, let url = URL(string: raw) else {
-    if let data = "Usage: sse-client [--event name]* [--pretty] [--field path] [--format text|json|raw] [--timeout secs] [--max-retries n] <url>\n".data(using: .utf8) {
-        FileHandle.standardError.write(data)
-    }
+    if let data = usage.data(using: .utf8) { FileHandle.standardError.write(data) }
     exit(2)
 }
 FilteringSSEClient(url: url, filters: filters, pretty: pretty, format: format, timeout: timeout, maxRetries: maxRetries, fieldPath: fieldPath).start()

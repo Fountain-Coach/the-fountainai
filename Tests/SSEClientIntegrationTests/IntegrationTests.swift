@@ -3,7 +3,7 @@ import Foundation
 
 /// Prerequisites: built executable in .build/debug; no special environment variables.
 final class SSEClientIntegrationTests: XCTestCase {
-    func testRunsWithHelp() throws {
+    func testShowsHelp() throws {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: ".build/debug/sse-client")
         process.arguments = ["--help"]
@@ -11,9 +11,34 @@ final class SSEClientIntegrationTests: XCTestCase {
         process.standardOutput = pipe
         try process.run()
         process.waitUntilExit()
-        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-        let output = String(decoding: data, as: UTF8.self)
+        let output = String(data: pipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
         XCTAssertEqual(process.terminationStatus, 0)
         XCTAssertFalse(output.isEmpty)
+    }
+
+    func testShowsVersion() throws {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: ".build/debug/sse-client")
+        process.arguments = ["--version"]
+        let pipe = Pipe()
+        process.standardOutput = pipe
+        try process.run()
+        process.waitUntilExit()
+        let output = String(data: pipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
+        XCTAssertEqual(process.terminationStatus, 0)
+        XCTAssertFalse(output.isEmpty)
+    }
+
+    func testInvalidArgumentsFail() throws {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: ".build/debug/sse-client")
+        process.arguments = ["--bogus"]
+        let pipe = Pipe()
+        process.standardError = pipe
+        try process.run()
+        process.waitUntilExit()
+        let error = String(data: pipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
+        XCTAssertNotEqual(process.terminationStatus, 0)
+        XCTAssertFalse(error.isEmpty)
     }
 }
