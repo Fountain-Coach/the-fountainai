@@ -42,4 +42,34 @@ public struct ControlPlaneDashboardView: View {
         .padding()
     }
 }
+#else
+
+/// Minimal renderer producing HTML and Markdown output from a ``DashboardModel``.
+/// This fallback is used in environments without SwiftUI.
+public struct DashboardView {
+    public let model: DashboardModel
+
+    public init(model: DashboardModel) {
+        self.model = model
+    }
+
+    /// Render the model into a very small HTML snippet.
+    public func renderHTML() -> String {
+        let rows = model.statuses.map { status in
+            "<tr><td>\(status.name)</td><td>\(status.running)</td><td>\(status.healthy)</td></tr>"
+        }.joined()
+        let logs = model.logs.map { "<li>\($0)</li>" }.joined()
+        return "<h1>Dashboard</h1><table>\(rows)</table><ul>\(logs)</ul>"
+    }
+
+    /// Render the model into a Markdown table with logs as bullet points.
+    public func renderMarkdown() -> String {
+        var table = "| Service | Running | Healthy |\n|---|---|---|\n"
+        table += model.statuses.map { status in
+            "| \(status.name) | \(status.running) | \(status.healthy) |"
+        }.joined(separator: "\n")
+        let logs = model.logs.map { "- \($0)" }.joined(separator: "\n")
+        return "# Dashboard\n\(table)\n\(logs)"
+    }
+}
 #endif
