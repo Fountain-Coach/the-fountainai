@@ -446,6 +446,16 @@ let fullTargets: [Target] = [
         path: "Tests/GatewayPluginsTests"
     ),
     .testTarget(
+        name: "GatewayPersonaOrchestratorTests",
+        dependencies: [
+            "GatewayPersonaOrchestrator",
+            "FountainRuntime",
+            "SecuritySentinelGatewayPlugin",
+            "DestructiveGuardianGatewayPlugin"
+        ],
+        path: "Tests/GatewayPersonaOrchestratorTests"
+    ),
+    .testTarget(
         name: "LauncherSignatureTests",
         dependencies: ["LauncherSignature"],
         path: "Tests/LauncherSignatureTests"
@@ -643,6 +653,16 @@ let leanTargets: [Target] = [
             .product(name: "Crypto", package: "swift-crypto")
         ],
         path: "Tests/GatewayPluginsTests"
+    ),
+    .testTarget(
+        name: "GatewayPersonaOrchestratorTests",
+        dependencies: [
+            "GatewayPersonaOrchestrator",
+            "FountainRuntime",
+            "SecuritySentinelGatewayPlugin",
+            "DestructiveGuardianGatewayPlugin"
+        ],
+        path: "Tests/GatewayPersonaOrchestratorTests"
     ),
     .testTarget(
         name: "LauncherSignatureTests",
