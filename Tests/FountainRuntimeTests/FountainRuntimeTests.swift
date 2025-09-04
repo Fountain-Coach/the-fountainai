@@ -18,6 +18,14 @@ final class FountainRuntimeTests: XCTestCase {
         XCTAssertTrue(resp.headers.isEmpty)
     }
 
+    func testHTTPResponseInitializerStoresValues() {
+        let body = Data("ok".utf8)
+        let resp = HTTPResponse(status: 201, headers: ["Content-Type": "text/plain"], body: body)
+        XCTAssertEqual(resp.status, 201)
+        XCTAssertEqual(resp.headers["Content-Type"], "text/plain")
+        XCTAssertEqual(String(data: resp.body, encoding: .utf8), "ok")
+    }
+
     func testURLSessionHTTPClientBadURLThrows() async {
         let client = URLSessionHTTPClient()
         do {
@@ -35,5 +43,24 @@ final class FountainRuntimeTests: XCTestCase {
         let body = try JSONDecoder().decode([String: String].self, from: resp.body)
         XCTAssertEqual(body["need"], "query.fullText")
         XCTAssertEqual(body["error"], "not-supported")
+    }
+
+    func testHTTPKernelHandlesRequest() async throws {
+        let kernel = HTTPKernel { req in
+            XCTAssertEqual(req.path, "/ok")
+            return HTTPResponse(status: 201, headers: ["X-Test": "yes"], body: Data("ok".utf8))
+        }
+        let resp = try await kernel.handle(HTTPRequest(method: "GET", path: "/ok"))
+        XCTAssertEqual(resp.status, 201)
+        XCTAssertEqual(resp.headers["X-Test"], "yes")
+        XCTAssertEqual(String(data: resp.body, encoding: .utf8), "ok")
+    }
+
+    func testHTTPRequestMutation() {
+        var req = HTTPRequest(method: "POST", path: "/submit")
+        req.headers["Content-Type"] = "text/plain"
+        req.body = Data("body".utf8)
+        XCTAssertEqual(req.headers["Content-Type"], "text/plain")
+        XCTAssertEqual(String(data: req.body, encoding: .utf8), "body")
     }
 }
