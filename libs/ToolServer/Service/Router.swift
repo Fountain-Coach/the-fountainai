@@ -38,7 +38,30 @@ public struct Router {
             let body = try? decoder.decode(Index.self, from: request.body)
             return try await handlers.pdfindexvalidate(request, body: body)
         default:
-            return HTTPResponse(status: 404)
+            let paths: Set<String> = [
+                "/ffmpeg",
+                "/exiftool",
+                "/imagemagick",
+                "/pdf/scan",
+                "/pandoc",
+                "/pdf/export-matrix",
+                "/libplist",
+                "/pdf/query",
+                "/pdf/index/validate"
+            ]
+            if paths.contains(request.path) {
+                return HTTPResponse(
+                    status: 405,
+                    headers: ["Content-Type": "text/plain", "Allow": "POST"],
+                    body: Data("Method Not Allowed".utf8)
+                )
+            } else {
+                return HTTPResponse(
+                    status: 404,
+                    headers: ["Content-Type": "text/plain"],
+                    body: Data("Not Found".utf8)
+                )
+            }
         }
     }
 }
