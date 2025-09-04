@@ -32,40 +32,44 @@ public enum PDFiumExtractorError: Error {
 }
 
 public final class PDFiumExtractor {
-    public init() {}
+    private let pdfium: PDFiumLibrary
+    public init(pdfium: PDFiumLibrary = DefaultPDFiumLibrary()) {
+        self.pdfium = pdfium
+    }
     public func extractText(from url: URL, useOCR: Bool = true) throws -> [PDFTextFragment] {
-#if canImport(PDFium)
+        guard pdfium.isAvailable else {
+            throw PDFiumExtractorError.unsupportedPlatform
+        }
         var fragments: [PDFTextFragment] = []
-        guard let document = FPDF_LoadDocument(url.path, nil) else {
+        guard let document = pdfium.loadDocument(url.path, nil) else {
             throw PDFiumExtractorError.openFailed
         }
-        defer { FPDF_CloseDocument(document) }
-        let pageCount = FPDF_GetPageCount(document)
+        defer { pdfium.closeDocument(document) }
+        let pageCount = pdfium.getPageCount(document)
         for pageIndex in 0..<pageCount {
-            guard let page = FPDF_LoadPage(document, pageIndex) else { continue }
-            defer { FPDF_ClosePage(page) }
-            guard let textPage = FPDFText_LoadPage(page) else { continue }
-            defer { FPDFText_ClosePage(textPage) }
-            let charCount = FPDFText_CountChars(textPage)
+            guard let page = pdfium.loadPage(document, pageIndex) else { continue }
+            defer { pdfium.closePage(page) }
+            guard let textPage = pdfium.textLoadPage(page) else { continue }
+            defer { pdfium.textClosePage(textPage) }
+            let charCount = pdfium.textCountChars(textPage)
             for i in 0..<charCount {
                 var left: Double = 0, right: Double = 0, bottom: Double = 0, top: Double = 0
-                FPDFText_GetCharBox(textPage, i, &left, &right, &bottom, &top)
+                pdfium.textGetCharBox(textPage, i, &left, &right, &bottom, &top)
                 var buffer = [UInt16](repeating: 0, count: 8)
-                let count = FPDFText_GetText(textPage, i, 1, &buffer, buffer.count)
+                let count = pdfium.textGetText(textPage, i, 1, &buffer, Int32(buffer.count))
                 if count > 0 {
                     let text = String(decoding: buffer[0..<Int(count)], as: UTF16.self)
                     let rect = Rect(x: left, y: bottom, width: right - left, height: top - bottom)
                     fragments.append(PDFTextFragment(text: text, frame: rect))
                 }
             }
+#if canImport(PDFium)
             if useOCR, hasTesseract {
                 fragments += ocrText(in: page)
             }
+#endif
         }
         return fragments
-#else
-        throw PDFiumExtractorError.unsupportedPlatform
-#endif
     }
 }
 
