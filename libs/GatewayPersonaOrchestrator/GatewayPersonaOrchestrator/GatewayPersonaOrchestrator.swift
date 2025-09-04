@@ -95,19 +95,30 @@ public struct SecuritySentinelPersona: GatewayPersona {
     }
 }
 
+/// Abstraction over types capable of performing destructive guardian evaluations.
+public protocol GuardianEvaluating: Sendable {
+    func guardianEvaluate(_ request: HTTPRequest, body: GuardianEvaluateRequest?) async throws -> HTTPResponse
+}
+
+extension Handlers: GuardianEvaluating {}
+
 /// Persona enforcing destructive operation policies.
 public struct DestructiveGuardianPersona: GatewayPersona {
-    private let handlers: Handlers
+    private let handler: any GuardianEvaluating
     public var name: String { "DestructiveGuardian" }
 
     public init(sensitivePaths: [String] = ["/"],
                 privilegedTokens: [String] = [],
                 auditURL: URL = URL(fileURLWithPath: "logs/guardian.log")) {
-        self.handlers = Handlers(
+        self.handler = Handlers(
             sensitivePaths: sensitivePaths,
             privilegedTokens: Set(privilegedTokens),
             auditURL: auditURL
         )
+    }
+
+    public init(handler: any GuardianEvaluating) {
+        self.handler = handler
     }
 
     public func evaluate(_ request: HTTPRequest) async -> GatewayPersonaVerdict {
@@ -116,7 +127,7 @@ public struct DestructiveGuardianPersona: GatewayPersona {
                                            manualApproval: false,
                                            serviceToken: nil)
         do {
-            let resp = try await handlers.guardianEvaluate(request, body: body)
+            let resp = try await handler.guardianEvaluate(request, body: body)
             if let decision = try? JSONDecoder().decode(GuardianEvaluateResponse.self, from: resp.body) {
                 if decision.decision.lowercased() == "allow" {
                     return .allow
