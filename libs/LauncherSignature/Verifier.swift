@@ -9,9 +9,12 @@ func isLauncherSignatureValid(
     return runtimeSig == embeddedLauncherSignature
 }
 
-public func verifyLauncherSignature() {
+public func verifyLauncherSignature(
+    exit: (Int32) -> Void = { Foundation.exit($0) }
+) {
     guard isLauncherSignatureValid() else {
         FileHandle.standardError.write(Data("Missing or invalid launcher signature\n".utf8))
         exit(1)
+        return
     }
 }
