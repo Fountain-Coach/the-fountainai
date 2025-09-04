@@ -14,12 +14,25 @@ private class MockURLProtocol: URLProtocol {
     override class func canInit(with request: URLRequest) -> Bool { true }
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
     override func startLoading() {
-        Self.lastRequest = request
+        var req = request
+        if req.httpBody == nil, let stream = req.httpBodyStream {
+            stream.open()
+            var data = Data()
+            let bufferSize = 1024
+            var buffer = [UInt8](repeating: 0, count: bufferSize)
+            while stream.hasBytesAvailable {
+                let read = stream.read(&buffer, maxLength: bufferSize)
+                if read > 0 { data.append(buffer, count: read) } else { break }
+            }
+            stream.close()
+            req.httpBody = data
+        }
+        Self.lastRequest = req
         if let error = Self.error {
             client?.urlProtocol(self, didFailWithError: error)
             return
         }
-        let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+        let response = HTTPURLResponse(url: req.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
         client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
         client?.urlProtocol(self, didLoad: Self.responseData)
         client?.urlProtocolDidFinishLoading(self)
