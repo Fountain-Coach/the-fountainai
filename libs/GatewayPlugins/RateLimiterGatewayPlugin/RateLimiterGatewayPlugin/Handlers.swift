@@ -4,16 +4,25 @@ import FoundationNetworking
 #endif
 import FountainRuntime
 
+public protocol LLMClient: Sendable {
+    func call(prompt: String) async throws -> String
+}
+
 /// Handlers for rate limiter gateway endpoints using an LLM backend.
 public actor Handlers {
-    private let client = LLMPluginClient(personaPath: "openapi/personas/rate-limiter.md")
+    private let client: LLMClient
     private let defaultLimit: Int
+    private let date: @Sendable () -> Date
     private var buckets: [String: (minute: Int, count: Int)] = [:]
     private var allowedTotal = 0
     private var throttledTotal = 0
 
-    public init(defaultLimit: Int = 60) {
+    public init(defaultLimit: Int = 60,
+                client: LLMClient? = nil,
+                date: @Sendable @escaping () -> Date = Date.init) {
         self.defaultLimit = defaultLimit
+        self.client = client ?? LLMPluginClient(personaPath: "openapi/personas/rate-limiter.md")
+        self.date = date
     }
 
     /// Returns whether the request is within its rate limit.
@@ -64,7 +73,7 @@ public actor Handlers {
 
     private func localAllow(routeId: String, clientId: String, limit: Int) -> Bool {
         let key = "\(routeId)|\(clientId)"
-        let minute = Int(Date().timeIntervalSince1970 / 60)
+        let minute = Int(date().timeIntervalSince1970 / 60)
         var bucket = buckets[key] ?? (minute: minute, count: 0)
         if bucket.minute != minute {
             bucket = (minute: minute, count: 0)
@@ -103,5 +112,7 @@ struct LLMPluginClient {
         return String(data: data, encoding: .utf8) ?? "{}"
     }
 }
+
+extension LLMPluginClient: LLMClient {}
 
 // © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
