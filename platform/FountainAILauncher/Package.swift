@@ -32,7 +32,7 @@ let package = Package(
         .testTarget(
             name: "FountainAiLauncherTests",
             dependencies: ["FountainAiLauncher"],
-            path: "Tests/FountainAiLauncherTests"
+            path: "Tests"
         )
     ]
 )
