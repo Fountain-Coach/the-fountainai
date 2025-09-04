@@ -1,5 +1,7 @@
 # FountainAI Playbill
 
+See [OPENAPI_COVERAGE.md](OPENAPI_COVERAGE.md) for a catalog of services, specs, and tools lacking OpenAPI coverage.
+
 Imagine FountainAI as a bustling theatre. Every user request is a script handed to the stage door, where the `gateway` decides whether the show can begin. The [Gateway API](openapi/v1/gateway.yml) and its [Swift stage crew](services/GatewayServer/GatewayApp) set the scene.
 
 The first actor to read the script is the [Auth Gateway](openapi/personas/auth.md), following the cues in [its contract](openapi/v1/auth-gateway.yml) and the lines in [AuthGatewayPlugin+GatewayPlugin.swift](services/GatewayServer/GatewayApp/AuthGatewayPlugin+GatewayPlugin.swift). If the ticket is valid, the curtain lifts for the next gatekeeper, the [Rate Limiter](openapi/personas/rate-limiter.md), who keeps count using [rate-limiter-gateway.yml](openapi/v1/rate-limiter-gateway.yml) and [RateLimiterGatewayPlugin+GatewayPlugin.swift](services/GatewayServer/GatewayApp/RateLimiterGatewayPlugin+GatewayPlugin.swift).
