@@ -69,6 +69,26 @@ final class DNSServerTCPTests: XCTestCase {
         try await server.stop()
         try await group.shutdownGracefully()
     }
+
+    func testHandlesIncompleteFrame() async throws {
+        let tmp = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        let manager = try ZoneManager(fileURL: tmp, enableGitCommits: false)
+        let zone = try await manager.createZone(name: "example.com")
+        _ = try await manager.createRecord(zoneId: zone.id, name: "", type: "A", value: "1.2.3.4")
+        let server = await DNSServer(zoneManager: manager)
+        let port = Int.random(in: 20000..<40000)
+        _ = try await server.start(udpPort: port, tcpPort: port)
+
+        let group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
+        let channel = try await ClientBootstrap(group: group).connect(host: "127.0.0.1", port: port).get()
+        var buf = channel.allocator.buffer(capacity: 2)
+        buf.writeInteger(UInt16(10), as: UInt16.self)
+        try await channel.writeAndFlush(buf).get()
+        try await Task.sleep(nanoseconds: 100_000_000)
+        try await channel.close().get()
+        try await server.stop()
+        try await group.shutdownGracefully()
+    }
 }
 
 final class TCPResponseHandler: ChannelInboundHandler, @unchecked Sendable {

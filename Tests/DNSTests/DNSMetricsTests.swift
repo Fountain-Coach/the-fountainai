@@ -20,4 +20,12 @@ final class DNSMetricsTests: XCTestCase {
         let timedOut = await DNSMetrics.shared.wait(forQueries: 1, timeout: 0.05)
         XCTAssertFalse(timedOut)
     }
+
+    func testExpositionIncludesTypeCounts() async {
+        await DNSMetrics.shared.reset()
+        await DNSMetrics.shared.record(query: "example.com", type: "A", hit: true)
+        let text = await DNSMetrics.shared.exposition()
+        XCTAssertTrue(text.contains("dns_queries_type_A_total 1"))
+        XCTAssertTrue(text.contains("dns_hits_type_A_total 1"))
+    }
 }
