@@ -68,6 +68,33 @@ final class GatewayPersonaOrchestratorTests: XCTestCase {
         }
     }
 
+    func testMultipleEscalationsKeepFirst() async {
+        let personas: [GatewayPersona] = [
+            StubPersona(name: "first", verdict: .escalate(reason: "r1", persona: "first")),
+            StubPersona(name: "second", verdict: .escalate(reason: "r2", persona: "second")),
+            StubPersona(name: "allow", verdict: .allow)
+        ]
+        let orchestrator = GatewayPersonaOrchestrator(personas: personas)
+        let result = await orchestrator.decide(for: HTTPRequest(method: "GET", path: "/"))
+        if case .escalate(let reason, let p) = result {
+            XCTAssertEqual(p, "first")
+            XCTAssertEqual(reason, "r1")
+        } else {
+            XCTFail("expected escalate")
+        }
+    }
+
+    func testBaselineSystemPersonaContainsKeyPhrases() {
+        XCTAssertTrue(baselineSystemPersona.contains("Gateway Persona Orchestrator"))
+        XCTAssertTrue(baselineSystemPersona.contains("SecuritySentinel"))
+        XCTAssertTrue(baselineSystemPersona.contains("DestructiveGuardian"))
+    }
+
+    func testDefaultDestructiveGuardianInitializer() {
+        let guardian = DestructiveGuardianPersona()
+        XCTAssertEqual(guardian.name, "DestructiveGuardian")
+    }
+
     func testSecuritySentinelPersonaBranches() async {
         let request = HTTPRequest(method: "GET", path: "/")
         let makeDecision: @Sendable (SentinelVerdict) -> SentinelDecision = { verdict in
