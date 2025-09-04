@@ -275,14 +275,14 @@ final class DNSEngineTests: XCTestCase {
     }
 
     func testTypeNameUnknown() {
-        var query = makeQuery(name: "example.com", type: 99)
+        let query = makeQuery(name: "example.com", type: 99)
         var copy = query
         let parser = DNSParser(buffer: &copy)
         XCTAssertEqual(parser?.typeName, "UNKNOWN")
     }
 
     func testMakeResponseInvalidARecordReturnsNil() {
-        var query = makeQuery(name: "bad.com", type: 1)
+        let query = makeQuery(name: "bad.com", type: 1)
         var parserBuf = query
         let parser = DNSParser(buffer: &parserBuf)!
         let record = DNSEngine.Record(name: "bad.com", type: "A", value: "1.2.3")
