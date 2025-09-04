@@ -452,7 +452,7 @@ let fullTargets: [Target] = [
             "RateLimiterGatewayPlugin",
             "AuthGatewayPlugin",
             "PayloadInspectionGatewayPlugin",
-            "DestructiveGuardianGatewayPlugin",
+            "BudgetBreakerGatewayPlugin",
             "FountainRuntime",
             .product(name: "Crypto", package: "swift-crypto")
         ],
@@ -662,7 +662,7 @@ let leanTargets: [Target] = [
             "RateLimiterGatewayPlugin",
             "AuthGatewayPlugin",
             "PayloadInspectionGatewayPlugin",
-            "DestructiveGuardianGatewayPlugin",
+            "BudgetBreakerGatewayPlugin",
             "FountainRuntime",
             .product(name: "Crypto", package: "swift-crypto")
         ],
