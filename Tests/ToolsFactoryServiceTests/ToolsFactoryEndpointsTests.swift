@@ -1,4 +1,5 @@
 import XCTest
+import Foundation
 @testable import ToolsFactoryService
 @testable import FountainStoreClient
 
@@ -60,6 +61,22 @@ final class ToolsFactoryEndpointsTests: XCTestCase {
         XCTAssertEqual(resp.status, 200)
         let text = String(data: resp.body, encoding: .utf8) ?? ""
         XCTAssertTrue(text.contains("tools_factory_uptime_seconds"))
+    }
+
+    func testServesOpenAPIDocument() async throws {
+        let manifest = ToolManifest(
+            image: .init(name: "img", tarball: "t", sha256: "s", qcow2: "q", qcow2_sha256: "qs"),
+            tools: [:],
+            operations: []
+        )
+        let router = ToolsFactoryRouter(service: nil, adapters: [:], manifest: manifest)
+        let cwd = FileManager.default.currentDirectoryPath
+        let dir = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
+        FileManager.default.changeCurrentDirectoryPath(dir.path)
+        defer { FileManager.default.changeCurrentDirectoryPath(cwd) }
+        let resp = try await router.route(.init(method: "GET", path: "/openapi.yaml"))
+        XCTAssertEqual(resp.status, 200)
+        XCTAssertEqual(resp.headers["Content-Type"], "application/yaml")
     }
 }
 
