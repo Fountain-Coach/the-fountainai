@@ -20,7 +20,7 @@ echo "[coverage] generating per-file summaries"
 
 TARGETS=(
   "FountainRuntime:libs/FountainRuntime"
-  "gateway-server:apps/GatewayServer"
+  "gateway-server:services/GatewayServer"
   "LLMGatewayPlugin:libs/GatewayPlugins/LLMGatewayPlugin"
   "AuthGatewayPlugin:libs/GatewayPlugins/AuthGatewayPlugin"
   "RateLimiterGatewayPlugin:libs/GatewayPlugins/RateLimiterGatewayPlugin"

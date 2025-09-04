@@ -17,6 +17,6 @@
    - End every spec with `© 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.`
 
 4. **Repository linkage**  
-   - Each new gateway spec should have a corresponding Swift package under `libs/GatewayPlugins/` and a registration file `+GatewayPlugin.swift` in `apps/GatewayServer/GatewayApp`.
+   - Each new gateway spec should have a corresponding Swift package under `libs/GatewayPlugins/` and a registration file `+GatewayPlugin.swift` in `services/GatewayServer/GatewayApp`.
 
 Following these guidelines keeps OpenAPI specs discoverable, versioned, and consistently integrated with the Gateway and FountainStore layers.

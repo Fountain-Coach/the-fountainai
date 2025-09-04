@@ -11,7 +11,7 @@ A Swift service that fetches and renders web pages (with optional CDP headless b
 - Observability: Spec‑pure health, Prometheus metrics, admin diagnostics (browser pool, host gate, network capture, artifacts).
 
 ## API
-OpenAPI spec: `openapi/v1/semantic-browser.yml`
+OpenAPI spec: [`openapi/v1/semantic-browser.yml`](../../openapi/v1/semantic-browser.yml)
 
 Key endpoints (spec‑compliant):
 - POST `/v1/snapshot` → SnapshotResponse
