@@ -87,7 +87,7 @@ public final class ControlPlane: @unchecked Sendable {
 }
 
 /// Status information returned by the control plane.
-public struct ServiceStatus: Codable, Sendable {
+public struct ServiceStatus: Codable, Sendable, Equatable {
     /// Service name.
     public let name: String
     /// Whether the process is running.
