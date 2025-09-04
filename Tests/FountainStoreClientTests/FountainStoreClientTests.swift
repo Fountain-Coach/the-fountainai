@@ -161,6 +161,67 @@ final class FountainStoreClientTests: XCTestCase {
         XCTAssertEqual(details?.functionId, "f1")
     }
 
+    func testCreateCorpusRequest() async throws {
+        let client = makeClient()
+        let resp = try await client.createCorpus(CorpusCreateRequest(corpusId: "cReq"))
+        XCTAssertEqual(resp.corpusId, "cReq")
+        let fetched = try await client.getCorpus("cReq")
+        XCTAssertNotNil(fetched)
+    }
+
+    func testEnsureCollections() async throws {
+        let client = makeClient()
+        await client.ensureCollections()
+    }
+
+    func testMultiSortCapabilityRequest() async throws {
+        let client = makeClient()
+        let q = Query(sort: [(field: "a", ascending: true), (field: "b", ascending: false)])
+        do {
+            _ = try await client.query(corpusId: "cX", collection: "pages", query: q)
+            XCTFail("expected notSupported")
+        } catch PersistenceError.notSupported(let need) {
+            XCTAssertEqual(need, "query.sort.multi")
+        }
+        let metrics = await client.capabilityRequests
+        XCTAssertEqual(metrics["query.sort.multi"], 1)
+    }
+
+    func testListFunctionsFiltering() async throws {
+        let client = makeClient()
+        _ = try await client.createCorpus("cFilter")
+        let f1 = FunctionModel(corpusId: "cFilter", functionId: "f1", name: "alpha", description: "one", httpMethod: "GET", httpPath: "/a")
+        let f2 = FunctionModel(corpusId: "cFilter", functionId: "f2", name: "beta", description: "two", httpMethod: "POST", httpPath: "/b")
+        _ = try await client.addFunction(f1)
+        _ = try await client.addFunction(f2)
+        let (total, filtered) = try await client.listFunctions(q: "beta")
+        XCTAssertEqual(total, 1)
+        XCTAssertEqual(filtered.first?.functionId, "f2")
+        let (cTotal, cFiltered) = try await client.listFunctions(corpusId: "cFilter", q: "beta")
+        XCTAssertEqual(cTotal, 1)
+        XCTAssertEqual(cFiltered.first?.functionId, "f2")
+    }
+
+    func testQueryModeWithFiltersCapabilityRequest() async throws {
+        let client = makeClient()
+        let q = Query(mode: .byIndexEq("foo", "bar"), filters: ["x": "y"])
+        do {
+            _ = try await client.query(corpusId: "cY", collection: "pages", query: q)
+            XCTFail("expected notSupported")
+        } catch PersistenceError.notSupported(let need) {
+            XCTAssertEqual(need, "query.modeWithFilters")
+        }
+        let metrics = await client.capabilityRequests
+        XCTAssertEqual(metrics["query.modeWithFilters"], 1)
+    }
+
+    func testGetFunctionDetailsMissing() async throws {
+        let client = makeClient()
+        _ = try await client.createCorpus("cFunc")
+        let missing = try await client.getFunctionDetails(functionId: "none")
+        XCTAssertNil(missing)
+    }
+
     func testSnapshotCapabilityFallback() async throws {
         let caps = Capabilities(corpus: true, documents: ["upsert", "get", "delete"], query: ["byId"], transactions: [], admin: [], experimental: [])
         let client = makeClient(caps: caps)
