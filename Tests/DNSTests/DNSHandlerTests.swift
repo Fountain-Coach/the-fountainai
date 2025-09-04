@@ -23,7 +23,7 @@ final class DNSHandlerTests: XCTestCase {
         return buf
     }
 
-    final class RecordingHandler: ChannelOutboundHandler {
+    final class RecordingHandler: ChannelOutboundHandler, @unchecked Sendable {
         typealias OutboundIn = ByteBuffer
         typealias OutboundOut = ByteBuffer
         var writeCount = 0
@@ -41,7 +41,7 @@ final class DNSHandlerTests: XCTestCase {
         try channel.pipeline.addHandlers(recorder, handler).wait()
 
         let query = makeQuery(name: "example.com", type: 1)
-        channel.pipeline.fireChannelRead(NIOAny(query))
+        channel.pipeline.fireChannelRead(query)
         channel.embeddedEventLoop.run()
 
         XCTAssertEqual(recorder.writeCount, 1)
@@ -53,8 +53,8 @@ final class DNSHandlerTests: XCTestCase {
     func testChannelReadCompleteFlushesWrites() throws {
         let engine = DNSEngine(records: [.init(name: "example.com", type: "A", value: "1.2.3.4")])
         let channel = EmbeddedChannel(handler: DNSHandler(engine: engine))
-        var query = makeQuery(name: "example.com", type: 1)
-        channel.pipeline.fireChannelRead(NIOAny(query))
+        let query = makeQuery(name: "example.com", type: 1)
+        channel.pipeline.fireChannelRead(query)
         let preFlush: ByteBuffer? = try channel.readOutbound()
         XCTAssertNil(preFlush)
         channel.pipeline.fireChannelReadComplete()
