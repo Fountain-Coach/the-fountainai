@@ -651,6 +651,22 @@ let leanTargets: [Target] = [
         resources: [.process("Fixtures")]
     ),
     .testTarget(
+        name: "DNSTests",
+        dependencies: [
+            "PublishingFrontend",
+            "FountainRuntime",
+            .product(name: "Crypto", package: "swift-crypto"),
+            .product(name: "NIOEmbedded", package: "swift-nio"),
+            .product(name: "NIO", package: "swift-nio")
+        ],
+        path: "Tests/DNSTests"
+    ),
+    .testTarget(
+        name: "DNSPerfTests",
+        dependencies: ["FountainRuntime", .product(name: "NIOCore", package: "swift-nio")],
+        path: "Tests/DNSPerfTests"
+    ),
+    .testTarget(
         name: "FountainCodexTests",
         dependencies: ["FountainCodex", .product(name: "NIOHTTP1", package: "swift-nio")],
         path: "Tests/FountainCodexTests"

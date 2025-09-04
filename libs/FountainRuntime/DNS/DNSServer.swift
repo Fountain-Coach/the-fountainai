@@ -43,7 +43,7 @@ public final class DNSServer: @unchecked Sendable {
                 }
             self.tcpChannel = try await tcpBootstrap.bind(host: "127.0.0.1", port: tcpPort).get()
         }
-        return self.udpChannel?.localAddress?.port ?? udpPort
+        return self.udpChannel!.localAddress!.port!
     }
 
     /// Shuts down the server and releases resources.
@@ -74,8 +74,6 @@ private final class DatagramCodec: ChannelDuplexHandler, @unchecked Sendable {
             remoteAddress = nil
             let envelope = AddressedEnvelope(remoteAddress: addr, data: buffer)
             context.write(self.wrapOutboundOut(envelope), promise: promise)
-        } else {
-            promise?.succeed(())
         }
     }
 }

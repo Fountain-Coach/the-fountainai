@@ -39,7 +39,7 @@ public actor DNSMetrics {
             "gateway_rate_limit_throttled_total \(rateLimitThrottled)"
         ]
         for key in queriesByType.keys.sorted() {
-            lines.append("dns_queries_type_\(key)_total \(queriesByType[key] ?? 0)")
+            lines.append("dns_queries_type_\(key)_total \(queriesByType[key]!)")
             lines.append("dns_hits_type_\(key)_total \(hitsByType[key] ?? 0)")
         }
         return lines.joined(separator: "\n")

@@ -61,6 +61,47 @@ final class ZoneManagerTests: XCTestCase {
         XCTAssertEqual(fetched?.value, "2.2.2.2")
     }
 
+    func testDeleteZoneReturnsFalseForUnknownID() async throws {
+        let file = temporaryFile()
+        let manager = try ZoneManager(fileURL: file)
+        let result = try await manager.deleteZone(id: UUID())
+        XCTAssertFalse(result)
+    }
+
+    func testCreateRecordReturnsNilForUnknownZone() async throws {
+        let file = temporaryFile()
+        let manager = try ZoneManager(fileURL: file)
+        let rec = try await manager.createRecord(zoneId: UUID(), name: "a", type: "A", value: "1.1.1.1")
+        XCTAssertNil(rec)
+    }
+
+    func testUpdateRecordReturnsNilForMissingRecord() async throws {
+        let file = temporaryFile()
+        let manager = try ZoneManager(fileURL: file)
+        let zone = try await manager.createZone(name: "example.com")
+        let updated = try await manager.updateRecord(zoneId: zone.id, recordId: UUID(), name: "a", type: "A", value: "1.1.1.1")
+        XCTAssertNil(updated)
+    }
+
+    func testDeleteRecordReturnsFalseForUnknownRecord() async throws {
+        let file = temporaryFile()
+        let manager = try ZoneManager(fileURL: file)
+        let zone = try await manager.createZone(name: "example.com")
+        let result = try await manager.deleteRecord(zoneId: zone.id, recordId: UUID())
+        XCTAssertFalse(result)
+    }
+
+    func testInitBuildsRecordMapWithSubrecord() async throws {
+        let file = temporaryFile()
+        let record = ZoneManager.Record(id: UUID(), name: "www", type: "A", value: "1.2.3.4")
+        let zone = ZoneManager.Zone(id: UUID(), name: "example.com", records: [record.id: record])
+        let yaml = try YAMLEncoder().encode([zone.id: zone])
+        try yaml.write(to: file, atomically: true, encoding: .utf8)
+        let manager = try ZoneManager(fileURL: file)
+        let fetched = await manager.record(name: "www.example.com", type: "A")
+        XCTAssertEqual(fetched?.value, "1.2.3.4")
+    }
+
     func testSetCommitsChangesToGit() async throws {
         let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)

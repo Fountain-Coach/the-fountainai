@@ -38,10 +38,11 @@ final class DNSHandlerTests: XCTestCase {
         let handler = DNSHandler(engine: engine)
         let recorder = RecordingHandler()
         let channel = EmbeddedChannel()
-        try channel.pipeline.addHandlers(handler, recorder).wait()
+        try channel.pipeline.addHandlers(recorder, handler).wait()
 
         let query = makeQuery(name: "example.com", type: 1)
         channel.pipeline.fireChannelRead(NIOAny(query))
+        channel.embeddedEventLoop.run()
 
         XCTAssertEqual(recorder.writeCount, 1)
         channel.pipeline.fireChannelReadComplete()

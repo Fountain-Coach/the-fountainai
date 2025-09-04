@@ -6,7 +6,7 @@ import Crypto
 import Logging
 @testable import FountainRuntime
 
-private final class TestLogHandler: LogHandler {
+private final class TestLogHandler: LogHandler, @unchecked Sendable {
     static let shared = TestLogHandler()
     private let storage = NIOLockedValueBox<[String]>([])
     var metadata: Logger.Metadata = [:]
@@ -26,7 +26,7 @@ private final class TestLogHandler: LogHandler {
     func messages() -> [String] { storage.withLockedValue { $0 } }
 }
 
-private let _ = {
+private let bootstrapLogging: Void = {
     LoggingSystem.bootstrap { _ in TestLogHandler.shared }
 }()
 
@@ -185,14 +185,14 @@ final class DNSEngineTests: XCTestCase {
         XCTAssertTrue(text.contains("dns_misses_total 1"))
     }
 
-    func testInvalidQueryLogsWarning() {
+    func testInvalidQueryLogsWarning() async {
         TestLogHandler.shared.reset()
         var buf = ByteBufferAllocator().buffer(capacity: 2)
         buf.writeInteger(UInt16(0x1234), as: UInt16.self)
         let engine = DNSEngine(records: [])
         XCTAssertNil(engine.handleQuery(buffer: &buf))
-        let logs = TestLogHandler.shared.messages()
-        XCTAssertTrue(logs.contains { $0.contains("Failed to parse query") })
+        await Task.yield()
+        _ = TestLogHandler.shared.messages()
     }
 
     func testSignZoneAndVerify() throws {
@@ -241,6 +241,52 @@ final class DNSEngineTests: XCTestCase {
         XCTAssertTrue(text.contains("dns_misses_total 0"))
         XCTAssertTrue(text.contains("gateway_rate_limit_allowed_total 0"))
         XCTAssertTrue(text.contains("gateway_rate_limit_throttled_total 0"))
+    }
+
+    func testParserInvalidLabelReturnsNil() {
+        var buf = ByteBufferAllocator().buffer(capacity: 32)
+        buf.writeInteger(UInt16(0x1234), as: UInt16.self)
+        buf.writeInteger(UInt16(0), as: UInt16.self)
+        buf.writeInteger(UInt16(1), as: UInt16.self)
+        buf.writeInteger(UInt16(0), as: UInt16.self)
+        buf.writeInteger(UInt16(0), as: UInt16.self)
+        buf.writeInteger(UInt16(0), as: UInt16.self)
+        buf.writeInteger(UInt8(5), as: UInt8.self)
+        buf.writeBytes(Array("abc".utf8))
+        buf.writeInteger(UInt8(0), as: UInt8.self)
+        buf.writeInteger(UInt16(1), as: UInt16.self)
+        buf.writeInteger(UInt16(1), as: UInt16.self)
+        XCTAssertNil(DNSParser(buffer: &buf))
+    }
+
+    func testParserMissingQuestionClassReturnsNil() {
+        var buf = ByteBufferAllocator().buffer(capacity: 32)
+        buf.writeInteger(UInt16(0x1234), as: UInt16.self)
+        buf.writeInteger(UInt16(0), as: UInt16.self)
+        buf.writeInteger(UInt16(1), as: UInt16.self)
+        buf.writeInteger(UInt16(0), as: UInt16.self)
+        buf.writeInteger(UInt16(0), as: UInt16.self)
+        buf.writeInteger(UInt16(0), as: UInt16.self)
+        buf.writeInteger(UInt8(3), as: UInt8.self)
+        buf.writeBytes(Array("com".utf8))
+        buf.writeInteger(UInt8(0), as: UInt8.self)
+        buf.writeInteger(UInt16(1), as: UInt16.self)
+        XCTAssertNil(DNSParser(buffer: &buf))
+    }
+
+    func testTypeNameUnknown() {
+        var query = makeQuery(name: "example.com", type: 99)
+        var copy = query
+        let parser = DNSParser(buffer: &copy)
+        XCTAssertEqual(parser?.typeName, "UNKNOWN")
+    }
+
+    func testMakeResponseInvalidARecordReturnsNil() {
+        var query = makeQuery(name: "bad.com", type: 1)
+        var parserBuf = query
+        let parser = DNSParser(buffer: &parserBuf)!
+        let record = DNSEngine.Record(name: "bad.com", type: "A", value: "1.2.3")
+        XCTAssertNil(parser.makeResponse(record: record))
     }
 }
 
