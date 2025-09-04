@@ -36,6 +36,47 @@ final class ToolServerHandlersTests: XCTestCase {
         XCTAssertEqual(String(data: resp.body, encoding: .utf8), "ok")
     }
 
+    func testRunExifToolReturnsOutput() async throws {
+        let h = Handlers(exifToolAdapter: MockAdapter(data: Data("ok".utf8), code: 0, tool: "exiftool"))
+        let router = Router(handlers: h)
+        let req = ToolRequest(args: ["-version"], request_id: "r1")
+        let body = try JSONEncoder().encode(req)
+        let resp = try await router.route(.init(method: "POST", path: "/exiftool", body: body))
+        XCTAssertEqual(resp.status, 200)
+        XCTAssertEqual(String(data: resp.body, encoding: .utf8), "ok")
+    }
+
+    func testRunImageMagickReturnsOutput() async throws {
+        let h = Handlers(imageMagickAdapter: MockAdapter(data: Data("img".utf8), code: 0, tool: "imagemagick"))
+        let router = Router(handlers: h)
+        let req = ToolRequest(args: ["-version"], request_id: "r1")
+        let body = try JSONEncoder().encode(req)
+        let resp = try await router.route(.init(method: "POST", path: "/imagemagick", body: body))
+        XCTAssertEqual(resp.status, 200)
+        XCTAssertEqual(String(data: resp.body, encoding: .utf8), "img")
+        XCTAssertEqual(resp.headers["Content-Type"], "application/octet-stream")
+    }
+
+    func testRunPandocReturnsOutput() async throws {
+        let h = Handlers(pandocAdapter: MockAdapter(data: Data("ok".utf8), code: 0, tool: "pandoc"))
+        let router = Router(handlers: h)
+        let req = ToolRequest(args: ["-v"], request_id: "r1")
+        let body = try JSONEncoder().encode(req)
+        let resp = try await router.route(.init(method: "POST", path: "/pandoc", body: body))
+        XCTAssertEqual(resp.status, 200)
+        XCTAssertEqual(String(data: resp.body, encoding: .utf8), "ok")
+    }
+
+    func testRunLibPlistReturnsOutput() async throws {
+        let h = Handlers(libPlistAdapter: MockAdapter(data: Data("plist".utf8), code: 0, tool: "libplist"))
+        let router = Router(handlers: h)
+        let req = ToolRequest(args: ["--help"], request_id: "r1")
+        let body = try JSONEncoder().encode(req)
+        let resp = try await router.route(.init(method: "POST", path: "/libplist", body: body))
+        XCTAssertEqual(resp.status, 200)
+        XCTAssertEqual(String(data: resp.body, encoding: .utf8), "plist")
+    }
+
     func testPdfScanReturnsIndex() async throws {
         let idx = Index(documents: [["id": "d1"]])
         let data = try JSONEncoder().encode(idx)
@@ -111,6 +152,7 @@ final class ToolServerHandlersTests: XCTestCase {
             let resp = try await router.route(.init(method: "POST", path: path, body: body))
             XCTAssertEqual(resp.status, 500, "path \(path)")
         }
+
     }
 
     func testOpenAPISpecLoads() throws {
