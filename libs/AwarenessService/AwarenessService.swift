@@ -198,7 +198,7 @@ extension AwarenessRouter {
         var out: [String: String] = [:]
         for pair in query.split(separator: "&") {
             let parts = pair.split(separator: "=", maxSplits: 1).map(String.init)
-            if parts.count == 2 { out[parts[0]] = parts[1] }
+            if parts.count == 2, !parts[1].isEmpty { out[parts[0]] = parts[1] }
         }
         return out
     }
