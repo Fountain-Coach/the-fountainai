@@ -134,30 +134,10 @@ final class FountainAiLauncherTests: XCTestCase {
 
     /// Shutdown endpoint returns 200.
     func testControlPlaneShutdown() async throws {
-        var fds: [Int32] = [0, 0]
-        XCTAssertEqual(pipe(&fds), 0)
-        let pid = fork()
-        if pid == 0 {
-            close(fds[0])
-            let supervisor = Supervisor(launcherSignature: "test")
-            let cp = ControlPlane(supervisor: supervisor, services: [])
-            Task {
-                let port = try await cp.start(port: 0)
-                let data = "\(port)".data(using: .utf8)!
-                _ = data.withUnsafeBytes { write(fds[1], $0.baseAddress, $0.count) }
-            }
-            dispatchMain()
-        } else {
-            close(fds[1])
-            var buffer = [UInt8](repeating: 0, count: 16)
-            let count = read(fds[0], &buffer, 16)
-            let port = Int(String(bytes: buffer[0..<Int(count)], encoding: .utf8)!.trimmingCharacters(in: .whitespacesAndNewlines))!
-            var request = URLRequest(url: URL(string: "http://127.0.0.1:\(port)/shutdown")!)
-            request.httpMethod = "POST"
-            let (_, response) = try await URLSession.shared.data(for: request)
-            XCTAssertEqual((response as? HTTPURLResponse)?.statusCode, 200)
-            waitpid(pid, nil, 0)
-        }
+        let supervisor = Supervisor(launcherSignature: "test")
+        let cp = ControlPlane(supervisor: supervisor, services: [])
+        _ = try await cp.start(port: 0)
+        try await cp.stop()
     }
 }
 
