@@ -6,8 +6,10 @@ public struct RateLimiterGatewayPlugin: Sendable {
     public let router: Router
     private let handlers: Handlers
 
-    public init(defaultLimit: Int = 60) {
-        let h = Handlers(defaultLimit: defaultLimit)
+    public init(defaultLimit: Int = 60,
+                client: LLMClient? = nil,
+                date: @Sendable @escaping () -> Date = Date.init) {
+        let h = Handlers(defaultLimit: defaultLimit, client: client, date: date)
         self.handlers = h
         self.router = Router(handlers: h)
     }
