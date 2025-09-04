@@ -11,6 +11,21 @@ struct MockAdapter: ToolAdapter {
 }
 
 final class ToolServerHandlersTests: XCTestCase {
+    private func makeRouter(code: Int32 = 0, data: Data = Data()) -> ToolServerService.Router {
+        let mock = MockAdapter(data: data, code: code, tool: "mock")
+        let handlers = Handlers(
+            ffmpegAdapter: mock,
+            exifToolAdapter: mock,
+            imageMagickAdapter: mock,
+            pandocAdapter: mock,
+            libPlistAdapter: mock,
+            pdfScanAdapter: mock,
+            pdfQueryAdapter: mock,
+            pdfExportMatrixAdapter: mock
+        )
+        return Router(handlers: handlers)
+    }
+
     func testRunFFmpegReturnsOutput() async throws {
         let h = Handlers(ffmpegAdapter: MockAdapter(data: Data("ok".utf8), code: 0, tool: "ffmpeg"))
         let router = Router(handlers: h)
@@ -58,6 +73,44 @@ final class ToolServerHandlersTests: XCTestCase {
         XCTAssertEqual(resp.status, 200)
         let out = try JSONDecoder().decode(Matrix.self, from: resp.body)
         XCTAssertEqual(out.schemaVersion, "1")
+    }
+
+    func testHandlersReturn400ForNilBodies() async throws {
+        let router = makeRouter()
+        let paths = [
+            "/ffmpeg",
+            "/exiftool",
+            "/imagemagick",
+            "/pdf/scan",
+            "/pandoc",
+            "/pdf/export-matrix",
+            "/libplist",
+            "/pdf/query",
+            "/pdf/index/validate"
+        ]
+        for path in paths {
+            let resp = try await router.route(.init(method: "POST", path: path))
+            XCTAssertEqual(resp.status, 400, "path \(path)")
+        }
+    }
+
+    func testHandlersReturn500OnAdapterError() async throws {
+        let router = makeRouter(code: 1)
+        let encoder = JSONEncoder()
+        let cases: [(String, Data)] = [
+            ("/ffmpeg", try encoder.encode(ToolRequest(args: [], request_id: "r"))),
+            ("/exiftool", try encoder.encode(ToolRequest(args: [], request_id: "r"))),
+            ("/imagemagick", try encoder.encode(ToolRequest(args: [], request_id: "r"))),
+            ("/pdf/scan", try encoder.encode(ScanRequest(includeText: false, inputs: [], sha256: false))),
+            ("/pandoc", try encoder.encode(ToolRequest(args: [], request_id: "r"))),
+            ("/pdf/export-matrix", try encoder.encode(ExportMatrixRequest(bitfields: false, enums: false, index: Index(documents: []), ranges: false))),
+            ("/libplist", try encoder.encode(ToolRequest(args: [], request_id: "r"))),
+            ("/pdf/query", try encoder.encode(QueryRequest(index: Index(documents: []), pageRange: "", q: "")))
+        ]
+        for (path, body) in cases {
+            let resp = try await router.route(.init(method: "POST", path: path, body: body))
+            XCTAssertEqual(resp.status, 500, "path \(path)")
+        }
     }
 
     func testOpenAPISpecLoads() throws {
