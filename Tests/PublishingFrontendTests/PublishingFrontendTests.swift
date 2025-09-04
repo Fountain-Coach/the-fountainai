@@ -189,6 +189,25 @@ final class PublishingFrontendTests: XCTestCase {
         try await frontend.stop()
     }
 
+    /// Ensures ``mimeType(forPath:)`` returns expected values for common extensions
+    func testMimeTypeResolvesCommonExtensions() {
+        let cases: [(String, String)] = [
+            ("/tmp/file.css", "text/css"),
+            ("/tmp/file.js", "application/javascript"),
+            ("/tmp/file.json", "application/json"),
+            ("/tmp/file.svg", "image/svg+xml"),
+            ("/tmp/file.png", "image/png"),
+            ("/tmp/file.jpg", "image/jpeg"),
+            ("/tmp/file.gif", "image/gif"),
+            ("/tmp/file.txt", "text/plain"),
+            ("/tmp/file.unknown", "application/octet-stream")
+        ]
+
+        for (path, expected) in cases {
+            XCTAssertEqual(mimeType(forPath: path), expected)
+        }
+    }
+
     @MainActor
     /// Serves files within nested subdirectories.
     func testServerServesNestedFile() async throws {
