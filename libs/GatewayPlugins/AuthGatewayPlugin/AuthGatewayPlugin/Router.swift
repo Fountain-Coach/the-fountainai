@@ -12,7 +12,7 @@ public struct Router: Sendable {
         case ("POST", "/auth/validate"):
             let body = try? JSONDecoder().decode(ValidateRequest.self, from: request.body)
             return try await handlers.authValidate(request, body: body)
-        case ("GET", "/auth/claims"):
+        case ("POST", "/auth/claims"), ("GET", "/auth/claims"):
             return try await handlers.authClaims(request, body: nil)
         default:
             return nil
