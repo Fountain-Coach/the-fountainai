@@ -287,8 +287,15 @@ public actor FountainStoreClient {
     }
 
     public func listFunctions(limit: Int = 50, offset: Int = 0, q: String? = nil) async throws -> (total: Int, functions: [FunctionModel]) {
-        let resp = try await query(corpusId: "", collection: "functions", query: Query())
-        var list = try resp.documents.map { try JSONDecoder().decode(FunctionModel.self, from: $0) }
+        // gather functions from all corpora
+        let (_, corpora) = try await listCorpora(limit: Int.max, offset: 0)
+        var all: [FunctionModel] = []
+        for corpus in corpora {
+            let resp = try await query(corpusId: corpus, collection: "functions", query: Query())
+            let list = try resp.documents.map { try JSONDecoder().decode(FunctionModel.self, from: $0) }
+            all.append(contentsOf: list)
+        }
+        var list = all
         if let q = q, !q.isEmpty, q != "*" {
             let needle = q.lowercased()
             list = list.filter { fn in
@@ -302,8 +309,14 @@ public actor FountainStoreClient {
     }
 
     public func getFunctionDetails(functionId: String) async throws -> FunctionModel? {
-        let resp = try await query(corpusId: "", collection: "functions", query: Query(mode: .byId(functionId)))
-        return resp.documents.first.flatMap { try? JSONDecoder().decode(FunctionModel.self, from: $0) }
+        let (_, corpora) = try await listCorpora(limit: Int.max, offset: 0)
+        for corpus in corpora {
+            let resp = try await query(corpusId: corpus, collection: "functions", query: Query(mode: .byId(functionId)))
+            if let doc = resp.documents.first {
+                return try? JSONDecoder().decode(FunctionModel.self, from: doc)
+            }
+        }
+        return nil
     }
 
     public func listFunctions(corpusId: String, limit: Int = 50, offset: Int = 0, q: String? = nil) async throws -> (total: Int, functions: [FunctionModel]) {
