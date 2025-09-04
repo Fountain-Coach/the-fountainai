@@ -80,6 +80,20 @@ final class SecuritySentinelGatewayPluginTests: XCTestCase {
         XCTAssertEqual(redacted["user"], "bob")
     }
 
+    func testAuditLoggerLogConsult() {
+        let decision = SentinelDecision(
+            decision: .allow,
+            reason: "ok",
+            confidence: 0.5,
+            model: "m",
+            requestID: "id",
+            latencyMS: 1,
+            source: .llm,
+            timestamp: "now"
+        )
+        AuditLogger.logConsult(inputSummary: "hello", context: ["token": "abc"], decision: decision)
+    }
+
     func testHashingSha256Hex() {
         XCTAssertEqual(Hashing.sha256Hex("hello"), "000000310f923099")
         XCTAssertEqual(Hashing.sha256Hex("hello"), Hashing.sha256Hex("hello"))
@@ -98,6 +112,20 @@ final class SecuritySentinelGatewayPluginTests: XCTestCase {
         try await Task.sleep(nanoseconds: 200_000_000)
         allowed = await breaker.allow()
         XCTAssertTrue(allowed)
+    }
+
+    func testRouterUnknownRoute() async throws {
+        let router = Router()
+        let req = HTTPRequest(method: "GET", path: "/other")
+        let resp = try await router.route(req)
+        XCTAssertNil(resp)
+    }
+
+    func testGatewayPluginInit() async throws {
+        let plugin = SecuritySentinelGatewayPlugin()
+        let req = HTTPRequest(method: "GET", path: "/none")
+        let resp = try await plugin.router.route(req)
+        XCTAssertNil(resp)
     }
 }
 
