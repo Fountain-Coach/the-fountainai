@@ -2,18 +2,57 @@
 import Foundation
 
 /// Simple preflight script for FountainAI.
-/// It scans the OpenAPI specifications for gateway services, verifies that
-/// each referenced binary exists and is executable, and checks for required
-/// environment variables.
+/// Service metadata is derived from OpenAPI specifications;
+/// these specs are the authoritative source of truth for what
+/// binaries the launcher manages.
 
 struct Service {
     let name: String
     let binaryPath: String
 }
 
-let scriptPath = URL(fileURLWithPath: CommandLine.arguments[0]).resolvingSymlinksInPath()
-let scriptDirectory = scriptPath.deletingLastPathComponent()
-let repoRoot = scriptDirectory.appendingPathComponent("..").standardized
+func camelCaseToDash(_ input: String) -> String {
+    var result = ""
+    for char in input {
+        if char.isUppercase {
+            if !result.isEmpty { result.append("-") }
+            result.append(char.lowercased())
+        } else {
+            result.append(char)
+        }
+    }
+    return result
+}
+
+func loadServices() throws -> [Service] {
+    let scriptPath = URL(fileURLWithPath: CommandLine.arguments[0]).resolvingSymlinksInPath()
+    let root = scriptPath.deletingLastPathComponent().appendingPathComponent("..").standardized
+    let servicesDir = root.appendingPathComponent("services")
+    let specsDir = root.appendingPathComponent("openapi/v1")
+    let fm = FileManager.default
+    let dirs = try fm.contentsOfDirectory(atPath: servicesDir.path).filter { !$0.hasSuffix(".md") }
+    var services: [Service] = []
+    for dir in dirs {
+        var base = dir
+        if base.hasSuffix("Server") {
+            base.removeLast("Server".count)
+        } else if base.hasSuffix("Service") {
+            base.removeLast("Service".count)
+        }
+        let dashed = camelCaseToDash(base)
+        let specURL = specsDir.appendingPathComponent("\(dashed).yml")
+        guard fm.fileExists(atPath: specURL.path),
+              let text = try? String(contentsOf: specURL) else { continue }
+        var title = dashed
+        if let line = text.split(separator: "\n").first(where: { $0.trimmingCharacters(in: .whitespaces).hasPrefix("title:") }) {
+            title = line.split(separator: ":", maxSplits: 1)[1].trimmingCharacters(in: .whitespaces)
+        }
+        let binaryName = dashed == "gateway" ? "fountain-gateway" : dashed
+        let binaryPath = "/usr/local/bin/\(binaryName)"
+        services.append(Service(name: title, binaryPath: binaryPath))
+    }
+    return services
+}
 
 var allChecksPassed = true
 
@@ -23,41 +62,8 @@ func fail(_ message: String) {
 }
 
 let fm = FileManager.default
+let services = (try? loadServices()) ?? []
 
-func discoverServices() -> [Service] {
-    let openapiURL = repoRoot.appendingPathComponent("openapi")
-    let servicesDir = ProcessInfo.processInfo.environment["FOUNTAINAI_SERVICES_DIR"] ?? "/usr/local/bin"
-    var services: [Service] = []
-    guard let versions = try? fm.contentsOfDirectory(at: openapiURL, includingPropertiesForKeys: nil) else {
-        fail("OpenAPI directory not found at \(openapiURL.path)")
-        return []
-    }
-    for version in versions where version.lastPathComponent.hasPrefix("v") {
-        if let specs = try? fm.contentsOfDirectory(at: version, includingPropertiesForKeys: nil) {
-            for spec in specs where spec.lastPathComponent.hasSuffix("-gateway.yml") {
-                if let text = try? String(contentsOf: spec) {
-                    let name = parseField("title", in: text) ?? spec.deletingPathExtension().lastPathComponent
-                    let binary = parseField("x-fountain.binary", in: text) ?? spec.deletingPathExtension().lastPathComponent
-                    let binaryPath = (servicesDir as NSString).appendingPathComponent(binary)
-                    services.append(Service(name: name, binaryPath: binaryPath))
-                }
-            }
-        }
-    }
-    return services
-}
-
-func parseField(_ key: String, in text: String) -> String? {
-    for line in text.components(separatedBy: "\n") {
-        let trimmed = line.trimmingCharacters(in: .whitespaces)
-        if trimmed.hasPrefix("\(key):") {
-            return trimmed.split(separator: ":", maxSplits: 1).last?.trimmingCharacters(in: .whitespaces)
-        }
-    }
-    return nil
-}
-
-let services = discoverServices()
 for service in services {
     if fm.isExecutableFile(atPath: service.binaryPath) {
         print("✅ \(service.name) binary found at \(service.binaryPath)")
@@ -85,3 +91,4 @@ if allChecksPassed {
 exit(allChecksPassed ? 0 : 1)
 
 // © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
+
