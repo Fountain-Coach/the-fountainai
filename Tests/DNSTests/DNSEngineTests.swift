@@ -179,7 +179,7 @@ final class DNSEngineTests: XCTestCase {
         buf.writeInteger(UInt16(0x1234), as: UInt16.self)
         let engine = DNSEngine(records: [])
         XCTAssertNil(engine.handleQuery(buffer: &buf))
-        await Task.yield()
+        _ = await DNSMetrics.shared.wait(forQueries: 1)
         let text = await DNSMetrics.shared.exposition()
         XCTAssertTrue(text.contains("dns_queries_type_invalid_total 1"))
         XCTAssertTrue(text.contains("dns_misses_total 1"))
