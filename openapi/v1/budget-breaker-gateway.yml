@@ -1,14 +1,17 @@
----
 openapi: 3.1.0
 info:
   title: Budget Breaker Gateway Plugin
   description: >
     Enforces request budgets with simple health checks.
   version: 1.0.0
-  
+
+  x-fountain.port: 8010
+  x-fountain.binary: fountain-gateway
 x-persona: ../personas/budget-breaker.md
 servers:
-  - url: http://budget-breaker.fountain.coach/api/v1
+  - url: http://budget-breaker.local
+    description: Local development
+  - url: http://budget-breaker.fountain.coach
 paths:
   /budget/check:
     post:
@@ -18,7 +21,7 @@ paths:
       description: Checks and consumes budget for a client.
       operationId: budgetCheck
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       requestBody:
         required: true
@@ -47,7 +50,7 @@ paths:
       description: Reports plugin health status.
       operationId: budgetHealth
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       responses:
         '200':
@@ -128,4 +131,4 @@ components:
           type: string
           title: Error Type
 
-© 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
+# © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.

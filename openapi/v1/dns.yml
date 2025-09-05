@@ -1,19 +1,21 @@
----
 openapi: 3.1.0
 info:
   title: Fountain Internal DNS API
   description: >
     API for managing internal DNS zones and records.
   version: 1.0.0
+  x-fountain.port: 8008
 servers:
-  - url: http://dns.fountain.coach/api/v1
+  - url: http://dns.local
+    description: Local development
+  - url: http://dns.fountain.coach
 paths:
   /zones:
     get:
       summary: List Zones
       operationId: listZones
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       responses:
         '200':
@@ -26,7 +28,7 @@ paths:
       summary: Create Zone
       operationId: createZone
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       requestBody:
         required: true
@@ -53,7 +55,7 @@ paths:
       summary: Delete Zone
       operationId: deleteZone
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       responses:
         '204':
@@ -70,7 +72,7 @@ paths:
       summary: List Records
       operationId: listRecords
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       responses:
         '200':
@@ -83,7 +85,7 @@ paths:
       summary: Create Record
       operationId: createRecord
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       requestBody:
         required: true
@@ -116,7 +118,7 @@ paths:
       summary: Update Record
       operationId: updateRecord
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       requestBody:
         required: true
@@ -135,7 +137,7 @@ paths:
       summary: Delete Record
       operationId: deleteRecord
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       responses:
         '204':
@@ -214,4 +216,4 @@ components:
           type: string
           description: Description of the error
 
-© 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
+# © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
