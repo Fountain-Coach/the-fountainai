@@ -32,7 +32,7 @@ Refer to the OpenAPI file for request and response schemas, authentication requi
 Define a `GATEWAY_CRED_<CLIENT_ID>` variable for each client allowed to request a token, an optional `GATEWAY_ROLE_<CLIENT_ID>` to embed a role claim, and set `GATEWAY_JWT_SECRET` to the HMAC signing key used to mint and verify JWTs.
 
 ### Entry Point
-[`main.swift`](main.swift) constructs a `GatewayServer` with `CoTLogger`, `LoggingPlugin` and `PublishingFrontendPlugin` and starts listening on port 8080. Passing `--dns` additionally launches a DNS server backed by `ZoneManager`. See [DNS subsystem docs](../FountainCodex/DNS/README.md) for zone management and server details.
+[`main.swift`](main.swift) constructs a `GatewayServer` with `LoggingPlugin` and `PublishingFrontendPlugin` and starts listening on port 8080. Passing `--dns` additionally launches a DNS server backed by `ZoneManager`. See [DNS subsystem docs](../FountainCodex/DNS/README.md) for zone management and server details.
 
 ## Plugin Index
 
@@ -58,11 +58,6 @@ Serves static files from disk when the router does not handle a request.
 
 - `rootPath` – Directory containing files to be served.
 - `respond(_:for:)` – Intercepts `404` responses for GET requests, serving a file with the appropriate `Content-Type` header when found.
-
-### [CoTLogger](CoTLogger.swift)
-Captures chain-of-thought responses when `/chat` requests include `include_cot: true`.
-
-- `respond(_:for:)` – Appends sanitized `cot` entries to `logs/cot.log`.
 
 ### [BudgetBreakerPlugin](BudgetBreakerPlugin.swift)
 Applies per-user request budgets with circuit breakers and health-triggered load shedding.

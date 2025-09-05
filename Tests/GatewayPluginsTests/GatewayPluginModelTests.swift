@@ -107,14 +107,13 @@ final class LLMGatewayPluginModelTests: XCTestCase {
     func testChatRequestCodable() throws {
         let msg = MessageObject(role: "user", content: "hi")
         let funcObj = FunctionObject(name: "f", description: nil)
-        let request = ChatRequest(model: "m", messages: [msg], functions: [funcObj], function_call: .auto, include_cot: true)
+        let request = ChatRequest(model: "m", messages: [msg], functions: [funcObj], function_call: .auto)
         let data = try JSONEncoder().encode(request)
         let decoded = try JSONDecoder().decode(ChatRequest.self, from: data)
         XCTAssertEqual(decoded.model, "m")
         XCTAssertEqual(decoded.messages.first?.content, "hi")
         XCTAssertEqual(decoded.functions?.first?.name, "f")
         if case .auto? = decoded.function_call {} else { XCTFail("expected auto") }
-        XCTAssertEqual(decoded.include_cot, true)
     }
 }
 

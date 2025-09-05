@@ -1,14 +1,13 @@
 import Foundation
 import FountainRuntime
 
-/// Plugin exposing CoT endpoints.
+/// Plugin exposing LLM gateway endpoints.
 public struct LLMGatewayPlugin: Sendable {
     public let router: Router
 
     /// Creates a new plugin instance.
-    /// - Parameter cotLogURL: Optional location of the CoT log file.
-    public init(cotLogURL: URL? = nil) {
-        self.router = Router(handlers: Handlers(cotLogURL: cotLogURL))
+    public init() {
+        self.router = Router()
     }
 }
 

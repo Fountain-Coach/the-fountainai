@@ -8,7 +8,7 @@ A **request** is any HTTP call reaching the gateway, typically a client prompt o
 4. **Plugin routers** – authentication and LLM plugins inspect routes like `/chat`; if one responds, processing stops.
 5. **Built-in endpoints** – unmatched calls are checked against health, metrics, JWT issuance, RoleGuard, certificate, and DNS handlers.
 6. **Dynamic proxy routing** – `tryProxy` searches configured routes, applies rate limits, builds upstream URLs, and forwards requests with circuit-breaker protection, otherwise returning 404.
-7. **Plugin respond chain** – plugins run `respond` hooks in reverse order, e.g., logging or chain-of-thought capture, before the response leaves.
+7. **Plugin respond chain** – plugins run `respond` hooks in reverse order, e.g., logging, before the response leaves.
 8. **Metrics & logging** – counters and structured logs record every request for observability.
 
 These chained reactions enforce authentication, safety personas, rate limiting, and auditing, creating a controlled perimeter around FountainAI's LLM services.
