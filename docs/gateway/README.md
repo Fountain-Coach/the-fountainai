@@ -34,6 +34,10 @@ Define a `GATEWAY_CRED_<CLIENT_ID>` variable for each client allowed to request 
 ### Entry Point
 [`main.swift`](main.swift) constructs a `GatewayServer` with `LoggingPlugin` and `PublishingFrontendPlugin` and starts listening on port 8080. Passing `--dns` additionally launches a DNS server backed by `ZoneManager`. See [DNS subsystem docs](../FountainCodex/DNS/README.md) for zone management and server details.
 
+## Evidence-based Reasoning
+
+`CuratorGatewayPlugin` loads a truth table from the OpenAPI Curator service describing operations and their supporting evidence. Incoming requests declare an operation identifier which is validated against this table. Operations lacking evidence are blocked, while approved responses are annotated with the curator's rationale.
+
 ## Plugin Index
 
 The gateway composes middleware plugins to augment request handling. Each plugin is documented below.
@@ -70,6 +74,9 @@ Applies per-user request budgets with circuit breakers and health-triggered load
 
 - `rateLimit` – Optional requests-per-minute quota on route definitions.
 - Exceeding the quota returns HTTP `429` and increments throttling metrics.
+
+### CuratorGatewayPlugin
+Validates requests against a curator-provided truth table. Responses for allowed operations include the curator's evidence, while unknown operations are blocked.
 
 ---
 © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.

@@ -29,6 +29,7 @@ For a repository-wide index of OpenAPI coverage, see [../OPENAPI_COVERAGE.md](..
 | Security Sentinel Gateway Plugin | 1.0.0 | Contexter alias Benedikt Eickhoff | [v1/security-sentinel-gateway.yml](v1/security-sentinel-gateway.yml) |
 | Tool Server | 1.0.0 | Contexter alias Benedikt Eickhoff | [v1/tool-server.yml](v1/tool-server.yml) |
 | OpenAPI Curator Service | 1.0.2 | Contexter alias Benedikt Eickhoff | [v1/openapi-curator.yml](v1/openapi-curator.yml) |
+| Curator Gateway Plugin | 1.0.0 | Contexter alias Benedikt Eickhoff | [v1/curator-gateway.yml](v1/curator-gateway.yml) |
 
 
 ## Gateway Plugins
@@ -42,6 +43,7 @@ For a repository-wide index of OpenAPI coverage, see [../OPENAPI_COVERAGE.md](..
 | Budget Breaker Gateway Plugin | Contexter alias Benedikt Eickhoff | ✅ | [v1/budget-breaker-gateway.yml](v1/budget-breaker-gateway.yml) |
 | Destructive Guardian Gateway Plugin | Contexter alias Benedikt Eickhoff | ✅ | [v1/destructive-guardian-gateway.yml](v1/destructive-guardian-gateway.yml) |
 | Security Sentinel Gateway Plugin | Contexter alias Benedikt Eickhoff | ✅ | [v1/security-sentinel-gateway.yml](v1/security-sentinel-gateway.yml) |
+| Curator Gateway Plugin | Contexter alias Benedikt Eickhoff | ✅ | [v1/curator-gateway.yml](v1/curator-gateway.yml) |
 
 ## Persistence/FountainStore
 
