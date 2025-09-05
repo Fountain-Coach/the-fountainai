@@ -159,6 +159,27 @@ public func makeOpenAPICuratorKernel() -> HTTPKernel {
                 ]
                 let json = try JSONSerialization.data(withJSONObject: respObj)
                 return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: json)
+            case ("POST", ["truth-table"]):
+                let obj = try JSONSerialization.jsonObject(with: req.body) as? [String: Any] ?? [:]
+                let rawSpecs = obj["specs"] as? [Any] ?? []
+                var specs: [Spec] = []
+                for item in rawSpecs {
+                    if let s = item as? String {
+                        let url = URL(string: s).flatMap { $0.scheme != nil ? $0 : nil } ?? URL(fileURLWithPath: s)
+                        let data = (try? Data(contentsOf: url)) ?? Data()
+                        let text = String(data: data, encoding: .utf8) ?? ""
+                        let ops = extractOperationIds(from: text)
+                        specs.append(Spec(operations: ops))
+                    } else if let dict = item as? [String: Any], let ops = dict["operations"] as? [String] {
+                        specs.append(Spec(operations: ops))
+                    }
+                }
+                let rules = await curatorRulesStore.rules
+                let result = OpenAPICuratorKit.run(specs: specs, rules: rules)
+                let banned: Set<String> = ["metrics_metrics_get", "register_openapi", "list_tools"]
+                let table = result.report.truthTable.filter { !banned.contains($0.key) }
+                let json = try JSONEncoder().encode(table)
+                return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: json)
 
             case ("POST", ["validate"]):
                 let obj = try JSONSerialization.jsonObject(with: req.body) as? [String: Any] ?? [:]

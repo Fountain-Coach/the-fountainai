@@ -13,6 +13,9 @@ paths:
     get:
       summary: Health
       operationId: health_health_get
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       responses:
         '200':
           description: Successful Response
@@ -25,6 +28,9 @@ paths:
       summary: Initialize a new corpus
       description: Creates a new corpus with the given corpus ID.
       operationId: initializeCorpus
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       requestBody:
         required: true
         content:
@@ -45,6 +51,9 @@ paths:
       summary: Add Baseline
       description: Adds a baseline text to the corpus.
       operationId: addBaseline
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       requestBody:
         required: true
         content:
@@ -65,6 +74,9 @@ paths:
       summary: Add Drift
       description: Adds a drift document to the corpus.
       operationId: addDrift
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       requestBody:
         required: true
         content:
@@ -85,6 +97,9 @@ paths:
       summary: Add Patterns
       description: Adds narrative patterns to the corpus.
       operationId: addPatterns
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       requestBody:
         required: true
         content:
@@ -105,6 +120,9 @@ paths:
       summary: Add Reflection
       description: Adds a reflection item to the corpus.
       operationId: addReflection
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       requestBody:
         required: true
         content:
@@ -125,6 +143,9 @@ paths:
       summary: List Reflections
       description: Lists all reflections in the specified corpus.
       operationId: listReflections
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       parameters:
         - name: corpus_id
           in: path
@@ -146,6 +167,9 @@ paths:
       summary: List History
       description: Lists the change history of the specified corpus.
       operationId: listHistory
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       parameters:
         - name: corpus_id
           in: path
@@ -167,6 +191,9 @@ paths:
       summary: Summarize History
       description: Provides a semantic summary of the corpus history.
       operationId: summarizeHistory
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       parameters:
         - name: corpus_id
           in: path
@@ -191,6 +218,9 @@ paths:
       description: >
         Retrieve the timeline of all semantic entries for the given corpus.
       operationId: listHistoryAnalytics
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       parameters:
         - name: corpus_id
           in: query
@@ -214,6 +244,9 @@ paths:
       description: >
         Construct and return the semantic arc based on the corpus history.
       operationId: readSemanticArc
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       parameters:
         - name: corpus_id
           in: query
@@ -233,6 +266,9 @@ paths:
     get:
       summary: Stream History Analytics
       operationId: streamHistoryAnalytics
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       description: Stream historical analytics of the corpus.
       responses:
         '200':
@@ -248,6 +284,9 @@ paths:
       summary: Metrics
       description: Endpoint that serves Prometheus metrics.
       operationId: metrics_metrics_get
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       responses:
         '200':
           description: Successful Response

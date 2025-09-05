@@ -17,6 +17,9 @@ paths:
       description: >
         Accepts a high-level user objective and returns a step-by-step plan.
       operationId: planner_reason
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       requestBody:
         required: true
         content:
@@ -45,6 +48,9 @@ paths:
         Takes a plan (function-call list) and runs each step,
         returning results.
       operationId: planner_execute
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       requestBody:
         required: true
         content:
@@ -72,6 +78,9 @@ paths:
       description: >
         Returns the names/IDs of all corpora that the planner knows about.
       operationId: planner_list_corpora
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       responses:
         '200':
           description: Successful Response
@@ -89,6 +98,9 @@ paths:
       summary: Fetch reflection history
       description: Retrieve all stored reflections for a given corpus ID.
       operationId: get_reflection_history
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       parameters:
         - name: corpus_id
           in: path
@@ -117,6 +129,9 @@ paths:
         Retrieve the semantic arc for a given corpus ID (curated summary,
         insights, etc.).
       operationId: get_semantic_arc
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       parameters:
         - name: corpus_id
           in: path
@@ -145,6 +160,9 @@ paths:
       summary: Add a new reflection
       description: Send a message to be reflected on and appended to the corpus.
       operationId: post_reflection
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       requestBody:
         required: true
         content:
@@ -169,6 +187,9 @@ paths:
       summary: Metrics
       description: Endpoint that serves Prometheus metrics.
       operationId: metrics_metrics_get
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       responses:
         '200':
           description: Successful Response

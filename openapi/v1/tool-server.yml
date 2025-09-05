@@ -6,6 +6,9 @@ paths:
   /imagemagick:
     post:
       operationId: runImageMagick
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       requestBody:
         required: true
         content:
@@ -23,6 +26,9 @@ paths:
   /ffmpeg:
     post:
       operationId: runFFmpeg
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       requestBody:
         required: true
         content:
@@ -34,6 +40,9 @@ paths:
   /exiftool:
     post:
       operationId: runExifTool
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       requestBody:
         required: true
         content:
@@ -45,6 +54,9 @@ paths:
   /pandoc:
     post:
       operationId: runPandoc
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       requestBody:
         required: true
         content:
@@ -56,6 +68,9 @@ paths:
   /libplist:
     post:
       operationId: runLibPlist
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       requestBody:
         required: true
         content:
@@ -67,6 +82,9 @@ paths:
   /pdf/scan:
     post:
       operationId: pdfScan
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       summary: Scan one or more PDFs into a semantic index
       requestBody:
         required: true
@@ -84,6 +102,9 @@ paths:
   /pdf/index/validate:
     post:
       operationId: pdfIndexValidate
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       summary: Validate an index structure
       requestBody:
         required: true
@@ -101,6 +122,9 @@ paths:
   /pdf/query:
     post:
       operationId: pdfQuery
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       summary: Query an index by keyword
       requestBody:
         required: true
@@ -118,6 +142,9 @@ paths:
   /pdf/export-matrix:
     post:
       operationId: pdfExportMatrix
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       summary: Export a Midi2Swift-friendly matrix skeleton from an index
       requestBody:
         required: true

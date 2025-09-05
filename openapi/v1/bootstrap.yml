@@ -16,6 +16,9 @@ paths:
         1) Creates empty corpus via `/corpus-init` on Awareness.
         2) Seeds default GPT roles via `/bootstrap/roles/seed`.
       operationId: bootstrapInitializeCorpus
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       requestBody:
         required: true
         content:
@@ -43,6 +46,9 @@ paths:
       description: >
         Populates an existing corpus with the five default GPT role prompts.
       operationId: bootstrapSeedRoles
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       requestBody:
         required: true
         content:
@@ -80,6 +86,9 @@ paths:
         All of that—live streaming, persistence of each slice, and background
         analytics—happens in one concise call.
       operationId: bootstrapAddBaseline
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       requestBody:
         required: true
         content:
@@ -106,6 +115,9 @@ paths:
         Populates the specified corpus with five GPT role prompts.
         Prerequisite: call `/corpus-init` first.
       operationId: seedRoles
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       requestBody:
         required: true
         content:
@@ -130,6 +142,9 @@ paths:
       summary: Metrics
       description: Endpoint that serves Prometheus metrics.
       operationId: metrics_metrics_get
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       responses:
         '200':
           description: Successful Response

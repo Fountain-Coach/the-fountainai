@@ -15,6 +15,9 @@ paths:
     get:
       summary: List Registered Functions
       operationId: list_functions
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       description: >
         Retrieve a paginated list of all registered functions available for
         invocation.
@@ -59,6 +62,9 @@ paths:
     get:
       summary: Get Function Details
       operationId: get_function_details
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       description: >
         Retrieve detailed metadata about a registered function by its ID.
       parameters:
@@ -84,6 +90,9 @@ paths:
     post:
       summary: Invoke a Registered Function
       operationId: invoke_function
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       description: |
         Invoke the specified function with the given input parameters.
         The service will perform the corresponding HTTP call and
@@ -133,6 +142,9 @@ paths:
       summary: Metrics
       description: Endpoint that serves Prometheus metrics.
       operationId: metrics_metrics_get
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       responses:
         '200':
           description: Successful Response
