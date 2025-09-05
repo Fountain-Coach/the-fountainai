@@ -468,6 +468,11 @@ let fullTargets: [Target] = [
         path: "Tests/FountainRuntimeTests"
     ),
     .testTarget(
+        name: "GatewayConfigStoreTests",
+        dependencies: ["gateway-server", "FountainStoreClient"],
+        path: "Tests/GatewayConfigStoreTests"
+    ),
+    .testTarget(
         name: "GatewayPluginsTests",
         dependencies: [
             "RateLimiterGatewayPlugin",

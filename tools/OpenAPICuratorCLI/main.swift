@@ -118,7 +118,9 @@ if let yaml = try? Yams.dump(object: ["operations": filteredOps]) {
         req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         req.setValue("application/x-yaml", forHTTPHeaderField: "Content-Type")
         req.httpBody = yaml.data(using: .utf8)
-        _ = try? URLSession.shared.data(for: req)
+        let sem = DispatchSemaphore(value: 0)
+        URLSession.shared.dataTask(with: req) { _, _, _ in sem.signal() }.resume()
+        sem.wait()
     }
 }
 
