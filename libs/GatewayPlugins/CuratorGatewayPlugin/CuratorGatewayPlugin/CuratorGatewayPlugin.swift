@@ -5,7 +5,7 @@ import FoundationNetworking
 import FountainRuntime
 import OpenAPICurator
 
-extension OpenAPICurator.Truth: @unchecked Sendable {}
+extension OpenAPICurator.Truth: @retroactive @unchecked Sendable {}
 
 /// Gateway plugin that consults the curator service for evidence-based operation gating.
 public struct CuratorGatewayPlugin: Sendable {
