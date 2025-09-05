@@ -3,6 +3,7 @@ import NIO
 import NIOHTTP1
 import FountainRuntime
 import Yams
+import FountainStoreClient
 
 /// Configuration for the ``PublishingFrontend`` server.
 public struct PublishingConfig: Codable {
@@ -64,15 +65,22 @@ public final class PublishingFrontend {
     }
 }
 
-/// Loads the publishing configuration from `Configuration/publishing.yml`.
-/// Missing `port` or `rootPath` keys fall back to the defaults `8085` and `./Public`.
-/// - Throws: If the file is missing, contains invalid YAML, or fails decoding into ``PublishingConfig``.
-/// - Returns: Parsed ``PublishingConfig`` instance.
-public func loadPublishingConfig() throws -> PublishingConfig {
-    let url = URL(fileURLWithPath: "Configuration/publishing.yml")
+/// Loads the publishing configuration from FountainStore's `config/publishing.yml`.
+/// Falls back to `Configuration/publishing.yml` when FountainStore is unavailable.
+public func loadPublishingConfig(store: ConfigurationStore? = nil,
+                                environment: [String: String] = ProcessInfo.processInfo.environment) throws -> PublishingConfig {
+    let svc = store ?? ConfigurationStore.fromEnvironment(environment)
+    if let data = svc?.getSync("publishing.yml"), let text = String(data: data, encoding: .utf8) {
+        return try decodePublishingConfig(from: text)
+    }
+    let path = environment["PUBLISHING_CONFIG_PATH"] ?? "Configuration/publishing.yml"
+    let raw = try String(contentsOfFile: path, encoding: .utf8)
+    return try decodePublishingConfig(from: raw)
+}
+
+private func decodePublishingConfig(from raw: String) throws -> PublishingConfig {
     // Strip lines that begin with a copyright footer (e.g., starting with "©")
     // to keep configuration strictly YAML-parseable.
-    let raw = try String(contentsOf: url, encoding: .utf8)
     let sanitized = raw
         .split(separator: "\n", omittingEmptySubsequences: false)
         .filter { !$0.trimmingCharacters(in: .whitespaces).hasPrefix("©") }
