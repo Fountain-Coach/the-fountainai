@@ -1,18 +1,12 @@
 import Foundation
 
-// Load service descriptors from bundled manifest.
+// Discover services from OpenAPI gateway specifications.
 let services: [Service]
-if let url = Bundle.module.url(forResource: "services", withExtension: "json") {
-    do {
-        let data = try Data(contentsOf: url)
-        services = try JSONDecoder().decode([Service].self, from: data)
-    } catch {
-        let message = "Failed to parse services.json: \(error)\n"
-        FileHandle.standardError.write(Data(message.utf8))
-        exit(1)
-    }
-} else {
-    FileHandle.standardError.write(Data("services.json not found\n".utf8))
+do {
+    services = try OpenAPIServiceLoader.loadServices()
+} catch {
+    let message = "Failed to load services: \(error)\n"
+    FileHandle.standardError.write(Data(message.utf8))
     exit(1)
 }
 

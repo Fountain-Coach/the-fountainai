@@ -1,4 +1,3 @@
----
 openapi: 3.1.0
 info:
   title: FountainAI Gateway
@@ -6,8 +5,12 @@ info:
     Swift-based API gateway providing HTTPS termination, routing,
     authentication and metrics for FountainAI services.
   version: 1.0.0
+  x-fountain.port: 8010
+  x-fountain.binary: fountain-gateway
 servers:
-  - url: https://gateway.fountain.coach/api/v1
+  - url: http://gateway.local
+    description: Local development
+  - url: http://gateway.fountain.coach
 paths:
   /health:
     get:
@@ -15,7 +18,7 @@ paths:
       description: Returns 200 if the gateway is running.
       operationId: gatewayHealth
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       responses:
         '200':
@@ -30,7 +33,7 @@ paths:
       description: Endpoint that serves runtime metrics encoded as JSON.
       operationId: gatewayMetrics
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       responses:
         '200':
@@ -51,7 +54,7 @@ paths:
         protected routes.
       operationId: issueAuthToken
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       requestBody:
         required: true
@@ -79,7 +82,7 @@ paths:
       description: Returns metadata about the active TLS certificate.
       operationId: certificateInfo
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       responses:
         '200':
@@ -96,7 +99,7 @@ paths:
       description: Manually invoke the renewal process for the TLS certificate.
       operationId: renewCertificate
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       responses:
         '202':
@@ -113,7 +116,7 @@ paths:
       description: Returns all routing definitions active in the gateway.
       operationId: listRoutes
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       responses:
         '200':
@@ -130,7 +133,7 @@ paths:
       summary: Add a new route
       operationId: createRoute
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       requestBody:
         required: true
@@ -158,7 +161,7 @@ paths:
       summary: Update an existing route
       operationId: updateRoute
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       parameters:
         - name: routeId
@@ -192,7 +195,7 @@ paths:
       summary: Delete a route
       operationId: deleteRoute
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       parameters:
         - name: routeId
@@ -295,4 +298,4 @@ components:
           type: string
           description: Certificate issuer
 
-© 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
+# © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.

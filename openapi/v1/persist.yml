@@ -1,4 +1,3 @@
----
 openapi: 3.1.0
 info:
   title: FountainStore Persistence Service
@@ -8,16 +7,20 @@ info:
     Collection schemas for pages, segments, entities, tables, and analyses are
     described in [docs/fountainstore-collections.md](../../docs/fountainstore-collections.md).
   version: 1.0.2
+  x-fountain.port: 8005
+  x-fountain.binary: persist
 x-persona: ../personas/persist.md
 servers:
-  - url: http://persist.fountain.coach/api/v1
+  - url: http://persist.local
+    description: Local development
+  - url: http://persist.fountain.coach
 paths:
   /capabilities:
     get:
       summary: Get supported capabilities
       operationId: capabilities
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       responses:
         '200':
@@ -36,7 +39,7 @@ paths:
         Useful for clients to discover existing corpora.
       operationId: listCorpora
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       parameters:
         - name: limit
@@ -80,7 +83,7 @@ paths:
         baselines, reflections, and other artifacts. Corpus IDs must be unique.
       operationId: createCorpus
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       requestBody:
         description: Corpus creation request payload including unique corpusId.
@@ -107,7 +110,7 @@ paths:
         Useful for examining historical semantic state.
       operationId: listBaselines
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       parameters:
         - name: corpusId
@@ -154,7 +157,7 @@ paths:
         analysis or reflection.
       operationId: addBaseline
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       parameters:
         - name: corpusId
@@ -187,7 +190,7 @@ paths:
       summary: List functions in a corpus, supports pagination
       operationId: listFunctionsInCorpus
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       parameters:
         - name: corpusId
@@ -213,7 +216,8 @@ paths:
             minimum: 0
         - name: q
           in: query
-          description: Optional substring filter across name, description, and httpPath.
+          description: Optional substring filter across name, description, and 
+            httpPath.
           schema:
             type: string
       responses:
@@ -235,7 +239,7 @@ paths:
       summary: Add a function to a corpus
       operationId: addFunction
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       parameters:
         - name: corpusId
@@ -269,7 +273,7 @@ paths:
         semantic reasoning and planning.
       operationId: addReflection
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       parameters:
         - name: corpusId
@@ -303,7 +307,7 @@ paths:
         for browsing semantic insights or planning data over time.
       operationId: listReflections
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       parameters:
         - name: corpusId
@@ -351,7 +355,7 @@ paths:
         the persistence layer for orchestration and invocation.
       operationId: listFunctions
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       parameters:
         - name: limit
@@ -371,7 +375,8 @@ paths:
             minimum: 0
         - name: q
           in: query
-          description: Optional substring filter across name, description, httpPath, functionId, and corpusId.
+          description: Optional substring filter across name, description, 
+            httpPath, functionId, and corpusId.
           schema:
             type: string
       responses:
@@ -398,7 +403,7 @@ paths:
         identifier.
       operationId: getFunctionDetails
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       parameters:
         - name: functionId
@@ -423,7 +428,7 @@ paths:
       description: Endpoint that serves Prometheus metrics.
       operationId: metrics_metrics_get
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       responses:
         '200':
@@ -576,5 +581,7 @@ components:
               message:
                 type: string
                 description: Human-readable error message.
+
+# © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
 
 # © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.

@@ -1,8 +1,9 @@
----
 openapi: 3.1.0
 info:
   title: OpenAPI Curator Service
   version: 1.0.2
+  x-fountain.port: 8000
+  x-fountain.binary: openapi-curator-service
 paths:
   /curate:
     post:
@@ -11,7 +12,7 @@ paths:
       summary: Curate one or more OpenAPI documents
       operationId: curate
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       requestBody:
         required: true
@@ -37,7 +38,7 @@ paths:
       summary: Validate specs without curating
       operationId: validate
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       requestBody:
         required: true
@@ -63,7 +64,7 @@ paths:
       summary: Export truth table for specs
       operationId: truth_table
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       requestBody:
         required: true
@@ -89,7 +90,7 @@ paths:
       summary: Get active curation rules
       operationId: get_rules
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       responses:
         '200':
@@ -106,7 +107,7 @@ paths:
       summary: Replace curation rules
       operationId: put_rules
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       requestBody:
         required: true
@@ -128,7 +129,7 @@ paths:
       summary: List curated snapshots for a corpus
       operationId: history
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       parameters:
         - in: query
@@ -158,7 +159,7 @@ paths:
       description: Endpoint that serves Prometheus metrics.
       operationId: metrics_metrics_get
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       responses:
         '200':
@@ -293,5 +294,9 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-© 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
+servers:
+  - url: http://openapi-curator.local
+    description: Local development
+  - url: http://openapi-curator.fountain.coach
 
+# © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.

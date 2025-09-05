@@ -1,4 +1,3 @@
----
 openapi: 3.1.0
 info:
   title: Destructive Guardian Gateway Plugin
@@ -6,9 +5,13 @@ info:
     Evaluates potentially destructive requests and returns allow/deny decisions.
   version: 1.0.0
 
+  x-fountain.port: 8010
+  x-fountain.binary: fountain-gateway
 x-persona: ../personas/destructive-guardian.md
 servers:
-  - url: http://destructive-guardian.fountain.coach/api/v1
+  - url: http://destructive-guardian.local
+    description: Local development
+  - url: http://destructive-guardian.fountain.coach
 paths:
   /guardian/evaluate:
     post:
@@ -18,7 +21,7 @@ paths:
       description: Evaluates a request and returns an allow or deny decision.
       operationId: guardianEvaluate
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       requestBody:
         required: true
@@ -103,4 +106,4 @@ components:
           type: string
           title: Error Type
 
-© 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
+# © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.

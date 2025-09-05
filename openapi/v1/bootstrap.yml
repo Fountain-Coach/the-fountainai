@@ -1,23 +1,26 @@
----
 openapi: 3.1.0
 info:
   title: FountainAI Bootstrap Service
   description: Initialize corpora, seed GPT roles, and add semantic baselines.
   version: 1.0.0
+  x-fountain.port: 8002
+  x-fountain.binary: bootstrap
 servers:
-  - url: http://bootstrap.fountain.coach/api/v1
+  - url: http://bootstrap.local
+    description: Local development
+  - url: http://bootstrap.fountain.coach
 paths:
   /bootstrap/corpus/init:
     post:
       tags:
         - Bootstrap
-      summary: "Bootstrap: Init Corpus + Seed Roles"
+      summary: 'Bootstrap: Init Corpus + Seed Roles'
       description: |
         1) Creates empty corpus via `/corpus-init` on Awareness.
         2) Seeds default GPT roles via `/bootstrap/roles/seed`.
       operationId: bootstrapInitializeCorpus
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       requestBody:
         required: true
@@ -42,12 +45,12 @@ paths:
     post:
       tags:
         - Bootstrap
-      summary: "Bootstrap: Seed GPT Roles"
+      summary: 'Bootstrap: Seed GPT Roles'
       description: >
         Populates an existing corpus with the five default GPT role prompts.
       operationId: bootstrapSeedRoles
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       requestBody:
         required: true
@@ -72,7 +75,7 @@ paths:
     post:
       tags:
         - Bootstrap
-      summary: "Bootstrap: Add Baseline, Stream Analyses & Persist Results"
+      summary: 'Bootstrap: Add Baseline, Stream Analyses & Persist Results'
       description: |
         1) Stores your new baseline snapshot in the Awareness Service.
         2) Immediately streams back two SSE channels:
@@ -87,7 +90,7 @@ paths:
         analytics—happens in one concise call.
       operationId: bootstrapAddBaseline
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       requestBody:
         required: true
@@ -116,7 +119,7 @@ paths:
         Prerequisite: call `/corpus-init` first.
       operationId: seedRoles
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       requestBody:
         required: true
@@ -143,7 +146,7 @@ paths:
       description: Endpoint that serves Prometheus metrics.
       operationId: metrics_metrics_get
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       responses:
         '200':
@@ -241,7 +244,8 @@ components:
         patterns:
           type: string
           title: Patterns
-          description: Full prompt text for the narrative patterns analysis role.
+          description: Full prompt text for the narrative patterns analysis 
+            role.
           const: |-
             You are Patterns, a spotter of recurring motifs, themes, or rhetorical structures. Inspect the corpus and list the strongest patterns you find.
         history:
@@ -362,4 +366,6 @@ components:
       discriminator:
         propertyName: kind
         mapping:
-          drift: 
+          drift:
+
+# © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.

@@ -40,6 +40,12 @@ jobs:
         run: ./install-deps.sh
       - name: Check FountainCodex imports
         run: Scripts/check_no_codex.sh
+      - name: Install PyYAML
+        run: python3 -m pip install --quiet pyyaml
+      - name: Validate OpenAPI specs
+        run: python3 scripts/validate_openapi.py
+      - name: Verify service config
+        run: swift scripts/verify-service-config.swift
       - name: Build
         continue-on-error: true
         run: |

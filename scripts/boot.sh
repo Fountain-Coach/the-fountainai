@@ -40,4 +40,5 @@ swift build -c release
 echo "==> Starting FountainAI launcher"
 swift run FountainAiLauncher
 
+
 # © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
