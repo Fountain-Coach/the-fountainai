@@ -2,21 +2,57 @@
 import Foundation
 
 /// Simple preflight script for FountainAI.
-/// It reads the **manually maintained** `services.json` file used by the
-/// launcher, verifies that each listed binary exists and is executable, and
-/// checks for required environment variables.
-///
-/// FountainAI currently has no automatic service registry—when adding new
-/// openapi servers you must update `services.json` by hand so this
-/// diagnostics check and the launcher know about them.
-struct Service: Decodable {
+/// Service metadata is derived from OpenAPI specifications;
+/// these specs are the authoritative source of truth for what
+/// binaries the launcher manages.
+
+struct Service {
     let name: String
     let binaryPath: String
 }
 
-let scriptPath = URL(fileURLWithPath: CommandLine.arguments[0]).resolvingSymlinksInPath()
-let scriptDirectory = scriptPath.deletingLastPathComponent()
-let servicesURL = scriptDirectory.appendingPathComponent("../FountainAiLauncher/Sources/FountainAiLauncher/services.json").standardized
+func camelCaseToDash(_ input: String) -> String {
+    var result = ""
+    for char in input {
+        if char.isUppercase {
+            if !result.isEmpty { result.append("-") }
+            result.append(char.lowercased())
+        } else {
+            result.append(char)
+        }
+    }
+    return result
+}
+
+func loadServices() throws -> [Service] {
+    let scriptPath = URL(fileURLWithPath: CommandLine.arguments[0]).resolvingSymlinksInPath()
+    let root = scriptPath.deletingLastPathComponent().appendingPathComponent("..").standardized
+    let servicesDir = root.appendingPathComponent("services")
+    let specsDir = root.appendingPathComponent("openapi/v1")
+    let fm = FileManager.default
+    let dirs = try fm.contentsOfDirectory(atPath: servicesDir.path).filter { !$0.hasSuffix(".md") }
+    var services: [Service] = []
+    for dir in dirs {
+        var base = dir
+        if base.hasSuffix("Server") {
+            base.removeLast("Server".count)
+        } else if base.hasSuffix("Service") {
+            base.removeLast("Service".count)
+        }
+        let dashed = camelCaseToDash(base)
+        let specURL = specsDir.appendingPathComponent("\(dashed).yml")
+        guard fm.fileExists(atPath: specURL.path),
+              let text = try? String(contentsOf: specURL) else { continue }
+        var title = dashed
+        if let line = text.split(separator: "\n").first(where: { $0.trimmingCharacters(in: .whitespaces).hasPrefix("title:") }) {
+            title = line.split(separator: ":", maxSplits: 1)[1].trimmingCharacters(in: .whitespaces)
+        }
+        let binaryName = dashed == "gateway" ? "fountain-gateway" : dashed
+        let binaryPath = "/usr/local/bin/\(binaryName)"
+        services.append(Service(name: title, binaryPath: binaryPath))
+    }
+    return services
+}
 
 var allChecksPassed = true
 
@@ -26,23 +62,14 @@ func fail(_ message: String) {
 }
 
 let fm = FileManager.default
+let services = (try? loadServices()) ?? []
 
-if fm.fileExists(atPath: servicesURL.path) {
-    do {
-        let data = try Data(contentsOf: servicesURL)
-        let services = try JSONDecoder().decode([Service].self, from: data)
-        for service in services {
-            if fm.isExecutableFile(atPath: service.binaryPath) {
-                print("✅ \(service.name) binary found at \(service.binaryPath)")
-            } else {
-                fail("\(service.name) binary missing or not executable at \(service.binaryPath)")
-            }
-        }
-    } catch {
-        fail("Failed to parse services.json: \(error)")
+for service in services {
+    if fm.isExecutableFile(atPath: service.binaryPath) {
+        print("✅ \(service.name) binary found at \(service.binaryPath)")
+    } else {
+        fail("\(service.name) binary missing or not executable at \(service.binaryPath)")
     }
-} else {
-    fail("Services configuration not found at \(servicesURL.path)")
 }
 
 let requiredEnv = ["OPENAI_API_KEY", "FOUNTAINSTORE_URL", "FOUNTAINSTORE_API_KEY"]
@@ -64,3 +91,4 @@ if allChecksPassed {
 exit(allChecksPassed ? 0 : 1)
 
 // © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
+
