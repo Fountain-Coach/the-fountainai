@@ -16,6 +16,7 @@ For a repository-wide index of OpenAPI coverage, see [../OPENAPI_COVERAGE.md](..
 | Function Caller Service | 1.0.0 | Contexter alias Benedikt Eickhoff | [v1/function-caller.yml](v1/function-caller.yml) |
 | Gateway | 1.0.0 | Contexter alias Benedikt Eickhoff | [v1/gateway.yml](v1/gateway.yml) |
 | LLM Gateway | 2.0.0 | Contexter alias Benedikt Eickhoff | [v2/llm-gateway.yml](v2/llm-gateway.yml) |
+| LLM Gateway | 2.0.0 | Contexter alias Benedikt Eickhoff | [v1/llm-gateway.yml](v1/llm-gateway.yml) |
 | Persistence Service | 1.0.2 | Contexter alias Benedikt Eickhoff | [v1/persist.yml](v1/persist.yml) |
 | Planner Service | 1.0.0 | Contexter alias Benedikt Eickhoff | [v1/planner.yml](v1/planner.yml) |
 | Planner Service (legacy alias) | 1.0.0 | Contexter alias Benedikt Eickhoff | [v0/planner.yml](v0/planner.yml) |
@@ -71,6 +72,7 @@ For a repository-wide index of OpenAPI coverage, see [../OPENAPI_COVERAGE.md](..
 | Destructive Guardian Gateway Plugin | Contexter alias Benedikt Eickhoff | ✅ | [v1/destructive-guardian-gateway.yml](v1/destructive-guardian-gateway.yml) |
 | Security Sentinel Gateway Plugin | Contexter alias Benedikt Eickhoff | ✅ | [v1/security-sentinel-gateway.yml](v1/security-sentinel-gateway.yml) |
 | Curator Gateway Plugin | Contexter alias Benedikt Eickhoff | ✅ | [v1/curator-gateway.yml](v1/curator-gateway.yml) |
+| LLM Gateway Plugin | Contexter alias Benedikt Eickhoff | ✅ | [v1/llm-gateway.yml](v1/llm-gateway.yml) |
 
 ## Persistence/FountainStore
 
