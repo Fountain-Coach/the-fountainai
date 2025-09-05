@@ -22,8 +22,7 @@ if gatewayConfig == nil {
     FileHandle.standardError.write(Data("[gateway] Warning: failed to load Configuration/gateway.yml; using defaults for rate limiting.\n".utf8))
 }
 let rateLimiter = RateLimiterGatewayPlugin(defaultLimit: gatewayConfig?.rateLimitPerMinute ?? 60)
-let cotLogPath = ProcessInfo.processInfo.environment["COT_LOG_PATH"].map { URL(fileURLWithPath: $0) }
-let llmPlugin = LLMGatewayPlugin(cotLogURL: cotLogPath)
+let llmPlugin = LLMGatewayPlugin()
 let authPlugin = AuthGatewayPlugin()
 let routesFile = URL(fileURLWithPath: "Configuration/routes.json")
 var plugins: [any GatewayPlugin] = []
@@ -40,7 +39,6 @@ if let jwksURL = ProcessInfo.processInfo.environment["GATEWAY_JWKS_URL"], let pr
 plugins.append(contentsOf: [
     authPlugin as any GatewayPlugin,
     llmPlugin as any GatewayPlugin,
-    CoTLogger() as any GatewayPlugin,
     rateLimiter as any GatewayPlugin,
     LoggingPlugin() as any GatewayPlugin,
     PublishingFrontendPlugin(rootPath: publishingConfig?.rootPath ?? "./Public") as any GatewayPlugin

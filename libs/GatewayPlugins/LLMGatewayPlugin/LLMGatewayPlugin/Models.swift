@@ -58,13 +58,11 @@ public struct ChatRequest: Codable {
     public let messages: [MessageObject]
     public let functions: [FunctionObject]?
     public let function_call: FunctionCall?
-    public let include_cot: Bool?
-    public init(model: String, messages: [MessageObject], functions: [FunctionObject]? = nil, function_call: FunctionCall? = nil, include_cot: Bool? = nil) {
+    public init(model: String, messages: [MessageObject], functions: [FunctionObject]? = nil, function_call: FunctionCall? = nil) {
         self.model = model
         self.messages = messages
         self.functions = functions
         self.function_call = function_call
-        self.include_cot = include_cot
     }
 }
 

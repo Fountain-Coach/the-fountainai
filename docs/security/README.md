@@ -13,9 +13,6 @@ This document outlines the current security posture of FountainAi and highlights
 ### Authentication & authorization
 The authentication gateway plugin validates OAuth2/OIDC bearer tokens and enforces role‑based access on administrative routes, returning `401` or `403` when credentials or scopes are insufficient.
 
-### Chain‑of‑thought logging
-[`CoTLogger`](../../Sources/GatewayApp/CoTLogger.swift) captures reasoning when `include_cot` is set, sanitizes secrets, and persists them.
-
 ### Rate limiting
 [`RateLimiterGatewayPlugin`](../../libs/GatewayPlugins/RateLimiterGatewayPlugin/RateLimiterGatewayPlugin/RateLimiterGatewayPlugin.swift) implements per‑client token buckets to throttle excessive requests and records allowance metrics.
 

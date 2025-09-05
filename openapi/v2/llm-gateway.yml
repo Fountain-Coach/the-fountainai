@@ -41,49 +41,15 @@ paths:
             application/json:
               schema:
                 type: object
-                properties:
-                  cot:
-                    title: Chain of Thought
-                    description: Reasoning steps produced by the model
-                    type: array
-                    items:
-                      type: string
+                properties: {}
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-  /chat/{id}/cot:
-    get:
-      summary: Fetch stored Chain-of-Thought
-      operationId: getChatCoT
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Retrieved reasoning
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                  cot:
-                    type: string
-                  cot_summary:
-                    type: string
-        "404":
-          description: Not Found
-      security:
-        - bearerAuth: []
-components:
-  schemas:
+  components:
+    schemas:
     ChatRequest:
       title: ChatRequest
       type: object
@@ -110,10 +76,6 @@ components:
             - type: string
               enum: [auto]
             - $ref: '#/components/schemas/FunctionCallObject'
-        include_cot:
-          title: Include Chain of Thought
-          description: When true, reasoning steps are returned and logged
-          type: boolean
     FunctionCallObject:
       title: FunctionCallObject
       type: object
