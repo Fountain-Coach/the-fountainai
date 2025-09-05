@@ -12,7 +12,8 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/apple/swift-crypto.git", from: "3.0.0"),
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.63.0"),
-        .package(url: "https://github.com/Fountain-Coach/Teatro.git", branch: "main")
+        .package(url: "https://github.com/Fountain-Coach/Teatro.git", branch: "main"),
+        .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.0")
     ],
     targets: [
         .executableTarget(
@@ -22,12 +23,10 @@ let package = Package(
                 .product(name: "NIO", package: "swift-nio"),
                 .product(name: "NIOHTTP1", package: "swift-nio"),
                 .product(name: "Teatro", package: "teatro"),
-                .product(name: "TeatroRenderAPI", package: "teatro")
+                .product(name: "TeatroRenderAPI", package: "teatro"),
+                .product(name: "Yams", package: "yams")
             ],
-            path: "Sources",
-            resources: [
-                .copy("services.json")
-            ]
+            path: "Sources"
         ),
         .testTarget(
             name: "FountainAiLauncherTests",

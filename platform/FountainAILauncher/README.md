@@ -27,7 +27,7 @@ These are checked alongside `OPENAI_API_KEY` during diagnostics.
 
 - ✅ Cross-platform orchestration (macOS & Linux)
 - 🌀 Launches all services as subprocesses
-- 📄 Loads service metadata from `services.json`
+- 📄 Discovers service metadata from OpenAPI gateway specs
 - 🔁 Optional auto-restart on failure
 - 🌐 Optional `/status` and `/health` HTTP endpoint (coming soon)
 - 📜 Logs directly to stdout or per-service log files
@@ -70,45 +70,17 @@ FountainAiLauncher/
 
 ---
 
-## 🗂 Manual Service Registry
+## 🗂 OpenAPI-based Service Discovery
 
-FountainAI does not include automatic service discovery. The launcher and the
-`start-diagnostics.swift` script read from the manually curated
-`Sources/FountainAiLauncher/services.json` file to know which openapi
-servers to start. When a new service is added—or a path changes—you must update
-this file yourself. Tools like `clientgen` can generate API clients, but they do
-not register services in the launcher.
+FountainAI now includes automatic service discovery. The launcher and
+`start-diagnostics.swift` scan `openapi/v*/` for `*-gateway.yml` files. Each
+spec declares the executable name via `x-fountain.binary` and an optional
+`x-fountain.port`. The first entry in `servers:` is used to determine the
+service's base URL. Binaries are resolved relative to the
+`FOUNTAINAI_SERVICES_DIR` environment variable (defaulting to
+`/usr/local/bin`).
 
-## 🔍 Auto-generate `services.json`
-
-To avoid editing the registry by hand, you can rebuild `services.json` by
-scanning a directory that contains all openapi binaries:
-
-```bash
-FOUNTAINAI_SERVICES_DIR=/usr/local/bin swift scripts/generate-service-registry.swift
-```
-
-The script checks the specified directory for the expected executables and
-writes their locations into `Sources/FountainAiLauncher/services.json`. Run it
-whenever you install or move service binaries.
-
----
-
-## 🔧 Required Service Binaries
-
-The launcher expects the following executables to exist on disk. Install each service to the path shown or adjust `main.swift` if your binaries live elsewhere.
-
-| Service Name         | Expected Path                             |
-|----------------------|-------------------------------------------|
-| Baseline Awareness   | `/usr/local/bin/baseline-awareness`       |
-| Bootstrap            | `/usr/local/bin/bootstrap`                |
-| Planner              | `/usr/local/bin/planner`                  |
-| Function Caller      | `/usr/local/bin/function-caller`          |
-| Persist              | `/usr/local/bin/persist`                  |
-| LLM Gateway          | `/usr/local/bin/llm-gateway`              |
-| Semantic Browser     | `/usr/local/bin/semantic-browser`         |
-| Gateway              | `/usr/local/bin/fountain-gateway`         |
-| Tools Factory        | `/usr/local/bin/tools-factory`            |
+This removes the need for a manual `services.json` manifest.
 
 ---
 
