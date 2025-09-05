@@ -19,7 +19,6 @@ fi
 CHECK_ENV="${CHECK_ENV:-1}"
 RUN_DIAGNOSTICS="${RUN_DIAGNOSTICS:-1}"
 BUILD="${BUILD:-1}"
-INSTALL_BINARIES="${INSTALL_BINARIES:-1}"
 LAUNCH_DEMO="${LAUNCH_DEMO:-1}"
 
 # Step 1: verify required environment variables
@@ -50,26 +49,7 @@ if [[ "$BUILD" == "1" ]]; then
   swift build -c release
 fi
 
-# Step 4: install service binaries defined in services.json
-if [[ "$INSTALL_BINARIES" == "1" ]]; then
-  echo "==> Installing service binaries"
-  SERVICES_JSON="$REPO_ROOT/FountainAiLauncher/Sources/FountainAiLauncher/services.json"
-  if command -v jq >/dev/null 2>&1; then
-    jq -r '.[].binaryPath' "$SERVICES_JSON" | while read -r path; do
-      bin="$(basename "$path")"
-      if [[ -f "$REPO_ROOT/.build/release/$bin" ]]; then
-        install "$REPO_ROOT/.build/release/$bin" "$path"
-        echo "Installed $bin to $path"
-      else
-        echo "Skipping $bin; build output not found" >&2
-      fi
-    done
-  else
-    echo "jq not found; skipping install step" >&2
-  fi
-fi
-
-# Step 5: start the launcher/demo
+# Step 4: start the launcher/demo
 if [[ "$LAUNCH_DEMO" == "1" ]]; then
   echo "==> Starting FountainAI launcher"
   swift run FountainAiLauncher

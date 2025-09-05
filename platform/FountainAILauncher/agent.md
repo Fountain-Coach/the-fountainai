@@ -23,7 +23,7 @@ For runtime usage and deployment instructions, consult [README.md](README.md).
    - any gateway credentials and TLS config
 2. Run diagnostics equivalent to `scripts/start-diagnostics.swift`.
 3. Execute `swift build --configuration release` for every package.
-4. Install or symlink resulting binaries according to `services.json`.
+4. Install or symlink resulting binaries according to the OpenAPI `x-fountain.binary` declarations.
 5. Generate a manifest of SHA-256 hashes and file permissions for each binary; runtime must verify against this manifest.
 
 ---
