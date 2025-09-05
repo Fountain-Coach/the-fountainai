@@ -1,13 +1,22 @@
 import Foundation
 import Yams
+import FountainStoreClient
 
-public func roleGuardConfigURL(environment: [String: String] = ProcessInfo.processInfo.environment) -> URL {
-    return environment["ROLE_GUARD_PATH"].map(URL.init(fileURLWithPath:)) ?? URL(fileURLWithPath: "Configuration/roleguard.yml")
+/// Loads role guard rules from FountainStore's `config/roleguard.yml`.
+/// Falls back to a local file when FountainStore is unavailable.
+public func loadRoleGuardRules(store: ConfigurationStore? = nil,
+                               path: URL? = nil,
+                               environment: [String: String] = ProcessInfo.processInfo.environment) -> [String: RoleRequirement] {
+    let svc = store ?? ConfigurationStore.fromEnvironment(environment)
+    if let data = svc?.getSync("roleguard.yml"), let text = String(data: data, encoding: .utf8) {
+        return parseRoleGuardRules(from: text)
+    }
+    let filePath = path?.path ?? (environment["ROLE_GUARD_PATH"] ?? "Configuration/roleguard.yml")
+    guard let text = try? String(contentsOfFile: filePath, encoding: .utf8) else { return [:] }
+    return parseRoleGuardRules(from: text)
 }
 
-public func loadRoleGuardRules(from path: URL? = nil, environment: [String: String] = ProcessInfo.processInfo.environment) -> [String: RoleRequirement] {
-    let url = path ?? roleGuardConfigURL(environment: environment)
-    guard FileManager.default.fileExists(atPath: url.path), let text = try? String(contentsOf: url, encoding: .utf8) else { return [:] }
+private func parseRoleGuardRules(from text: String) -> [String: RoleRequirement] {
     do {
         if let yaml = try Yams.load(yaml: text) as? [String: Any], let rawRules = yaml["rules"] as? [String: Any] {
             var result: [String: RoleRequirement] = [:]

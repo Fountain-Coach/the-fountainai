@@ -2,25 +2,38 @@ import Foundation
 import FountainRuntime
 import OpenAPICurator
 import Yams
+import FountainStoreClient
 import CryptoKit
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
+private let env = ProcessInfo.processInfo.environment
+private let configStore = ConfigurationStore.fromEnvironment(env)
+private let initialRules: Rules = loadCuratorRules(environment: env, store: configStore)
+let curatorRulesStore = CuratorRulesStore(initialRules: initialRules, configURL: nil)
+var curatorRulesReloader: CuratorRulesReloader?
+if configStore == nil {
+    let path = env["CURATOR_RULES_PATH"] ?? "Configuration/curator.yml"
+    let url = URL(fileURLWithPath: path)
+    curatorRulesReloader = CuratorRulesReloader(store: curatorRulesStore, url: url)
+    curatorRulesReloader?.start(interval: 2.0)
+}
 
-private let rulesPath = ProcessInfo.processInfo.environment["CURATOR_RULES_PATH"] ?? "Configuration/curator.yml"
-private let rulesURL = URL(fileURLWithPath: rulesPath)
-private let initialRules: Rules = {
-    let contents = (try? String(contentsOfFile: rulesPath)) ?? ""
+public func loadCuratorRules(environment: [String: String] = ProcessInfo.processInfo.environment,
+                             store: ConfigurationStore? = nil) -> Rules {
+    let svc = store ?? ConfigurationStore.fromEnvironment(environment)
+    if let data = svc?.getSync("curator.yml"), let text = String(data: data, encoding: .utf8) {
+        return parseRules(from: text)
+    }
+    let path = environment["CURATOR_RULES_PATH"] ?? "Configuration/curator.yml"
+    let contents = (try? String(contentsOfFile: path)) ?? ""
     return parseRules(from: contents)
-}()
-let curatorRulesStore = CuratorRulesStore(initialRules: initialRules, configURL: rulesURL)
-var curatorRulesReloader: CuratorRulesReloader? = CuratorRulesReloader(store: curatorRulesStore, url: rulesURL)
-curatorRulesReloader?.start(interval: 2.0)
+}
 
 public func metrics_metrics_get() async -> HTTPResponse {
     let uptime = Int(ProcessInfo.processInfo.systemUptime)
     let counts = await curatorMetrics.snapshot()
-    let rulesContents = (try? String(contentsOfFile: rulesPath)) ?? ""
+    let rulesContents: String = { if let data = configStore?.getSync("curator.yml") { return String(data: data, encoding: .utf8) ?? "" } else { let path = env["CURATOR_RULES_PATH"] ?? "Configuration/curator.yml"; return (try? String(contentsOfFile: path)) ?? "" } }()
     let digest = SHA256.hash(data: Data(rulesContents.utf8))
     let rulesHash = digest.prefix(8).reduce(UInt64(0)) { ($0 << 8) | UInt64($1) }
     var lines: [String] = []
@@ -208,7 +221,13 @@ public func makeOpenAPICuratorKernel() -> HTTPKernel {
                 return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: json)
 
             case ("GET", ["rules"]):
-                if let contents = try? String(contentsOfFile: rulesPath),
+                if let data = configStore?.getSync("curator.yml"),
+                   let yamlObj = try? Yams.load(yaml: String(data: data, encoding: .utf8) ?? "") {
+                    let json = try JSONSerialization.data(withJSONObject: yamlObj)
+                    return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: json)
+                }
+                let path = env["CURATOR_RULES_PATH"] ?? "Configuration/curator.yml"
+                if let contents = try? String(contentsOfFile: path),
                    let yamlObj = try? Yams.load(yaml: contents) {
                     let json = try JSONSerialization.data(withJSONObject: yamlObj)
                     return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: json)

@@ -1,4 +1,5 @@
 import XCTest
+import FountainStoreClient
 import Foundation
 #if canImport(FoundationNetworking)
 import FoundationNetworking
@@ -246,3 +247,20 @@ final class PublishingFrontendTests: XCTestCase {
 }
 
 // © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
+    func testLoadPublishingConfigFromStore() async throws {
+        let client = FountainStoreClient(client: EmbeddedFountainStoreClient())
+        let store = ConfigurationStore(client: client, corpusId: "p")
+        let yaml = """
+        port: 5555
+        rootPath: /srv/www
+        """
+        try await store.put("publishing.yml", data: Data(yaml.utf8))
+        let env = [
+            "FOUNTAINSTORE_URL": "embedded",
+            "FOUNTAINSTORE_API_KEY": "x",
+            "DEFAULT_CORPUS_ID": "p"
+        ]
+        let cfg = try loadPublishingConfig(store: store, environment: env)
+        XCTAssertEqual(cfg.port, 5555)
+        XCTAssertEqual(cfg.rootPath, "/srv/www")
+    }

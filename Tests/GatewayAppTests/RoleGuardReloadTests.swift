@@ -19,7 +19,7 @@ final class RoleGuardReloadTests: XCTestCase {
         try initial.write(to: rulesFile)
 
         // Server with store pointing to temp file
-        let store = RoleGuardStore(initialRules: loadRoleGuardRules(from: rulesFile), configURL: rulesFile)
+        let store = RoleGuardStore(initialRules: loadRoleGuardRules(path: rulesFile), configURL: rulesFile)
         let server = GatewayServer(plugins: [RoleGuardPlugin(store: store)], roleGuardStore: store)
         let port = 9145
         Task { try await server.start(port: port) }

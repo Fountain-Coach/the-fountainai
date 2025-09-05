@@ -327,7 +327,7 @@ let fullTargets: [Target] = [
     ),
     .testTarget(
         name: "OpenAPICuratorServiceIntegrationTests",
-        dependencies: ["openapi-curator-service"],
+        dependencies: ["openapi-curator-service", "FountainStoreClient"],
         path: "Tests/OpenAPICuratorServiceIntegrationTests"
     ),
     .testTarget(
@@ -376,7 +376,7 @@ let fullTargets: [Target] = [
         path: "Tests/BootstrapServerIntegrationTests"
     ),
     .testTarget(name: "ClientGeneratorTests", dependencies: ["FountainRuntime"], path: "Tests/ClientGeneratorTests"),
-    .testTarget(name: "PublishingFrontendTests", dependencies: ["PublishingFrontend"], path: "Tests/PublishingFrontendTests"),
+    .testTarget(name: "PublishingFrontendTests", dependencies: ["PublishingFrontend", "FountainStoreClient"], path: "Tests/PublishingFrontendTests"),
     .testTarget(name: "DNSTests", dependencies: ["PublishingFrontend", "FountainRuntime", .product(name: "Crypto", package: "swift-crypto"), .product(name: "NIOEmbedded", package: "swift-nio"), .product(name: "NIO", package: "swift-nio")], path: "Tests/DNSTests"),
     .testTarget(
         name: "IntegrationRuntimeTests",
@@ -389,7 +389,7 @@ let fullTargets: [Target] = [
     .testTarget(name: "MIDI2CoreTests", dependencies: ["MIDI2Core", "ResourceLoader", "flexctl"], path: "Tests/MIDI2CoreTests"),
     .testTarget(name: "MIDI2TransportsTests", dependencies: ["MIDI2Transports"], path: "Tests/MIDI2TransportsTests"),
     .testTarget(name: "FlexctlTests", dependencies: ["flexctl", "ResourceLoader"], path: "Tests/FlexctlTests"),
-    .testTarget(name: "GatewayAppTests", dependencies: ["gateway-server", "LLMGatewayPlugin", "AuthGatewayPlugin", "DestructiveGuardianGatewayPlugin", "PayloadInspectionGatewayPlugin", "BudgetBreakerGatewayPlugin", "RateLimiterGatewayPlugin", "RoleHealthCheckGatewayPlugin", "persist-server"], path: "Tests/GatewayAppTests"),
+    .testTarget(name: "GatewayAppTests", dependencies: ["gateway-server", "LLMGatewayPlugin", "AuthGatewayPlugin", "DestructiveGuardianGatewayPlugin", "PayloadInspectionGatewayPlugin", "BudgetBreakerGatewayPlugin", "RateLimiterGatewayPlugin", "RoleHealthCheckGatewayPlugin", "persist-server", "FountainStoreClient"], path: "Tests/GatewayAppTests"),
     .testTarget(name: "ToolsFactoryServiceTests", dependencies: ["ToolsFactoryService", "FountainStoreClient"], path: "Tests/ToolsFactoryServiceTests"),
     .testTarget(
         name: "ToolsmithPackageTests",
