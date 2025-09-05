@@ -2,6 +2,10 @@
 
 FountainAI organizes its Swift packages into modular layers.
 
+## Golden Rule
+
+All persistent data—including configuration—must reside in a FountainStore corpus. Services load and persist state through the corpus tree instead of local files, keeping deployments consistent and auditable.
+
 ## Architecture
 
 - [Sources/FountainCodex/Parser/SpecLoader.swift](../Sources/FountainCodex/Parser/SpecLoader.swift#L1-L33) // loads OpenAPI specs and normalizes JSON or YAML

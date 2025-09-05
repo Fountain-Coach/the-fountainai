@@ -4,9 +4,21 @@ import OpenAPICurator
 import Yams
 import FountainStoreClient
 import Crypto
+
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
+private let env = ProcessInfo.processInfo.environment
+private let configStore = ConfigurationStore.fromEnvironment(env)
+private let initialRules: Rules = loadCuratorRules(environment: env, store: configStore)
+let curatorRulesStore = CuratorRulesStore(initialRules: initialRules, configURL: nil)
+var curatorRulesReloader: CuratorRulesReloader?
+if configStore == nil {
+    let path = env["CURATOR_RULES_PATH"] ?? "Configuration/curator.yml"
+    let url = URL(fileURLWithPath: path)
+    curatorRulesReloader = CuratorRulesReloader(store: curatorRulesStore, url: url)
+    curatorRulesReloader?.start(interval: 2.0)
+}
 
 private let env = ProcessInfo.processInfo.environment
 private let configStore = ConfigurationStore.fromEnvironment(env)

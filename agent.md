@@ -10,8 +10,8 @@ This file is the **canonical manifest** at the repo root that Codex follows when
 ---
 
 ## 1) Golden Rule
-> **Everything is persisted under a corpus.**  
-> All FountainAI services write/read through FountainStore into a corpus tree. The corpus structure is authoritative and defined by Bootstrapping and Baseline Awareness. No dual APIs, no detached indexers, no semantic browser persistence outside the semantic memory engine.
+> **Everything—including configuration—is persisted under a corpus.**
+> All FountainAI services and their configs read/write through FountainStore into a corpus tree. The corpus structure is authoritative and defined by Bootstrapping and Baseline Awareness. No dual APIs, no detached indexers, and no standalone configuration files outside the semantic memory engine.
 
 ---
 
