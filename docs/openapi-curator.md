@@ -1,7 +1,7 @@
 # OpenAPI Curator
 
 ## Overview
-The OpenAPI Curator filters FountainAI service specifications into a conflict-free subset before the Tools Factory sees them. It runs as a CLI for build scripts or as an ephemeral review service, emitting curated specs and reports for each run.
+The OpenAPI Curator filters FountainAI service specifications into a conflict-free subset before the Tools Factory sees them. It runs as a CLI for build scripts or as an ephemeral review service, emitting curated specs and reports for each run. For the high-level system design, see the [architecture blueprint](openapi-curator-architecture.md).
 
 ## API Examples
 The service exposes endpoints such as `/curate`:
