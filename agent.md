@@ -18,9 +18,10 @@ This file is the **canonical manifest** at the repo root that Codex follows when
 ## 2) Deliverables (this PR series)
 
 ### 2.1 Specs & Text Updates
-- Purge all references to external or evolved indexer APIs.  
-- Update Semantic Browser spec to say: **“Artifacts are persisted into FountainStore under a corpus.”**  
+- Purge all references to external or evolved indexer APIs.
+- Update Semantic Browser spec to say: **“Artifacts are persisted into FountainStore under a corpus.”**
 - Ensure Bootstrapping and Baseline Awareness OpenAPIs are referenced as the definitional model for corpus creation, readiness, and baseline anchoring.
+- OpenAPI specs are the canonical source of truth; after modifying any spec, call the OpenAPI Curator (`POST /curate`) with the full list of repository specs and optionally submit the curated bundle to the Tools Factory.
 
 ### 2.2 FountainStore Client (Swift)
 Implement `libs/FountainStoreClient` with corpus-first methods:
