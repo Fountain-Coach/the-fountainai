@@ -17,7 +17,7 @@ public actor RoleGuardStore {
     @discardableResult
     public func reload() async -> Bool {
         guard let url = configURL else { return false }
-        let newRules = loadRoleGuardRules(from: url)
+        let newRules = loadRoleGuardRules(path: url)
         guard !newRules.isEmpty else { return false }
         self.rules = newRules
         return true

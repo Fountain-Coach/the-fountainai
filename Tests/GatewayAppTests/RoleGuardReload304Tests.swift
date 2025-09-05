@@ -12,7 +12,7 @@ final class RoleGuardReload304Tests: XCTestCase {
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         let file = dir.appendingPathComponent("roleguard.yml")
         try Data().write(to: file)
-        let store = RoleGuardStore(initialRules: loadRoleGuardRules(from: file), configURL: file)
+        let store = RoleGuardStore(initialRules: loadRoleGuardRules(path: file), configURL: file)
         let server = GatewayServer(plugins: [], roleGuardStore: store)
         let port = 9152
         Task { try await server.start(port: port) }

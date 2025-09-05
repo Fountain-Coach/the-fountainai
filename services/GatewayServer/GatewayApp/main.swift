@@ -8,32 +8,42 @@ import RateLimiterGatewayPlugin
 import CuratorGatewayPlugin
 import LauncherSignature
 import GatewayPersonaOrchestrator
+import FountainStoreClient
 
 verifyLauncherSignature()
 // Role guard plugin in this target
 // Loaded from config if present
+let env = ProcessInfo.processInfo.environment
+let configStore = ConfigurationStore.fromEnvironment(env)
 
-let publishingConfig = try? loadPublishingConfig()
+let publishingConfig = try? loadPublishingConfig(store: configStore, environment: env)
 if publishingConfig == nil {
-    FileHandle.standardError.write(Data("[gateway] Warning: failed to load Configuration/publishing.yml; using defaults for static content.\n".utf8))
+    FileHandle.standardError.write(Data("[gateway] Warning: failed to load publishing config; using defaults for static content.\n".utf8))
 }
 
-let gatewayConfig = try? loadGatewayConfig()
+let gatewayConfig = try? loadGatewayConfig(store: configStore, environment: env)
 if gatewayConfig == nil {
-    FileHandle.standardError.write(Data("[gateway] Warning: failed to load Configuration/gateway.yml; using defaults for rate limiting.\n".utf8))
+    FileHandle.standardError.write(Data("[gateway] Warning: failed to load gateway config; using defaults for rate limiting.\n".utf8))
 }
 let rateLimiter = RateLimiterGatewayPlugin(defaultLimit: gatewayConfig?.rateLimitPerMinute ?? 60)
 let curatorPlugin = CuratorGatewayPlugin()
 let llmPlugin = LLMGatewayPlugin()
 let authPlugin = AuthGatewayPlugin()
-let routesFile = URL(fileURLWithPath: "Configuration/routes.json")
+var routesURL: URL?
+if let data = configStore?.getSync("routes.json") {
+    let tmp = FileManager.default.temporaryDirectory.appendingPathComponent("routes.json")
+    try? data.write(to: tmp)
+    routesURL = tmp
+} else {
+    let path = env["ROUTES_PATH"] ?? "Configuration/routes.json"
+    routesURL = URL(fileURLWithPath: path)
+}
 var plugins: [any GatewayPlugin] = []
-let rgURL = roleGuardConfigURL()
-let roleRules = loadRoleGuardRules(from: rgURL)
-let roleGuardStore = RoleGuardStore(initialRules: roleRules, configURL: rgURL)
+let roleRules = loadRoleGuardRules(store: configStore, environment: env)
+let roleGuardStore = RoleGuardStore(initialRules: roleRules, configURL: nil)
 Task { await RoleGuardMetrics.shared.setActiveRules(roleRules.count) }
 // Choose validator based on environment (JWKS for HS256-oct if provided; otherwise env secret)
-if let jwksURL = ProcessInfo.processInfo.environment["GATEWAY_JWKS_URL"], let provider = JWKSKeyProvider(jwksURL: jwksURL) {
+if let jwksURL = env["GATEWAY_JWKS_URL"], let provider = JWKSKeyProvider(jwksURL: jwksURL) {
     plugins.append(RoleGuardPlugin(store: roleGuardStore, validator: HMACKeyValidator(keyProvider: provider)))
 } else {
     plugins.append(RoleGuardPlugin(store: roleGuardStore, validator: HMACKeyValidator()))
@@ -51,7 +61,7 @@ let orchestrator = GatewayPersonaOrchestrator(personas: [
     DestructiveGuardianPersona()
 ])
 
-let server = GatewayServer(plugins: plugins, zoneManager: nil, routeStoreURL: routesFile, certificatePath: nil, rateLimiter: rateLimiter, roleGuardStore: roleGuardStore, personaOrchestrator: orchestrator)
+let server = GatewayServer(plugins: plugins, zoneManager: nil, routeStoreURL: routesURL, certificatePath: nil, rateLimiter: rateLimiter, roleGuardStore: roleGuardStore, personaOrchestrator: orchestrator)
 Task { @MainActor in
     try await server.start(port: 8080)
 }
