@@ -28,6 +28,7 @@ let fullProducts: [Product] = [
     .executable(name: "openapi-curator-cli", targets: ["openapi-curator-cli"]),
     .executable(name: "openapi-curator-service", targets: ["openapi-curator-service"]),
     .library(name: "GatewayPersonaOrchestrator", targets: ["GatewayPersonaOrchestrator"]),
+    .library(name: "CuratorGatewayPlugin", targets: ["CuratorGatewayPlugin"]),
     .executable(name: "semantic-browser-server", targets: ["semantic-browser-server"])]
 
 let leanProducts: [Product] = [
@@ -42,6 +43,7 @@ let leanProducts: [Product] = [
     .library(name: "DestructiveGuardianGatewayPlugin", targets: ["DestructiveGuardianGatewayPlugin"]),
     .library(name: "RoleHealthCheckGatewayPlugin", targets: ["RoleHealthCheckGatewayPlugin"]),
     .library(name: "SecuritySentinelGatewayPlugin", targets: ["SecuritySentinelGatewayPlugin"]),
+    .library(name: "CuratorGatewayPlugin", targets: ["CuratorGatewayPlugin"]),
     .library(name: "GatewayPersonaOrchestrator", targets: ["GatewayPersonaOrchestrator"]),
     .executable(name: "semantic-browser-server", targets: ["semantic-browser-server"])
 ]
@@ -119,6 +121,7 @@ let fullTargets: [Target] = [
             "PublishingFrontend",
             "LLMGatewayPlugin",
             "AuthGatewayPlugin",
+            "CuratorGatewayPlugin",
             "RateLimiterGatewayPlugin",
             "BudgetBreakerGatewayPlugin",
             "PayloadInspectionGatewayPlugin",
@@ -178,6 +181,11 @@ let fullTargets: [Target] = [
             .product(name: "Logging", package: "swift-log")
         ],
         path: "libs/GatewayPlugins/SecuritySentinelGatewayPlugin",
+    ),
+    .target(
+        name: "CuratorGatewayPlugin",
+        dependencies: ["FountainRuntime", "OpenAPICurator"],
+        path: "libs/GatewayPlugins/CuratorGatewayPlugin",
     ),
     .target(
         name: "GatewayPersonaOrchestrator",
@@ -470,6 +478,7 @@ let fullTargets: [Target] = [
             "RoleHealthCheckGatewayPlugin",
             "SecuritySentinelGatewayPlugin",
             "DestructiveGuardianGatewayPlugin",
+            "CuratorGatewayPlugin",
             "FountainRuntime",
             .product(name: "Crypto", package: "swift-crypto")
         ],
@@ -558,6 +567,7 @@ let leanTargets: [Target] = [
             "PublishingFrontend",
             "LLMGatewayPlugin",
             "AuthGatewayPlugin",
+            "CuratorGatewayPlugin",
             "RateLimiterGatewayPlugin",
             "BudgetBreakerGatewayPlugin",
             "PayloadInspectionGatewayPlugin",
@@ -617,6 +627,11 @@ let leanTargets: [Target] = [
             .product(name: "Logging", package: "swift-log")
         ],
         path: "libs/GatewayPlugins/SecuritySentinelGatewayPlugin"
+    ),
+    .target(
+        name: "CuratorGatewayPlugin",
+        dependencies: ["FountainRuntime", "OpenAPICurator"],
+        path: "libs/GatewayPlugins/CuratorGatewayPlugin"
     ),
     .target(
         name: "GatewayPersonaOrchestrator",
@@ -701,6 +716,7 @@ let leanTargets: [Target] = [
             "RoleHealthCheckGatewayPlugin",
             "SecuritySentinelGatewayPlugin",
             "DestructiveGuardianGatewayPlugin",
+            "CuratorGatewayPlugin",
             "FountainRuntime",
             .product(name: "Crypto", package: "swift-crypto")
         ],
