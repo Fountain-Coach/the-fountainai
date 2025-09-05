@@ -1,0 +1,755 @@
+
+Showing All Issues
+Launch actions
+Test Suite 'All tests' started at 2025-09-05 11:22:25.256.
+Test Suite 'DNSTests.xctest' started at 2025-09-05 11:22:25.257.
+Test Suite 'APIClientTests' started at 2025-09-05 11:22:25.257.
+Test Case '-[DNSTests.APIClientTests testBearerInitializerSetsHeader]' started.
+Test Case '-[DNSTests.APIClientTests testBearerInitializerSetsHeader]' passed (0.005 seconds).
+Test Case '-[DNSTests.APIClientTests testNoBodyResponseReturnsInstance]' started.
+Test Case '-[DNSTests.APIClientTests testNoBodyResponseReturnsInstance]' passed (0.001 seconds).
+Test Case '-[DNSTests.APIClientTests testNon200ResponseThrowsAPIError]' started.
+Test Case '-[DNSTests.APIClientTests testNon200ResponseThrowsAPIError]' passed (0.002 seconds).
+Test Case '-[DNSTests.APIClientTests testRawDataResponse]' started.
+Test Case '-[DNSTests.APIClientTests testRawDataResponse]' passed (0.001 seconds).
+Test Case '-[DNSTests.APIClientTests testRequestWithoutBodyOmitsContentType]' started.
+Test Case '-[DNSTests.APIClientTests testRequestWithoutBodyOmitsContentType]' passed (0.001 seconds).
+Test Case '-[DNSTests.APIClientTests testSendDecodesResponse]' started.
+Test Case '-[DNSTests.APIClientTests testSendDecodesResponse]' passed (0.001 seconds).
+Test Suite 'APIClientTests' passed at 2025-09-05 11:22:25.269.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.011 (0.012) seconds
+Test Suite 'DNSEngineTests' started at 2025-09-05 11:22:25.269.
+Test Case '-[DNSTests.DNSEngineTests testHandlerDropsNXDomainQuery]' started.
+2025-09-05T11:22:25+0200 info DNSEngine: hit=false name=unknown.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testHandlerDropsNXDomainQuery]' passed (0.008 seconds).
+Test Case '-[DNSTests.DNSEngineTests testHandlerResolvesViaEmbeddedChannel]' started.
+2025-09-05T11:22:25+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testHandlerResolvesViaEmbeddedChannel]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testInvalidIPv6RecordReturnsNil]' started.
+Test Case '-[DNSTests.DNSEngineTests testInvalidIPv6RecordReturnsNil]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testInvalidQueryLogsWarning]' started.
+2025-09-05T11:22:25+0200 warning DNSEngine: [FountainRuntime] Failed to parse query
+Test Case '-[DNSTests.DNSEngineTests testInvalidQueryLogsWarning]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testMakeResponseInvalidARecordReturnsNil]' started.
+Test Case '-[DNSTests.DNSEngineTests testMakeResponseInvalidARecordReturnsNil]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testMalformedPacketRecordedAsInvalid]' started.
+2025-09-05T11:22:25+0200 warning DNSEngine: [FountainRuntime] Failed to parse query
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/DNSTests/DNSEngineTests.swift:184: error: -[DNSTests.DNSEngineTests testMalformedPacketRecordedAsInvalid] : XCTAssertTrue failed
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/DNSTests/DNSEngineTests.swift:185: error: -[DNSTests.DNSEngineTests testMalformedPacketRecordedAsInvalid] : XCTAssertTrue failed
+Test Case '-[DNSTests.DNSEngineTests testMalformedPacketRecordedAsInvalid]' failed (2.489 seconds).
+Test Case '-[DNSTests.DNSEngineTests testMetricsRecordedPerType]' started.
+2025-09-05T11:22:27+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+2025-09-05T11:22:27+0200 info DNSEngine: hit=true name=ipv6.com type=AAAA [FountainRuntime] dns_query
+2025-09-05T11:22:27+0200 info DNSEngine: hit=true name=alias.com type=CNAME [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testMetricsRecordedPerType]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testNXDomainRecordsMiss]' started.
+2025-09-05T11:22:27+0200 info DNSEngine: hit=false name=missing.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testNXDomainRecordsMiss]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testParserInvalidLabelReturnsNil]' started.
+Test Case '-[DNSTests.DNSEngineTests testParserInvalidLabelReturnsNil]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testParserMissingQuestionClassReturnsNil]' started.
+Test Case '-[DNSTests.DNSEngineTests testParserMissingQuestionClassReturnsNil]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testRecordRateLimitMetrics]' started.
+Test Case '-[DNSTests.DNSEngineTests testRecordRateLimitMetrics]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testResetZeroesMetrics]' started.
+Test Case '-[DNSTests.DNSEngineTests testResetZeroesMetrics]' passed (0.343 seconds).
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithAAAARecordFromCache]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=ipv6.com type=AAAA [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithAAAARecordFromCache]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithARecordFromCache]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithARecordFromCache]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithCNAMERecordFromCache]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=alias.com type=CNAME [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithCNAMERecordFromCache]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testSignZoneAndVerify]' started.
+Test Case '-[DNSTests.DNSEngineTests testSignZoneAndVerify]' passed (0.003 seconds).
+Test Case '-[DNSTests.DNSEngineTests testSignZoneReturnsNilWithoutSigner]' started.
+Test Case '-[DNSTests.DNSEngineTests testSignZoneReturnsNilWithoutSigner]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testTypeNameUnknown]' started.
+Test Case '-[DNSTests.DNSEngineTests testTypeNameUnknown]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testUnknownRecordReturnsNil]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=false name=unknown.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testUnknownRecordReturnsNil]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testUnsupportedRecordTypeResponseNil]' started.
+Test Case '-[DNSTests.DNSEngineTests testUnsupportedRecordTypeResponseNil]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testUpdatedRecordServedFromCache]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testUpdatedRecordServedFromCache]' passed (0.041 seconds).
+Test Suite 'DNSEngineTests' failed at 2025-09-05 11:22:28.166.
+	 Executed 21 tests, with 2 failures (0 unexpected) in 2.894 (2.897) seconds
+Test Suite 'DNSHandlerTests' started at 2025-09-05 11:22:28.166.
+Test Case '-[DNSTests.DNSHandlerTests testChannelReadCompleteFlushesWrites]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSHandlerTests testChannelReadCompleteFlushesWrites]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSHandlerTests testChannelReadForwardsResponse]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSHandlerTests testChannelReadForwardsResponse]' passed (0.001 seconds).
+Test Suite 'DNSHandlerTests' passed at 2025-09-05 11:22:28.168.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'DNSMetricsTests' started at 2025-09-05 11:22:28.169.
+Test Case '-[DNSTests.DNSMetricsTests testExpositionIncludesTypeCounts]' started.
+Test Case '-[DNSTests.DNSMetricsTests testExpositionIncludesTypeCounts]' passed (0.105 seconds).
+Test Case '-[DNSTests.DNSMetricsTests testWaitResolvesAfterTargetQueries]' started.
+Test Case '-[DNSTests.DNSMetricsTests testWaitResolvesAfterTargetQueries]' passed (0.036 seconds).
+Test Case '-[DNSTests.DNSMetricsTests testWaitTimesOutWhenNotReached]' started.
+Test Case '-[DNSTests.DNSMetricsTests testWaitTimesOutWhenNotReached]' passed (0.051 seconds).
+Test Suite 'DNSMetricsTests' passed at 2025-09-05 11:22:28.361.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.192 (0.192) seconds
+Test Suite 'DNSSECSignerTests' started at 2025-09-05 11:22:28.361.
+Test Case '-[DNSTests.DNSSECSignerTests testPublicKeyValidatesSignature]' started.
+Test Case '-[DNSTests.DNSSECSignerTests testPublicKeyValidatesSignature]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSSECSignerTests testSignAndVerifyZone]' started.
+Test Case '-[DNSTests.DNSSECSignerTests testSignAndVerifyZone]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSSECSignerTests testVerifyFailsForTamperedZone]' started.
+Test Case '-[DNSTests.DNSSECSignerTests testVerifyFailsForTamperedZone]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSSECSignerTests testVerifyFailsWithDifferentKey]' started.
+Test Case '-[DNSTests.DNSSECSignerTests testVerifyFailsWithDifferentKey]' passed (0.001 seconds).
+Test Suite 'DNSSECSignerTests' passed at 2025-09-05 11:22:28.417.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.056) seconds
+Test Suite 'DNSServerTCPTests' started at 2025-09-05 11:22:28.418.
+Test Case '-[DNSTests.DNSServerTCPTests testHandlesIncompleteFrame]' started.
+Test Case '-[DNSTests.DNSServerTCPTests testHandlesIncompleteFrame]' passed (0.125 seconds).
+Test Case '-[DNSTests.DNSServerTCPTests testServerRespondsToTCPQueries]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSServerTCPTests testServerRespondsToTCPQueries]' passed (0.005 seconds).
+Test Suite 'DNSServerTCPTests' passed at 2025-09-05 11:22:28.547.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.129 (0.130) seconds
+Test Suite 'DNSServerTests' started at 2025-09-05 11:22:28.547.
+Test Case '-[DNSTests.DNSServerTests testServerRespondsToUDPQueries]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSServerTests testServerRespondsToUDPQueries]' passed (0.229 seconds).
+Test Suite 'DNSServerTests' passed at 2025-09-05 11:22:28.776.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.229 (0.229) seconds
+Test Suite 'ZoneManagerDNSSECTests' started at 2025-09-05 11:22:28.777.
+Test Case '-[DNSTests.ZoneManagerDNSSECTests testPersistsSignature]' started.
+Test Case '-[DNSTests.ZoneManagerDNSSECTests testPersistsSignature]' passed (0.003 seconds).
+Test Suite 'ZoneManagerDNSSECTests' passed at 2025-09-05 11:22:28.780.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+Test Suite 'ZoneManagerRecordTypeTests' started at 2025-09-05 11:22:28.780.
+Test Case '-[DNSTests.ZoneManagerRecordTypeTests testRetrievesRecordsByType]' started.
+Test Case '-[DNSTests.ZoneManagerRecordTypeTests testRetrievesRecordsByType]' passed (0.003 seconds).
+Test Suite 'ZoneManagerRecordTypeTests' passed at 2025-09-05 11:22:28.784.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+Test Suite 'ZoneManagerTests' started at 2025-09-05 11:22:28.784.
+Test Case '-[DNSTests.ZoneManagerTests testConcurrentUpdatesAreSerialized]' started.
+Test Case '-[DNSTests.ZoneManagerTests testConcurrentUpdatesAreSerialized]' passed (0.011 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testCreateRecordReturnsNilForUnknownZone]' started.
+Test Case '-[DNSTests.ZoneManagerTests testCreateRecordReturnsNilForUnknownZone]' passed (0.001 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testDeleteRecordReturnsFalseForUnknownRecord]' started.
+Test Case '-[DNSTests.ZoneManagerTests testDeleteRecordReturnsFalseForUnknownRecord]' passed (0.001 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testDeleteZoneReturnsFalseForUnknownID]' started.
+Test Case '-[DNSTests.ZoneManagerTests testDeleteZoneReturnsFalseForUnknownID]' passed (0.001 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testDisableGitCommitsSkipsCommit]' started.
+Initialized empty Git repository in /private/var/folders/ln/ps7y8sb135d6z_dx83yqg_xh0000gn/T/DE60ADBB-EA61-48C6-80B4-7A3218A29C22/.git/
+[main (root-commit) 10db5c4] Initial
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 zones.yaml
+Test Case '-[DNSTests.ZoneManagerTests testDisableGitCommitsSkipsCommit]' passed (0.246 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testInitBuildsRecordMapWithSubrecord]' started.
+Test Case '-[DNSTests.ZoneManagerTests testInitBuildsRecordMapWithSubrecord]' passed (0.002 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testListAndDeleteZonesAndRecords]' started.
+Test Case '-[DNSTests.ZoneManagerTests testListAndDeleteZonesAndRecords]' passed (0.004 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testLoadsExistingZonesFromDisk]' started.
+Test Case '-[DNSTests.ZoneManagerTests testLoadsExistingZonesFromDisk]' passed (0.001 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testPersistsUpdatesToDisk]' started.
+Test Case '-[DNSTests.ZoneManagerTests testPersistsUpdatesToDisk]' passed (0.002 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testReloadUpdatesCache]' started.
+Test Case '-[DNSTests.ZoneManagerTests testReloadUpdatesCache]' passed (1.008 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testSetCommitsChangesToGit]' started.
+Initialized empty Git repository in /private/var/folders/ln/ps7y8sb135d6z_dx83yqg_xh0000gn/T/B41D8743-6BAE-4585-A747-6129A60A491F/.git/
+[main (root-commit) 5cca549] Update zone file
+ 1 file changed, 4 insertions(+)
+ create mode 100644 zones.yaml
+[main 370af5f] Update zone file
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+Test Case '-[DNSTests.ZoneManagerTests testSetCommitsChangesToGit]' passed (0.121 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testUpdateRecordReturnsNilForMissingRecord]' started.
+Test Case '-[DNSTests.ZoneManagerTests testUpdateRecordReturnsNilForMissingRecord]' passed (0.002 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testUpdatesStreamEmitsOnModification]' started.
+Test Case '-[DNSTests.ZoneManagerTests testUpdatesStreamEmitsOnModification]' passed (0.002 seconds).
+Test Suite 'ZoneManagerTests' passed at 2025-09-05 11:22:30.189.
+	 Executed 13 tests, with 0 failures (0 unexpected) in 1.402 (1.404) seconds
+Test Suite 'DNSTests.xctest' failed at 2025-09-05 11:22:30.189.
+	 Executed 54 tests, with 2 failures (0 unexpected) in 4.869 (4.932) seconds
+Test Suite 'All tests' failed at 2025-09-05 11:22:30.189.
+	 Executed 54 tests, with 2 failures (0 unexpected) in 4.869 (4.933) seconds
+Test Suite 'All tests' started at 2025-09-05 11:22:25.256.
+Test Suite 'DNSTests.xctest' started at 2025-09-05 11:22:25.257.
+Test Suite 'APIClientTests' started at 2025-09-05 11:22:25.257.
+Test Case '-[DNSTests.APIClientTests testBearerInitializerSetsHeader]' started.
+Test Case '-[DNSTests.APIClientTests testBearerInitializerSetsHeader]' passed (0.005 seconds).
+Test Case '-[DNSTests.APIClientTests testNoBodyResponseReturnsInstance]' started.
+Test Case '-[DNSTests.APIClientTests testNoBodyResponseReturnsInstance]' passed (0.001 seconds).
+Test Case '-[DNSTests.APIClientTests testNon200ResponseThrowsAPIError]' started.
+Test Case '-[DNSTests.APIClientTests testNon200ResponseThrowsAPIError]' passed (0.002 seconds).
+Test Case '-[DNSTests.APIClientTests testRawDataResponse]' started.
+Test Case '-[DNSTests.APIClientTests testRawDataResponse]' passed (0.001 seconds).
+Test Case '-[DNSTests.APIClientTests testRequestWithoutBodyOmitsContentType]' started.
+Test Case '-[DNSTests.APIClientTests testRequestWithoutBodyOmitsContentType]' passed (0.001 seconds).
+Test Case '-[DNSTests.APIClientTests testSendDecodesResponse]' started.
+Test Case '-[DNSTests.APIClientTests testSendDecodesResponse]' passed (0.001 seconds).
+Test Suite 'APIClientTests' passed at 2025-09-05 11:22:25.269.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.011 (0.012) seconds
+Test Suite 'DNSEngineTests' started at 2025-09-05 11:22:25.269.
+Test Case '-[DNSTests.DNSEngineTests testHandlerDropsNXDomainQuery]' started.
+2025-09-05T11:22:25+0200 info DNSEngine: hit=false name=unknown.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testHandlerDropsNXDomainQuery]' passed (0.008 seconds).
+Test Case '-[DNSTests.DNSEngineTests testHandlerResolvesViaEmbeddedChannel]' started.
+2025-09-05T11:22:25+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testHandlerResolvesViaEmbeddedChannel]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testInvalidIPv6RecordReturnsNil]' started.
+Test Case '-[DNSTests.DNSEngineTests testInvalidIPv6RecordReturnsNil]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testInvalidQueryLogsWarning]' started.
+2025-09-05T11:22:25+0200 warning DNSEngine: [FountainRuntime] Failed to parse query
+Test Case '-[DNSTests.DNSEngineTests testInvalidQueryLogsWarning]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testMakeResponseInvalidARecordReturnsNil]' started.
+Test Case '-[DNSTests.DNSEngineTests testMakeResponseInvalidARecordReturnsNil]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testMalformedPacketRecordedAsInvalid]' started.
+2025-09-05T11:22:25+0200 warning DNSEngine: [FountainRuntime] Failed to parse query
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/DNSTests/DNSEngineTests.swift:184: error: -[DNSTests.DNSEngineTests testMalformedPacketRecordedAsInvalid] : XCTAssertTrue failed
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/DNSTests/DNSEngineTests.swift:185: error: -[DNSTests.DNSEngineTests testMalformedPacketRecordedAsInvalid] : XCTAssertTrue failed
+Test Case '-[DNSTests.DNSEngineTests testMalformedPacketRecordedAsInvalid]' failed (2.489 seconds).
+Test Case '-[DNSTests.DNSEngineTests testMetricsRecordedPerType]' started.
+2025-09-05T11:22:27+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+2025-09-05T11:22:27+0200 info DNSEngine: hit=true name=ipv6.com type=AAAA [FountainRuntime] dns_query
+2025-09-05T11:22:27+0200 info DNSEngine: hit=true name=alias.com type=CNAME [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testMetricsRecordedPerType]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testNXDomainRecordsMiss]' started.
+2025-09-05T11:22:27+0200 info DNSEngine: hit=false name=missing.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testNXDomainRecordsMiss]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testParserInvalidLabelReturnsNil]' started.
+Test Case '-[DNSTests.DNSEngineTests testParserInvalidLabelReturnsNil]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testParserMissingQuestionClassReturnsNil]' started.
+Test Case '-[DNSTests.DNSEngineTests testParserMissingQuestionClassReturnsNil]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testRecordRateLimitMetrics]' started.
+Test Case '-[DNSTests.DNSEngineTests testRecordRateLimitMetrics]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testResetZeroesMetrics]' started.
+Test Case '-[DNSTests.DNSEngineTests testResetZeroesMetrics]' passed (0.343 seconds).
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithAAAARecordFromCache]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=ipv6.com type=AAAA [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithAAAARecordFromCache]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithARecordFromCache]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithARecordFromCache]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithCNAMERecordFromCache]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=alias.com type=CNAME [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithCNAMERecordFromCache]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testSignZoneAndVerify]' started.
+Test Case '-[DNSTests.DNSEngineTests testSignZoneAndVerify]' passed (0.003 seconds).
+Test Case '-[DNSTests.DNSEngineTests testSignZoneReturnsNilWithoutSigner]' started.
+Test Case '-[DNSTests.DNSEngineTests testSignZoneReturnsNilWithoutSigner]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testTypeNameUnknown]' started.
+Test Case '-[DNSTests.DNSEngineTests testTypeNameUnknown]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testUnknownRecordReturnsNil]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=false name=unknown.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testUnknownRecordReturnsNil]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testUnsupportedRecordTypeResponseNil]' started.
+Test Case '-[DNSTests.DNSEngineTests testUnsupportedRecordTypeResponseNil]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testUpdatedRecordServedFromCache]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testUpdatedRecordServedFromCache]' passed (0.041 seconds).
+Test Suite 'DNSEngineTests' failed at 2025-09-05 11:22:28.166.
+	 Executed 21 tests, with 2 failures (0 unexpected) in 2.894 (2.897) seconds
+Test Suite 'DNSHandlerTests' started at 2025-09-05 11:22:28.166.
+Test Case '-[DNSTests.DNSHandlerTests testChannelReadCompleteFlushesWrites]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSHandlerTests testChannelReadCompleteFlushesWrites]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSHandlerTests testChannelReadForwardsResponse]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSHandlerTests testChannelReadForwardsResponse]' passed (0.001 seconds).
+Test Suite 'DNSHandlerTests' passed at 2025-09-05 11:22:28.168.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'DNSMetricsTests' started at 2025-09-05 11:22:28.169.
+Test Case '-[DNSTests.DNSMetricsTests testExpositionIncludesTypeCounts]' started.
+Test Case '-[DNSTests.DNSMetricsTests testExpositionIncludesTypeCounts]' passed (0.105 seconds).
+Test Case '-[DNSTests.DNSMetricsTests testWaitResolvesAfterTargetQueries]' started.
+Test Case '-[DNSTests.DNSMetricsTests testWaitResolvesAfterTargetQueries]' passed (0.036 seconds).
+Test Case '-[DNSTests.DNSMetricsTests testWaitTimesOutWhenNotReached]' started.
+Test Case '-[DNSTests.DNSMetricsTests testWaitTimesOutWhenNotReached]' passed (0.051 seconds).
+Test Suite 'DNSMetricsTests' passed at 2025-09-05 11:22:28.361.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.192 (0.192) seconds
+Test Suite 'DNSSECSignerTests' started at 2025-09-05 11:22:28.361.
+Test Case '-[DNSTests.DNSSECSignerTests testPublicKeyValidatesSignature]' started.
+Test Case '-[DNSTests.DNSSECSignerTests testPublicKeyValidatesSignature]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSSECSignerTests testSignAndVerifyZone]' started.
+Test Case '-[DNSTests.DNSSECSignerTests testSignAndVerifyZone]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSSECSignerTests testVerifyFailsForTamperedZone]' started.
+Test Case '-[DNSTests.DNSSECSignerTests testVerifyFailsForTamperedZone]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSSECSignerTests testVerifyFailsWithDifferentKey]' started.
+Test Case '-[DNSTests.DNSSECSignerTests testVerifyFailsWithDifferentKey]' passed (0.001 seconds).
+Test Suite 'DNSSECSignerTests' passed at 2025-09-05 11:22:28.417.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.056) seconds
+Test Suite 'DNSServerTCPTests' started at 2025-09-05 11:22:28.418.
+Test Case '-[DNSTests.DNSServerTCPTests testHandlesIncompleteFrame]' started.
+Test Case '-[DNSTests.DNSServerTCPTests testHandlesIncompleteFrame]' passed (0.125 seconds).
+Test Case '-[DNSTests.DNSServerTCPTests testServerRespondsToTCPQueries]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSServerTCPTests testServerRespondsToTCPQueries]' passed (0.005 seconds).
+Test Suite 'DNSServerTCPTests' passed at 2025-09-05 11:22:28.547.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.129 (0.130) seconds
+Test Suite 'DNSServerTests' started at 2025-09-05 11:22:28.547.
+Test Case '-[DNSTests.DNSServerTests testServerRespondsToUDPQueries]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSServerTests testServerRespondsToUDPQueries]' passed (0.229 seconds).
+Test Suite 'DNSServerTests' passed at 2025-09-05 11:22:28.776.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.229 (0.229) seconds
+Test Suite 'ZoneManagerDNSSECTests' started at 2025-09-05 11:22:28.777.
+Test Case '-[DNSTests.ZoneManagerDNSSECTests testPersistsSignature]' started.
+Test Case '-[DNSTests.ZoneManagerDNSSECTests testPersistsSignature]' passed (0.003 seconds).
+Test Suite 'ZoneManagerDNSSECTests' passed at 2025-09-05 11:22:28.780.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+Test Suite 'ZoneManagerRecordTypeTests' started at 2025-09-05 11:22:28.780.
+Test Case '-[DNSTests.ZoneManagerRecordTypeTests testRetrievesRecordsByType]' started.
+Test Case '-[DNSTests.ZoneManagerRecordTypeTests testRetrievesRecordsByType]' passed (0.003 seconds).
+Test Suite 'ZoneManagerRecordTypeTests' passed at 2025-09-05 11:22:28.784.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+Test Suite 'ZoneManagerTests' started at 2025-09-05 11:22:28.784.
+Test Case '-[DNSTests.ZoneManagerTests testConcurrentUpdatesAreSerialized]' started.
+Test Case '-[DNSTests.ZoneManagerTests testConcurrentUpdatesAreSerialized]' passed (0.011 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testCreateRecordReturnsNilForUnknownZone]' started.
+Test Case '-[DNSTests.ZoneManagerTests testCreateRecordReturnsNilForUnknownZone]' passed (0.001 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testDeleteRecordReturnsFalseForUnknownRecord]' started.
+Test Case '-[DNSTests.ZoneManagerTests testDeleteRecordReturnsFalseForUnknownRecord]' passed (0.001 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testDeleteZoneReturnsFalseForUnknownID]' started.
+Test Case '-[DNSTests.ZoneManagerTests testDeleteZoneReturnsFalseForUnknownID]' passed (0.001 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testDisableGitCommitsSkipsCommit]' started.
+Initialized empty Git repository in /private/var/folders/ln/ps7y8sb135d6z_dx83yqg_xh0000gn/T/DE60ADBB-EA61-48C6-80B4-7A3218A29C22/.git/
+[main (root-commit) 10db5c4] Initial
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 zones.yaml
+Test Case '-[DNSTests.ZoneManagerTests testDisableGitCommitsSkipsCommit]' passed (0.246 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testInitBuildsRecordMapWithSubrecord]' started.
+Test Case '-[DNSTests.ZoneManagerTests testInitBuildsRecordMapWithSubrecord]' passed (0.002 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testListAndDeleteZonesAndRecords]' started.
+Test Case '-[DNSTests.ZoneManagerTests testListAndDeleteZonesAndRecords]' passed (0.004 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testLoadsExistingZonesFromDisk]' started.
+Test Case '-[DNSTests.ZoneManagerTests testLoadsExistingZonesFromDisk]' passed (0.001 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testPersistsUpdatesToDisk]' started.
+Test Case '-[DNSTests.ZoneManagerTests testPersistsUpdatesToDisk]' passed (0.002 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testReloadUpdatesCache]' started.
+Test Case '-[DNSTests.ZoneManagerTests testReloadUpdatesCache]' passed (1.008 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testSetCommitsChangesToGit]' started.
+Initialized empty Git repository in /private/var/folders/ln/ps7y8sb135d6z_dx83yqg_xh0000gn/T/B41D8743-6BAE-4585-A747-6129A60A491F/.git/
+[main (root-commit) 5cca549] Update zone file
+ 1 file changed, 4 insertions(+)
+ create mode 100644 zones.yaml
+[main 370af5f] Update zone file
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+Test Case '-[DNSTests.ZoneManagerTests testSetCommitsChangesToGit]' passed (0.121 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testUpdateRecordReturnsNilForMissingRecord]' started.
+Test Case '-[DNSTests.ZoneManagerTests testUpdateRecordReturnsNilForMissingRecord]' passed (0.002 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testUpdatesStreamEmitsOnModification]' started.
+Test Case '-[DNSTests.ZoneManagerTests testUpdatesStreamEmitsOnModification]' passed (0.002 seconds).
+Test Suite 'ZoneManagerTests' passed at 2025-09-05 11:22:30.189.
+	 Executed 13 tests, with 0 failures (0 unexpected) in 1.402 (1.404) seconds
+Test Suite 'DNSTests.xctest' failed at 2025-09-05 11:22:30.189.
+	 Executed 54 tests, with 2 failures (0 unexpected) in 4.869 (4.932) seconds
+Test Suite 'DNSTests.xctest' started at 2025-09-05 11:22:25.257.
+Test Suite 'APIClientTests' started at 2025-09-05 11:22:25.257.
+Test Case '-[DNSTests.APIClientTests testBearerInitializerSetsHeader]' started.
+Test Case '-[DNSTests.APIClientTests testBearerInitializerSetsHeader]' passed (0.005 seconds).
+Test Case '-[DNSTests.APIClientTests testNoBodyResponseReturnsInstance]' started.
+Test Case '-[DNSTests.APIClientTests testNoBodyResponseReturnsInstance]' passed (0.001 seconds).
+Test Case '-[DNSTests.APIClientTests testNon200ResponseThrowsAPIError]' started.
+Test Case '-[DNSTests.APIClientTests testNon200ResponseThrowsAPIError]' passed (0.002 seconds).
+Test Case '-[DNSTests.APIClientTests testRawDataResponse]' started.
+Test Case '-[DNSTests.APIClientTests testRawDataResponse]' passed (0.001 seconds).
+Test Case '-[DNSTests.APIClientTests testRequestWithoutBodyOmitsContentType]' started.
+Test Case '-[DNSTests.APIClientTests testRequestWithoutBodyOmitsContentType]' passed (0.001 seconds).
+Test Case '-[DNSTests.APIClientTests testSendDecodesResponse]' started.
+Test Case '-[DNSTests.APIClientTests testSendDecodesResponse]' passed (0.001 seconds).
+Test Suite 'APIClientTests' passed at 2025-09-05 11:22:25.269.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.011 (0.012) seconds
+Test Suite 'DNSEngineTests' started at 2025-09-05 11:22:25.269.
+Test Case '-[DNSTests.DNSEngineTests testHandlerDropsNXDomainQuery]' started.
+2025-09-05T11:22:25+0200 info DNSEngine: hit=false name=unknown.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testHandlerDropsNXDomainQuery]' passed (0.008 seconds).
+Test Case '-[DNSTests.DNSEngineTests testHandlerResolvesViaEmbeddedChannel]' started.
+2025-09-05T11:22:25+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testHandlerResolvesViaEmbeddedChannel]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testInvalidIPv6RecordReturnsNil]' started.
+Test Case '-[DNSTests.DNSEngineTests testInvalidIPv6RecordReturnsNil]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testInvalidQueryLogsWarning]' started.
+2025-09-05T11:22:25+0200 warning DNSEngine: [FountainRuntime] Failed to parse query
+Test Case '-[DNSTests.DNSEngineTests testInvalidQueryLogsWarning]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testMakeResponseInvalidARecordReturnsNil]' started.
+Test Case '-[DNSTests.DNSEngineTests testMakeResponseInvalidARecordReturnsNil]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testMalformedPacketRecordedAsInvalid]' started.
+2025-09-05T11:22:25+0200 warning DNSEngine: [FountainRuntime] Failed to parse query
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/DNSTests/DNSEngineTests.swift:184: error: -[DNSTests.DNSEngineTests testMalformedPacketRecordedAsInvalid] : XCTAssertTrue failed
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/DNSTests/DNSEngineTests.swift:185: error: -[DNSTests.DNSEngineTests testMalformedPacketRecordedAsInvalid] : XCTAssertTrue failed
+Test Case '-[DNSTests.DNSEngineTests testMalformedPacketRecordedAsInvalid]' failed (2.489 seconds).
+Test Case '-[DNSTests.DNSEngineTests testMetricsRecordedPerType]' started.
+2025-09-05T11:22:27+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+2025-09-05T11:22:27+0200 info DNSEngine: hit=true name=ipv6.com type=AAAA [FountainRuntime] dns_query
+2025-09-05T11:22:27+0200 info DNSEngine: hit=true name=alias.com type=CNAME [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testMetricsRecordedPerType]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testNXDomainRecordsMiss]' started.
+2025-09-05T11:22:27+0200 info DNSEngine: hit=false name=missing.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testNXDomainRecordsMiss]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testParserInvalidLabelReturnsNil]' started.
+Test Case '-[DNSTests.DNSEngineTests testParserInvalidLabelReturnsNil]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testParserMissingQuestionClassReturnsNil]' started.
+Test Case '-[DNSTests.DNSEngineTests testParserMissingQuestionClassReturnsNil]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testRecordRateLimitMetrics]' started.
+Test Case '-[DNSTests.DNSEngineTests testRecordRateLimitMetrics]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testResetZeroesMetrics]' started.
+Test Case '-[DNSTests.DNSEngineTests testResetZeroesMetrics]' passed (0.343 seconds).
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithAAAARecordFromCache]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=ipv6.com type=AAAA [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithAAAARecordFromCache]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithARecordFromCache]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithARecordFromCache]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithCNAMERecordFromCache]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=alias.com type=CNAME [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithCNAMERecordFromCache]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testSignZoneAndVerify]' started.
+Test Case '-[DNSTests.DNSEngineTests testSignZoneAndVerify]' passed (0.003 seconds).
+Test Case '-[DNSTests.DNSEngineTests testSignZoneReturnsNilWithoutSigner]' started.
+Test Case '-[DNSTests.DNSEngineTests testSignZoneReturnsNilWithoutSigner]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testTypeNameUnknown]' started.
+Test Case '-[DNSTests.DNSEngineTests testTypeNameUnknown]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testUnknownRecordReturnsNil]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=false name=unknown.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testUnknownRecordReturnsNil]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testUnsupportedRecordTypeResponseNil]' started.
+Test Case '-[DNSTests.DNSEngineTests testUnsupportedRecordTypeResponseNil]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testUpdatedRecordServedFromCache]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testUpdatedRecordServedFromCache]' passed (0.041 seconds).
+Test Suite 'DNSEngineTests' failed at 2025-09-05 11:22:28.166.
+	 Executed 21 tests, with 2 failures (0 unexpected) in 2.894 (2.897) seconds
+Test Suite 'DNSHandlerTests' started at 2025-09-05 11:22:28.166.
+Test Case '-[DNSTests.DNSHandlerTests testChannelReadCompleteFlushesWrites]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSHandlerTests testChannelReadCompleteFlushesWrites]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSHandlerTests testChannelReadForwardsResponse]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSHandlerTests testChannelReadForwardsResponse]' passed (0.001 seconds).
+Test Suite 'DNSHandlerTests' passed at 2025-09-05 11:22:28.168.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'DNSMetricsTests' started at 2025-09-05 11:22:28.169.
+Test Case '-[DNSTests.DNSMetricsTests testExpositionIncludesTypeCounts]' started.
+Test Case '-[DNSTests.DNSMetricsTests testExpositionIncludesTypeCounts]' passed (0.105 seconds).
+Test Case '-[DNSTests.DNSMetricsTests testWaitResolvesAfterTargetQueries]' started.
+Test Case '-[DNSTests.DNSMetricsTests testWaitResolvesAfterTargetQueries]' passed (0.036 seconds).
+Test Case '-[DNSTests.DNSMetricsTests testWaitTimesOutWhenNotReached]' started.
+Test Case '-[DNSTests.DNSMetricsTests testWaitTimesOutWhenNotReached]' passed (0.051 seconds).
+Test Suite 'DNSMetricsTests' passed at 2025-09-05 11:22:28.361.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.192 (0.192) seconds
+Test Suite 'DNSSECSignerTests' started at 2025-09-05 11:22:28.361.
+Test Case '-[DNSTests.DNSSECSignerTests testPublicKeyValidatesSignature]' started.
+Test Case '-[DNSTests.DNSSECSignerTests testPublicKeyValidatesSignature]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSSECSignerTests testSignAndVerifyZone]' started.
+Test Case '-[DNSTests.DNSSECSignerTests testSignAndVerifyZone]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSSECSignerTests testVerifyFailsForTamperedZone]' started.
+Test Case '-[DNSTests.DNSSECSignerTests testVerifyFailsForTamperedZone]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSSECSignerTests testVerifyFailsWithDifferentKey]' started.
+Test Case '-[DNSTests.DNSSECSignerTests testVerifyFailsWithDifferentKey]' passed (0.001 seconds).
+Test Suite 'DNSSECSignerTests' passed at 2025-09-05 11:22:28.417.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.056) seconds
+Test Suite 'DNSServerTCPTests' started at 2025-09-05 11:22:28.418.
+Test Case '-[DNSTests.DNSServerTCPTests testHandlesIncompleteFrame]' started.
+Test Case '-[DNSTests.DNSServerTCPTests testHandlesIncompleteFrame]' passed (0.125 seconds).
+Test Case '-[DNSTests.DNSServerTCPTests testServerRespondsToTCPQueries]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSServerTCPTests testServerRespondsToTCPQueries]' passed (0.005 seconds).
+Test Suite 'DNSServerTCPTests' passed at 2025-09-05 11:22:28.547.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.129 (0.130) seconds
+Test Suite 'DNSServerTests' started at 2025-09-05 11:22:28.547.
+Test Case '-[DNSTests.DNSServerTests testServerRespondsToUDPQueries]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSServerTests testServerRespondsToUDPQueries]' passed (0.229 seconds).
+Test Suite 'DNSServerTests' passed at 2025-09-05 11:22:28.776.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.229 (0.229) seconds
+Test Suite 'ZoneManagerDNSSECTests' started at 2025-09-05 11:22:28.777.
+Test Case '-[DNSTests.ZoneManagerDNSSECTests testPersistsSignature]' started.
+Test Case '-[DNSTests.ZoneManagerDNSSECTests testPersistsSignature]' passed (0.003 seconds).
+Test Suite 'ZoneManagerDNSSECTests' passed at 2025-09-05 11:22:28.780.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+Test Suite 'ZoneManagerRecordTypeTests' started at 2025-09-05 11:22:28.780.
+Test Case '-[DNSTests.ZoneManagerRecordTypeTests testRetrievesRecordsByType]' started.
+Test Case '-[DNSTests.ZoneManagerRecordTypeTests testRetrievesRecordsByType]' passed (0.003 seconds).
+Test Suite 'ZoneManagerRecordTypeTests' passed at 2025-09-05 11:22:28.784.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+Test Suite 'ZoneManagerTests' started at 2025-09-05 11:22:28.784.
+Test Case '-[DNSTests.ZoneManagerTests testConcurrentUpdatesAreSerialized]' started.
+Test Case '-[DNSTests.ZoneManagerTests testConcurrentUpdatesAreSerialized]' passed (0.011 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testCreateRecordReturnsNilForUnknownZone]' started.
+Test Case '-[DNSTests.ZoneManagerTests testCreateRecordReturnsNilForUnknownZone]' passed (0.001 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testDeleteRecordReturnsFalseForUnknownRecord]' started.
+Test Case '-[DNSTests.ZoneManagerTests testDeleteRecordReturnsFalseForUnknownRecord]' passed (0.001 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testDeleteZoneReturnsFalseForUnknownID]' started.
+Test Case '-[DNSTests.ZoneManagerTests testDeleteZoneReturnsFalseForUnknownID]' passed (0.001 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testDisableGitCommitsSkipsCommit]' started.
+Initialized empty Git repository in /private/var/folders/ln/ps7y8sb135d6z_dx83yqg_xh0000gn/T/DE60ADBB-EA61-48C6-80B4-7A3218A29C22/.git/
+[main (root-commit) 10db5c4] Initial
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 zones.yaml
+Test Case '-[DNSTests.ZoneManagerTests testDisableGitCommitsSkipsCommit]' passed (0.246 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testInitBuildsRecordMapWithSubrecord]' started.
+Test Case '-[DNSTests.ZoneManagerTests testInitBuildsRecordMapWithSubrecord]' passed (0.002 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testListAndDeleteZonesAndRecords]' started.
+Test Case '-[DNSTests.ZoneManagerTests testListAndDeleteZonesAndRecords]' passed (0.004 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testLoadsExistingZonesFromDisk]' started.
+Test Case '-[DNSTests.ZoneManagerTests testLoadsExistingZonesFromDisk]' passed (0.001 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testPersistsUpdatesToDisk]' started.
+Test Case '-[DNSTests.ZoneManagerTests testPersistsUpdatesToDisk]' passed (0.002 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testReloadUpdatesCache]' started.
+Test Case '-[DNSTests.ZoneManagerTests testReloadUpdatesCache]' passed (1.008 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testSetCommitsChangesToGit]' started.
+Initialized empty Git repository in /private/var/folders/ln/ps7y8sb135d6z_dx83yqg_xh0000gn/T/B41D8743-6BAE-4585-A747-6129A60A491F/.git/
+[main (root-commit) 5cca549] Update zone file
+ 1 file changed, 4 insertions(+)
+ create mode 100644 zones.yaml
+[main 370af5f] Update zone file
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+Test Case '-[DNSTests.ZoneManagerTests testSetCommitsChangesToGit]' passed (0.121 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testUpdateRecordReturnsNilForMissingRecord]' started.
+Test Case '-[DNSTests.ZoneManagerTests testUpdateRecordReturnsNilForMissingRecord]' passed (0.002 seconds).
+Test Case '-[DNSTests.ZoneManagerTests testUpdatesStreamEmitsOnModification]' started.
+Test Case '-[DNSTests.ZoneManagerTests testUpdatesStreamEmitsOnModification]' passed (0.002 seconds).
+Test Suite 'ZoneManagerTests' passed at 2025-09-05 11:22:30.189.
+	 Executed 13 tests, with 0 failures (0 unexpected) in 1.402 (1.404) seconds
+Test Suite 'DNSEngineTests' started at 2025-09-05 11:22:25.269.
+Test Case '-[DNSTests.DNSEngineTests testHandlerDropsNXDomainQuery]' started.
+Test Case '-[DNSTests.DNSEngineTests testHandlerDropsNXDomainQuery]' started.
+2025-09-05T11:22:25+0200 info DNSEngine: hit=false name=unknown.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testHandlerDropsNXDomainQuery]' passed (0.008 seconds).
+2025-09-05T11:22:25+0200 info DNSEngine: hit=false name=unknown.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testHandlerDropsNXDomainQuery]' passed (0.008 seconds).
+Test Case '-[DNSTests.DNSEngineTests testHandlerResolvesViaEmbeddedChannel]' started.
+Test Case '-[DNSTests.DNSEngineTests testHandlerResolvesViaEmbeddedChannel]' started.
+2025-09-05T11:22:25+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testHandlerResolvesViaEmbeddedChannel]' passed (0.001 seconds).
+2025-09-05T11:22:25+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testHandlerResolvesViaEmbeddedChannel]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testInvalidIPv6RecordReturnsNil]' started.
+Test Case '-[DNSTests.DNSEngineTests testInvalidIPv6RecordReturnsNil]' started.
+Test Case '-[DNSTests.DNSEngineTests testInvalidIPv6RecordReturnsNil]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testInvalidIPv6RecordReturnsNil]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testInvalidQueryLogsWarning]' started.
+Test Case '-[DNSTests.DNSEngineTests testInvalidQueryLogsWarning]' started.
+2025-09-05T11:22:25+0200 warning DNSEngine: [FountainRuntime] Failed to parse query
+Test Case '-[DNSTests.DNSEngineTests testInvalidQueryLogsWarning]' passed (0.001 seconds).
+2025-09-05T11:22:25+0200 warning DNSEngine: [FountainRuntime] Failed to parse query
+Test Case '-[DNSTests.DNSEngineTests testInvalidQueryLogsWarning]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testMakeResponseInvalidARecordReturnsNil]' started.
+Test Case '-[DNSTests.DNSEngineTests testMakeResponseInvalidARecordReturnsNil]' started.
+Test Case '-[DNSTests.DNSEngineTests testMakeResponseInvalidARecordReturnsNil]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testMakeResponseInvalidARecordReturnsNil]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testMalformedPacketRecordedAsInvalid]' started.
+Test Case '-[DNSTests.DNSEngineTests testMalformedPacketRecordedAsInvalid]' started.
+2025-09-05T11:22:25+0200 warning DNSEngine: [FountainRuntime] Failed to parse query
+2025-09-05T11:22:25+0200 warning DNSEngine: [FountainRuntime] Failed to parse query
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/DNSTests/DNSEngineTests.swift:184: error: -[DNSTests.DNSEngineTests testMalformedPacketRecordedAsInvalid] : XCTAssertTrue failed
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/DNSTests/DNSEngineTests.swift:184: error: -[DNSTests.DNSEngineTests testMalformedPacketRecordedAsInvalid] : XCTAssertTrue failed
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/DNSTests/DNSEngineTests.swift:185: error: -[DNSTests.DNSEngineTests testMalformedPacketRecordedAsInvalid] : XCTAssertTrue failed
+Test Case '-[DNSTests.DNSEngineTests testMalformedPacketRecordedAsInvalid]' failed (2.489 seconds).
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/DNSTests/DNSEngineTests.swift:185: error: -[DNSTests.DNSEngineTests testMalformedPacketRecordedAsInvalid] : XCTAssertTrue failed
+Test Case '-[DNSTests.DNSEngineTests testMalformedPacketRecordedAsInvalid]' failed (2.489 seconds).
+Test Case '-[DNSTests.DNSEngineTests testMetricsRecordedPerType]' started.
+Test Case '-[DNSTests.DNSEngineTests testMetricsRecordedPerType]' started.
+2025-09-05T11:22:27+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+2025-09-05T11:22:27+0200 info DNSEngine: hit=true name=ipv6.com type=AAAA [FountainRuntime] dns_query
+2025-09-05T11:22:27+0200 info DNSEngine: hit=true name=alias.com type=CNAME [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testMetricsRecordedPerType]' passed (0.001 seconds).
+2025-09-05T11:22:27+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+2025-09-05T11:22:27+0200 info DNSEngine: hit=true name=ipv6.com type=AAAA [FountainRuntime] dns_query
+2025-09-05T11:22:27+0200 info DNSEngine: hit=true name=alias.com type=CNAME [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testMetricsRecordedPerType]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testNXDomainRecordsMiss]' started.
+Test Case '-[DNSTests.DNSEngineTests testNXDomainRecordsMiss]' started.
+2025-09-05T11:22:27+0200 info DNSEngine: hit=false name=missing.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testNXDomainRecordsMiss]' passed (0.001 seconds).
+2025-09-05T11:22:27+0200 info DNSEngine: hit=false name=missing.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testNXDomainRecordsMiss]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testParserInvalidLabelReturnsNil]' started.
+Test Case '-[DNSTests.DNSEngineTests testParserInvalidLabelReturnsNil]' started.
+Test Case '-[DNSTests.DNSEngineTests testParserInvalidLabelReturnsNil]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testParserInvalidLabelReturnsNil]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testParserMissingQuestionClassReturnsNil]' started.
+Test Case '-[DNSTests.DNSEngineTests testParserMissingQuestionClassReturnsNil]' started.
+Test Case '-[DNSTests.DNSEngineTests testParserMissingQuestionClassReturnsNil]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testParserMissingQuestionClassReturnsNil]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testRecordRateLimitMetrics]' started.
+Test Case '-[DNSTests.DNSEngineTests testRecordRateLimitMetrics]' started.
+Test Case '-[DNSTests.DNSEngineTests testRecordRateLimitMetrics]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testRecordRateLimitMetrics]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testResetZeroesMetrics]' started.
+Test Case '-[DNSTests.DNSEngineTests testResetZeroesMetrics]' started.
+Test Case '-[DNSTests.DNSEngineTests testResetZeroesMetrics]' passed (0.343 seconds).
+Test Case '-[DNSTests.DNSEngineTests testResetZeroesMetrics]' passed (0.343 seconds).
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithAAAARecordFromCache]' started.
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithAAAARecordFromCache]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=ipv6.com type=AAAA [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithAAAARecordFromCache]' passed (0.001 seconds).
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=ipv6.com type=AAAA [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithAAAARecordFromCache]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithARecordFromCache]' started.
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithARecordFromCache]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithARecordFromCache]' passed (0.001 seconds).
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithARecordFromCache]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithCNAMERecordFromCache]' started.
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithCNAMERecordFromCache]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=alias.com type=CNAME [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithCNAMERecordFromCache]' passed (0.001 seconds).
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=alias.com type=CNAME [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testRespondsWithCNAMERecordFromCache]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testSignZoneAndVerify]' started.
+Test Case '-[DNSTests.DNSEngineTests testSignZoneAndVerify]' started.
+Test Case '-[DNSTests.DNSEngineTests testSignZoneAndVerify]' passed (0.003 seconds).
+Test Case '-[DNSTests.DNSEngineTests testSignZoneAndVerify]' passed (0.003 seconds).
+Test Case '-[DNSTests.DNSEngineTests testSignZoneReturnsNilWithoutSigner]' started.
+Test Case '-[DNSTests.DNSEngineTests testSignZoneReturnsNilWithoutSigner]' started.
+Test Case '-[DNSTests.DNSEngineTests testSignZoneReturnsNilWithoutSigner]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testSignZoneReturnsNilWithoutSigner]' passed (0.001 seconds).
+Test Case '-[DNSTests.DNSEngineTests testTypeNameUnknown]' started.
+Test Case '-[DNSTests.DNSEngineTests testTypeNameUnknown]' started.
+Test Case '-[DNSTests.DNSEngineTests testTypeNameUnknown]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testTypeNameUnknown]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testUnknownRecordReturnsNil]' started.
+Test Case '-[DNSTests.DNSEngineTests testUnknownRecordReturnsNil]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=false name=unknown.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testUnknownRecordReturnsNil]' passed (0.000 seconds).
+2025-09-05T11:22:28+0200 info DNSEngine: hit=false name=unknown.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testUnknownRecordReturnsNil]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testUnsupportedRecordTypeResponseNil]' started.
+Test Case '-[DNSTests.DNSEngineTests testUnsupportedRecordTypeResponseNil]' started.
+Test Case '-[DNSTests.DNSEngineTests testUnsupportedRecordTypeResponseNil]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testUnsupportedRecordTypeResponseNil]' passed (0.000 seconds).
+Test Case '-[DNSTests.DNSEngineTests testUpdatedRecordServedFromCache]' started.
+Test Case '-[DNSTests.DNSEngineTests testUpdatedRecordServedFromCache]' started.
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testUpdatedRecordServedFromCache]' passed (0.041 seconds).
+2025-09-05T11:22:28+0200 info DNSEngine: hit=true name=example.com type=A [FountainRuntime] dns_query
+Test Case '-[DNSTests.DNSEngineTests testUpdatedRecordServedFromCache]' passed (0.041 seconds).
+Test Case '-[DNSTests.DNSEngineTests testMalformedPacketRecordedAsInvalid]' started.
+2025-09-05T11:22:25+0200 warning DNSEngine: [FountainRuntime] Failed to parse query
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/DNSTests/DNSEngineTests.swift:184: error: -[DNSTests.DNSEngineTests testMalformedPacketRecordedAsInvalid] : XCTAssertTrue failed
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/DNSTests/DNSEngineTests.swift:184: XCTAssertTrue failed
+
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/DNSTests/DNSEngineTests.swift:185: XCTAssertTrue failed
+
+Test Suite 'All tests' started at 2025-09-05 11:24:01.833.
+Test Suite 'TokenValidationTests.xctest' started at 2025-09-05 11:24:01.833.
+Test Suite 'TokenValidationTests' started at 2025-09-05 11:24:01.833.
+Test Case '-[TokenValidationTests.TokenValidationTests testCredentialStoreValidatorPaths]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testCredentialStoreValidatorPaths]' passed (0.003 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testEnvKeyProvider]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testEnvKeyProvider]' passed (0.000 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testErrorTypes]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testErrorTypes]' passed (0.000 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testHMACKeyValidator]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testHMACKeyValidator]' passed (0.001 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testJWKSKeyProvider]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testJWKSKeyProvider]' passed (0.027 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testJWTValidationOptions]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testJWTValidationOptions]' passed (0.001 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testOAuth2Validator]' started.
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/TokenValidationTests/TokenValidationTests.swift:114: error: -[TokenValidationTests.TokenValidationTests testOAuth2Validator] : XCTAssertEqual failed: ("Optional("")") is not equal to ("Optional("token=good")")
+Test Case '-[TokenValidationTests.TokenValidationTests testOAuth2Validator]' failed (3.455 seconds).
+Test Suite 'TokenValidationTests' failed at 2025-09-05 11:24:05.321.
+	 Executed 7 tests, with 1 failure (0 unexpected) in 3.487 (3.488) seconds
+Test Suite 'TokenValidationTests.xctest' failed at 2025-09-05 11:24:05.322.
+	 Executed 7 tests, with 1 failure (0 unexpected) in 3.487 (3.488) seconds
+Test Suite 'All tests' failed at 2025-09-05 11:24:05.322.
+	 Executed 7 tests, with 1 failure (0 unexpected) in 3.487 (3.489) seconds
+Test Suite 'All tests' started at 2025-09-05 11:24:01.833.
+Test Suite 'TokenValidationTests.xctest' started at 2025-09-05 11:24:01.833.
+Test Suite 'TokenValidationTests' started at 2025-09-05 11:24:01.833.
+Test Case '-[TokenValidationTests.TokenValidationTests testCredentialStoreValidatorPaths]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testCredentialStoreValidatorPaths]' passed (0.003 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testEnvKeyProvider]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testEnvKeyProvider]' passed (0.000 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testErrorTypes]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testErrorTypes]' passed (0.000 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testHMACKeyValidator]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testHMACKeyValidator]' passed (0.001 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testJWKSKeyProvider]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testJWKSKeyProvider]' passed (0.027 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testJWTValidationOptions]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testJWTValidationOptions]' passed (0.001 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testOAuth2Validator]' started.
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/TokenValidationTests/TokenValidationTests.swift:114: error: -[TokenValidationTests.TokenValidationTests testOAuth2Validator] : XCTAssertEqual failed: ("Optional("")") is not equal to ("Optional("token=good")")
+Test Case '-[TokenValidationTests.TokenValidationTests testOAuth2Validator]' failed (3.455 seconds).
+Test Suite 'TokenValidationTests' failed at 2025-09-05 11:24:05.321.
+	 Executed 7 tests, with 1 failure (0 unexpected) in 3.487 (3.488) seconds
+Test Suite 'TokenValidationTests.xctest' failed at 2025-09-05 11:24:05.322.
+	 Executed 7 tests, with 1 failure (0 unexpected) in 3.487 (3.488) seconds
+Test Suite 'All tests' failed at 2025-09-05 11:24:05.322.
+	 Executed 7 tests, with 1 failure (0 unexpected) in 3.487 (3.489) seconds
+Test Suite 'TokenValidationTests.xctest' started at 2025-09-05 11:24:01.833.
+Test Suite 'TokenValidationTests' started at 2025-09-05 11:24:01.833.
+Test Case '-[TokenValidationTests.TokenValidationTests testCredentialStoreValidatorPaths]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testCredentialStoreValidatorPaths]' passed (0.003 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testEnvKeyProvider]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testEnvKeyProvider]' passed (0.000 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testErrorTypes]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testErrorTypes]' passed (0.000 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testHMACKeyValidator]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testHMACKeyValidator]' passed (0.001 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testJWKSKeyProvider]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testJWKSKeyProvider]' passed (0.027 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testJWTValidationOptions]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testJWTValidationOptions]' passed (0.001 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testOAuth2Validator]' started.
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/TokenValidationTests/TokenValidationTests.swift:114: error: -[TokenValidationTests.TokenValidationTests testOAuth2Validator] : XCTAssertEqual failed: ("Optional("")") is not equal to ("Optional("token=good")")
+Test Case '-[TokenValidationTests.TokenValidationTests testOAuth2Validator]' failed (3.455 seconds).
+Test Suite 'TokenValidationTests' failed at 2025-09-05 11:24:05.321.
+	 Executed 7 tests, with 1 failure (0 unexpected) in 3.487 (3.488) seconds
+Test Suite 'TokenValidationTests.xctest' failed at 2025-09-05 11:24:05.322.
+	 Executed 7 tests, with 1 failure (0 unexpected) in 3.487 (3.488) seconds
+Test Suite 'TokenValidationTests' started at 2025-09-05 11:24:01.833.
+Test Case '-[TokenValidationTests.TokenValidationTests testCredentialStoreValidatorPaths]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testCredentialStoreValidatorPaths]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testCredentialStoreValidatorPaths]' passed (0.003 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testCredentialStoreValidatorPaths]' passed (0.003 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testEnvKeyProvider]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testEnvKeyProvider]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testEnvKeyProvider]' passed (0.000 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testEnvKeyProvider]' passed (0.000 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testErrorTypes]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testErrorTypes]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testErrorTypes]' passed (0.000 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testErrorTypes]' passed (0.000 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testHMACKeyValidator]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testHMACKeyValidator]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testHMACKeyValidator]' passed (0.001 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testHMACKeyValidator]' passed (0.001 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testJWKSKeyProvider]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testJWKSKeyProvider]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testJWKSKeyProvider]' passed (0.027 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testJWKSKeyProvider]' passed (0.027 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testJWTValidationOptions]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testJWTValidationOptions]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testJWTValidationOptions]' passed (0.001 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testJWTValidationOptions]' passed (0.001 seconds).
+Test Case '-[TokenValidationTests.TokenValidationTests testOAuth2Validator]' started.
+Test Case '-[TokenValidationTests.TokenValidationTests testOAuth2Validator]' started.
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/TokenValidationTests/TokenValidationTests.swift:114: error: -[TokenValidationTests.TokenValidationTests testOAuth2Validator] : XCTAssertEqual failed: ("Optional("")") is not equal to ("Optional("token=good")")
+Test Case '-[TokenValidationTests.TokenValidationTests testOAuth2Validator]' failed (3.455 seconds).
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/TokenValidationTests/TokenValidationTests.swift:114: error: -[TokenValidationTests.TokenValidationTests testOAuth2Validator] : XCTAssertEqual failed: ("Optional("")") is not equal to ("Optional("token=good")")
+Test Case '-[TokenValidationTests.TokenValidationTests testOAuth2Validator]' failed (3.455 seconds).
+Test Suite 'TokenValidationTests' failed at 2025-09-05 11:24:05.321.
+	 Executed 7 tests, with 1 failure (0 unexpected) in 3.487 (3.488) seconds
+Test Suite 'TokenValidationTests' failed at 2025-09-05 11:24:05.321.
+	 Executed 7 tests, with 1 failure (0 unexpected) in 3.487 (3.488) seconds
+Test Case '-[TokenValidationTests.TokenValidationTests testOAuth2Validator]' started.
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/TokenValidationTests/TokenValidationTests.swift:114: error: -[TokenValidationTests.TokenValidationTests testOAuth2Validator] : XCTAssertEqual failed: ("Optional("")") is not equal to ("Optional("token=good")")
+Test Case '-[TokenValidationTests.TokenValidationTests testOAuth2Validator]' failed (3.455 seconds).
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/TokenValidationTests/TokenValidationTests.swift:114: XCTAssertEqual failed: ("Optional("")") is not equal to ("Optional("token=good")")
+
+
+
+Testing Complete    05.09.25, 11:24    186.1 seconds
