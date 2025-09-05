@@ -362,8 +362,30 @@ POST /curate
 
   * **removes** denylisted/admin endpoints,
   * **resolves** all `operationId` conflicts per configured strategy,
-  * **emits** a valid OpenAPI 3.1 document,
-  * optionally **submits** to Tools Factory,
-  * **persists** artifacts and **exposes** metrics.
+* **emits** a valid OpenAPI 3.1 document,
+* optionally **submits** to Tools Factory,
+* **persists** artifacts and **exposes** metrics.
+
+---
+
+## 15) Truth Table Derivation
+
+During curation the Rules Engine reads each operation's vendor extensions:
+
+```
+x-fountain.visibility: public|internal
+x-fountain.allow-as-tool: true|false
+x-fountain.reason: "..."
+```
+
+It assembles them into a truth table mapping `operationId` to a structured record:
+
+```
+{
+  "authValidate": { "visibility": "public", "allowAsTool": true, "reason": "" }
+}
+```
+
+The `/truth-table` endpoint and `CuratorReport.truthTable` expose this view so clients can audit which operations become tools and why.
 
 

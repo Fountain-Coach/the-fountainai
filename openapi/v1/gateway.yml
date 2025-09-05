@@ -14,6 +14,9 @@ paths:
       summary: Health
       description: Returns 200 if the gateway is running.
       operationId: gatewayHealth
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       responses:
         '200':
           description: Successful Response
@@ -26,6 +29,9 @@ paths:
       summary: Metrics
       description: Endpoint that serves runtime metrics encoded as JSON.
       operationId: gatewayMetrics
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       responses:
         '200':
           description: Successful Response
@@ -44,6 +50,9 @@ paths:
         Verify client credentials and issue a JWT used for accessing
         protected routes.
       operationId: issueAuthToken
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       requestBody:
         required: true
         content:
@@ -69,6 +78,9 @@ paths:
       summary: Certificate Info
       description: Returns metadata about the active TLS certificate.
       operationId: certificateInfo
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       responses:
         '200':
           description: Successful Response
@@ -83,6 +95,9 @@ paths:
       summary: Trigger certificate renewal
       description: Manually invoke the renewal process for the TLS certificate.
       operationId: renewCertificate
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       responses:
         '202':
           description: Renewal triggered
@@ -97,6 +112,9 @@ paths:
       summary: List Configured Routes
       description: Returns all routing definitions active in the gateway.
       operationId: listRoutes
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       responses:
         '200':
           description: Successful Response
@@ -111,6 +129,9 @@ paths:
     post:
       summary: Add a new route
       operationId: createRoute
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       requestBody:
         required: true
         content:
@@ -136,6 +157,9 @@ paths:
     put:
       summary: Update an existing route
       operationId: updateRoute
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       parameters:
         - name: routeId
           in: path
@@ -167,6 +191,9 @@ paths:
     delete:
       summary: Delete a route
       operationId: deleteRoute
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       parameters:
         - name: routeId
           in: path
