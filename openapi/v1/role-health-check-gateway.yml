@@ -1,13 +1,16 @@
----
 openapi: 3.1.0
 info:
   title: Role Health Check Gateway Plugin
   description: >
     Verifies seeded roles and promotes validated reflections.
   version: 1.0.0
+  x-fountain.port: 8010
+  x-fountain.binary: fountain-gateway
 x-persona: ../personas/role-health-check.md
 servers:
-  - url: http://role-health-check.fountain.coach/api/v1
+  - url: http://role-health-check.local
+    description: Local development
+  - url: http://role-health-check.fountain.coach
 x-prompts:
   system: |-
     You are the Role Health Check Gateway Plugin. Validate the five default GPT roles: drift, semantic_arc, patterns, history, and view_creator.
@@ -20,7 +23,7 @@ paths:
       description: Enqueues the health-check reflection in the corpus.
       operationId: roleHealthCheckReflect
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       requestBody:
         required: true
@@ -49,7 +52,7 @@ paths:
       description: Promotes the latest health-check reflection to a role.
       operationId: roleHealthCheckPromote
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       requestBody:
         required: true
@@ -137,4 +140,4 @@ components:
           type: string
           title: Error Type
 
-© 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
+# © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.

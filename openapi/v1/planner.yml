@@ -1,4 +1,3 @@
----
 openapi: 3.1.0
 info:
   title: FountainAI Planner Service
@@ -6,8 +5,12 @@ info:
     Orchestrates LLM-driven planning workflows; all endpoints are
     grouped by router tags.
   version: 1.0.0
+  x-fountain.port: 8003
+  x-fountain.binary: planner
 servers:
-  - url: http://planner.fountain.coach/api/v1
+  - url: http://planner.local
+    description: Local development
+  - url: http://planner.fountain.coach
 paths:
   /planner/reason:
     post:
@@ -18,7 +21,7 @@ paths:
         Accepts a high-level user objective and returns a step-by-step plan.
       operationId: planner_reason
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       requestBody:
         required: true
@@ -49,7 +52,7 @@ paths:
         returning results.
       operationId: planner_execute
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       requestBody:
         required: true
@@ -79,7 +82,7 @@ paths:
         Returns the names/IDs of all corpora that the planner knows about.
       operationId: planner_list_corpora
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       responses:
         '200':
@@ -99,7 +102,7 @@ paths:
       description: Retrieve all stored reflections for a given corpus ID.
       operationId: get_reflection_history
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       parameters:
         - name: corpus_id
@@ -130,7 +133,7 @@ paths:
         insights, etc.).
       operationId: get_semantic_arc
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       parameters:
         - name: corpus_id
@@ -161,7 +164,7 @@ paths:
       description: Send a message to be reflected on and appended to the corpus.
       operationId: post_reflection
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       requestBody:
         required: true
@@ -188,7 +191,7 @@ paths:
       description: Endpoint that serves Prometheus metrics.
       operationId: metrics_metrics_get
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       responses:
         '200':
@@ -352,4 +355,4 @@ components:
           type: string
           title: Error Type
 
-© 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
+# © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.

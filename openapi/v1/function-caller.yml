@@ -1,4 +1,3 @@
----
 openapi: 3.1.0
 info:
   title: FountainAI Function Caller Service
@@ -8,15 +7,19 @@ info:
     It acts as a dynamic operationId-to-HTTP call mapping factory,
     enabling LLM-driven orchestration.
   version: 1.0.0
+  x-fountain.port: 8004
+  x-fountain.binary: function-caller
 servers:
-  - url: http://functions.fountain.coach/api/v1
+  - url: http://functions.local
+    description: Local development
+  - url: http://functions.fountain.coach
 paths:
   /functions:
     get:
       summary: List Registered Functions
       operationId: list_functions
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       description: >
         Retrieve a paginated list of all registered functions available for
@@ -63,7 +66,7 @@ paths:
       summary: Get Function Details
       operationId: get_function_details
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       description: >
         Retrieve detailed metadata about a registered function by its ID.
@@ -91,7 +94,7 @@ paths:
       summary: Invoke a Registered Function
       operationId: invoke_function
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       description: |
         Invoke the specified function with the given input parameters.
@@ -143,7 +146,7 @@ paths:
       description: Endpoint that serves Prometheus metrics.
       operationId: metrics_metrics_get
       x-fountain.visibility: public
-      x-fountain.reason: ""
+      x-fountain.reason: ''
       x-fountain.allow-as-tool: true
       responses:
         '200':
@@ -222,4 +225,4 @@ components:
                 error_code: validation_error
                 message: Invalid input parameters
 
-© 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
+# © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
