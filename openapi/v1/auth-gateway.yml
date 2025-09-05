@@ -15,6 +15,9 @@ paths:
       summary: Validate Access Token
       description: Verifies a bearer token and returns its role when valid.
       operationId: authValidate
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       requestBody:
         required: true
         content:
@@ -35,6 +38,9 @@ paths:
       summary: Retrieve Claims
       description: Returns claims associated with the supplied bearer token.
       operationId: authClaims
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       parameters:
         - in: header
           name: Authorization

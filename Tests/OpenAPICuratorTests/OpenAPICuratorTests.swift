@@ -68,6 +68,19 @@ final class OpenAPICuratorTests: XCTestCase {
         XCTAssertTrue(result.report.appliedRules.contains("x-fountain.visibility=public"))
     }
 
+    func testTruthTableOutput() {
+        let spec = Spec(operations: ["op"], extensions: ["op": [
+            "x-fountain.visibility": "internal",
+            "x-fountain.reason": "example",
+            "x-fountain.allow-as-tool": "false"
+        ]])
+        let result = curate(specs: [spec], rules: Rules())
+        let entry = result.report.truthTable["op"]
+        XCTAssertEqual(entry?.visibility, "internal")
+        XCTAssertEqual(entry?.reason, "example")
+        XCTAssertEqual(entry?.allowAsTool, false)
+    }
+
     func testReviewerHookInvoked() {
         let spec = Spec(operations: ["op"])
         var reviewed = false

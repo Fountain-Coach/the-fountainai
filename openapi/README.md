@@ -3,6 +3,8 @@
 Versioned service definitions live here. Each YAML file describes a FountainAI service interface.
 Persona definitions for Gateway plugins live in `personas/` and are referenced via `x-persona` in the specs.
 
+- Every operation includes `x-fountain.visibility`, `x-fountain.reason`, and `x-fountain.allow-as-tool` extensions for curation.
+
 For a repository-wide index of OpenAPI coverage, see [../OPENAPI_COVERAGE.md](../OPENAPI_COVERAGE.md).
 
 | Service | Version | Owner | Spec |
@@ -26,7 +28,7 @@ For a repository-wide index of OpenAPI coverage, see [../OPENAPI_COVERAGE.md](..
 | Destructive Guardian Gateway Plugin | 1.0.0 | Contexter alias Benedikt Eickhoff | [v1/destructive-guardian-gateway.yml](v1/destructive-guardian-gateway.yml) |
 | Security Sentinel Gateway Plugin | 1.0.0 | Contexter alias Benedikt Eickhoff | [v1/security-sentinel-gateway.yml](v1/security-sentinel-gateway.yml) |
 | Tool Server | 1.0.0 | Contexter alias Benedikt Eickhoff | [v1/tool-server.yml](v1/tool-server.yml) |
-| OpenAPI Curator Service | 1.0.1 | Contexter alias Benedikt Eickhoff | [v1/openapi-curator.yml](v1/openapi-curator.yml) |
+| OpenAPI Curator Service | 1.0.2 | Contexter alias Benedikt Eickhoff | [v1/openapi-curator.yml](v1/openapi-curator.yml) |
 
 
 ## Gateway Plugins

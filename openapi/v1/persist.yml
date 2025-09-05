@@ -16,6 +16,9 @@ paths:
     get:
       summary: Get supported capabilities
       operationId: capabilities
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       responses:
         '200':
           description: Capability flags for the persistence service.
@@ -32,6 +35,9 @@ paths:
         available in the persistence layer.
         Useful for clients to discover existing corpora.
       operationId: listCorpora
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       parameters:
         - name: limit
           in: query
@@ -73,6 +79,9 @@ paths:
         Initialize a new corpus that will act as a semantic container for
         baselines, reflections, and other artifacts. Corpus IDs must be unique.
       operationId: createCorpus
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       requestBody:
         description: Corpus creation request payload including unique corpusId.
         required: true
@@ -97,6 +106,9 @@ paths:
         Retrieve baseline snapshots stored for the given corpus.
         Useful for examining historical semantic state.
       operationId: listBaselines
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       parameters:
         - name: corpusId
           in: path
@@ -141,6 +153,9 @@ paths:
         capture semantic state or data snapshots relevant for drift
         analysis or reflection.
       operationId: addBaseline
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       parameters:
         - name: corpusId
           in: path
@@ -171,6 +186,9 @@ paths:
     get:
       summary: List functions in a corpus, supports pagination
       operationId: listFunctionsInCorpus
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       parameters:
         - name: corpusId
           in: path
@@ -216,6 +234,9 @@ paths:
     post:
       summary: Add a function to a corpus
       operationId: addFunction
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       parameters:
         - name: corpusId
           in: path
@@ -247,6 +268,9 @@ paths:
         Reflections often include question and answer content useful for
         semantic reasoning and planning.
       operationId: addReflection
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       parameters:
         - name: corpusId
           in: path
@@ -278,6 +302,9 @@ paths:
         Retrieve reflections stored in the given corpus with pagination. Useful
         for browsing semantic insights or planning data over time.
       operationId: listReflections
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       parameters:
         - name: corpusId
           in: path
@@ -323,6 +350,9 @@ paths:
         Retrieve a paginated list of all registered callable functions known to
         the persistence layer for orchestration and invocation.
       operationId: listFunctions
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       parameters:
         - name: limit
           in: query
@@ -367,6 +397,9 @@ paths:
         Retrieve detailed metadata for a registered function by its
         identifier.
       operationId: getFunctionDetails
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       parameters:
         - name: functionId
           in: path
@@ -389,6 +422,9 @@ paths:
       summary: Metrics
       description: Endpoint that serves Prometheus metrics.
       operationId: metrics_metrics_get
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       responses:
         '200':
           description: Successful Response

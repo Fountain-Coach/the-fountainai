@@ -37,6 +37,9 @@ paths:
   /v1/browse:
     post:
       operationId: browseAndDissect
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       tags: [Browse]
       summary: Navigate to a URL, snapshot the rendered page, optionally analyze and index in a single call.
       description: >
@@ -70,6 +73,9 @@ paths:
   /v1/snapshot:
     post:
       operationId: snapshotOnly
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       tags: [Browse]
       summary: Navigate and return only the Snapshot (no semantic analysis).
       requestBody:
@@ -90,6 +96,9 @@ paths:
   /v1/analyze:
     post:
       operationId: analyzeSnapshot
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       tags: [Analyze]
       summary: Run semantic dissection on a Snapshot (inline or by reference).
       requestBody:
@@ -114,6 +123,9 @@ paths:
   /v1/index:
     post:
       operationId: indexAnalysis
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       tags: [Index]
       summary: Persist Analysis-derived artifacts (page/segments/entities/tables/analyses) into FountainStore collections under a corpus.
       requestBody:
@@ -133,6 +145,9 @@ paths:
   /v1/pages:
     get:
       operationId: queryPages
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       tags: [Query]
       summary: Search previously persisted pages in FountainStore.
       parameters:
@@ -178,6 +193,9 @@ paths:
   /v1/pages/{id}:
     get:
       operationId: getPage
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       tags: [Query]
       summary: Fetch a single indexed page document by ID.
       parameters:
@@ -198,6 +216,9 @@ paths:
   /v1/segments:
     get:
       operationId: querySegments
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       tags: [Query]
       summary: Search segments (headings/paragraphs/code/captions/tables).
       parameters:
@@ -235,6 +256,9 @@ paths:
   /v1/entities:
     get:
       operationId: queryEntities
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       tags: [Query]
       summary: Search canonicalized entities.
       parameters:
@@ -267,6 +291,9 @@ paths:
   /v1/export:
     get:
       operationId: exportArtifacts
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       tags: [Export]
       summary: Export artifacts for a page/analysis.
       parameters:
@@ -294,6 +321,9 @@ paths:
   /v1/health:
     get:
       operationId: health
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       tags: [Admin]
       summary: Liveness and readiness probe.
       responses:

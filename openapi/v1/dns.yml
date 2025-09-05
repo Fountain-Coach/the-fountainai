@@ -12,6 +12,9 @@ paths:
     get:
       summary: List Zones
       operationId: listZones
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       responses:
         '200':
           description: Successful Response
@@ -22,6 +25,9 @@ paths:
     post:
       summary: Create Zone
       operationId: createZone
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       requestBody:
         required: true
         content:
@@ -46,6 +52,9 @@ paths:
     delete:
       summary: Delete Zone
       operationId: deleteZone
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       responses:
         '204':
           description: Zone Deleted
@@ -60,6 +69,9 @@ paths:
     get:
       summary: List Records
       operationId: listRecords
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       responses:
         '200':
           description: Successful Response
@@ -70,6 +82,9 @@ paths:
     post:
       summary: Create Record
       operationId: createRecord
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       requestBody:
         required: true
         content:
@@ -100,6 +115,9 @@ paths:
     put:
       summary: Update Record
       operationId: updateRecord
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       requestBody:
         required: true
         content:
@@ -116,6 +134,9 @@ paths:
     delete:
       summary: Delete Record
       operationId: deleteRecord
+      x-fountain.visibility: public
+      x-fountain.reason: ""
+      x-fountain.allow-as-tool: true
       responses:
         '204':
           description: Record Deleted
