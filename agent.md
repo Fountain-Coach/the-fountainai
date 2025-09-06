@@ -1,136 +1,101 @@
-# 🧠 FountainAI Root Agent — **FountainStore Integration (Corpus-First Rule)**
+# 🧠 FountainAI Root Agent — **OpenAPI‑Driven Platform**
 
-_Last updated: 03.09.2025_
+_Last updated: 2025‑03‑09_
 
-## 0) Scope & Intent
-Codex, your task is to **implement FountainStore as the sole persistence layer**, remodeled around the **corpus** as the basic unit. Every persisted object must live under a corpus, and each corpus is modeled via the **Bootstrapping** and **Baseline Awareness** OpenAPIs. Remove legacy indexer semantics, including the evolved Typesense-like API. Persistence must reflect semantic memory as designed in Bootstrapping + Baseline Awareness.
+## 0) Scope & OpenAPI Surface
+You own the entire FountainAI platform. **Every service below must expose and consume its OpenAPI spec**—the spec is the single source of truth:
 
-This file is the **canonical manifest** at the repo root that Codex follows when improving the repository. Keep it up-to-date and machine-actionable.
+### Core & Persistence
+- `openapi/v1/bootstrap.yml` – Bootstrapping  
+- `openapi/v1/baseline-awareness.yml` – Baseline Awareness  
+- `openapi/v1/persist.yml` – FountainStore  
 
----
+### Domain Services
+- `openapi/v1/semantic-browser.yml` – Semantic Browser  
+- `openapi/v1/planner.yml` (plus `openapi/v0/planner.yml` legacy reference) – Planner  
+- `openapi/v1/function-caller.yml` – Function Caller  
+- `openapi/v1/tool-server.yml` – Tool Server  
+- `openapi/v1/tools-factory.yml` – Tools Factory  
+- `openapi/v1/openapi-curator.yml` – OpenAPI Curator  
+
+### Gateways & Guards
+- `openapi/v1/gateway.yml` – Core Gateway  
+- `openapi/v1/auth-gateway.yml` – Auth Gateway  
+- `openapi/v1/budget-breaker-gateway.yml` – Budget Breaker Gateway  
+- `openapi/v1/curator-gateway.yml` – Curator Gateway  
+- `openapi/v1/destructive-guardian-gateway.yml` – Destructive Guardian Gateway  
+- `openapi/v1/payload-inspection-gateway.yml` – Payload Inspection Gateway  
+- `openapi/v1/rate-limiter-gateway.yml` – Rate Limiter Gateway  
+- `openapi/v1/role-health-check-gateway.yml` – Role Health‑Check Gateway  
+- `openapi/v1/security-sentinel-gateway.yml` – Security Sentinel Gateway  
+
+### Infrastructure Utilities
+- `openapi/v1/dns.yml` – DNS Service  
+- `openapi/v1/llm-gateway.yml` – LLM Gateway  
+
+### Tests & Fixtures
+- `Tests/ToolsFactoryServiceTests/openapi/v1/tools-factory.yml` – Tools Factory test spec  
+
+_Add new services by adding their OpenAPI document under `openapi/` and updating this list._
 
 ## 1) Golden Rule
-> **Everything—including configuration—is persisted under a corpus.**
-> All FountainAI services and their configs read/write through FountainStore into a corpus tree. The corpus structure is authoritative and defined by Bootstrapping and Baseline Awareness. No dual APIs, no detached indexers, and no standalone configuration files outside the semantic memory engine.
+> **OpenAPI specs are authoritative for every interface.**  
+> Before changing behavior, update the relevant spec and curate it. No ad‑hoc endpoints or undocumented parameters.
 
----
+## 2) Deliverables (Platform‑Wide)
 
-## 2) Deliverables (this PR series)
+1. **Spec Curation**  
+   - Keep all specs under `openapi/`.  
+   - After any change, call the OpenAPI Curator (`POST /curate`) with all spec files.
 
-### 2.1 Specs & Text Updates
-- Purge all references to external or evolved indexer APIs.
-- Update Semantic Browser spec to say: **“Artifacts are persisted into FountainStore under a corpus.”**
-- Ensure Bootstrapping and Baseline Awareness OpenAPIs are referenced as the definitional model for corpus creation, readiness, and baseline anchoring.
-- OpenAPI specs are the canonical source of truth; after modifying any spec, call the OpenAPI Curator (`POST /curate`) with the full list of repository specs and optionally submit the curated bundle to the Tools Factory.
+2. **Service Alignment**  
+   - Ensure every service in the list above conforms exactly to its OpenAPI.  
+   - The Teatro GUI must communicate **only** through documented APIs.
 
-### 2.2 FountainStore Client (Swift)
-Implement `libs/FountainStoreClient` with corpus-first methods:
-- `createCorpus(id, metadata)`
-- `getCorpus(id)`
-- `deleteCorpus(id)`
-- `putDoc(corpusId, collection, id, body)`
-- `getDoc(corpusId, collection, id)`
-- `deleteDoc(corpusId, collection, id)`
-- `query(corpusId, collection, Query { byId|byIndexEq|prefixScan|filters|sort|limit|offset })`
-- `capabilities()`
-- `snapshot(corpusId)/restore(corpusId)`
-- `backup(corpusId)/compaction(corpusId)`
+3. **Corpus Semantics**  
+   - FountainStore is the sole persistence layer.  
+   - Bootstrapping and Baseline Awareness define corpus semantics; all services operate on corpus‑aware endpoints.
 
-### 2.3 Service Wiring
-- **Semantic Browser**: when `/v1/browse` runs with `index.enabled=true`, it must write artifacts into the correct **corpus** inside FountainStore. The corpus context must be obtained from Bootstrapping + Baseline Awareness.  
-- **Launcher/ops**: require corpus-aware environment wiring (`FOUNTAINSTORE_URL`, `FOUNTAINSTORE_API_KEY`). Entry points still route through the Launcher as the golden key.
+4. **GUI Development**  
+   - Build Teatro components (corpus browser, annotation surfaces, capability‑aware feedback).  
+   - Remove legacy indexer UI code and wire all flows to FountainStore.
 
-### 2.4 Collections (per corpus)
-Within each corpus, create collections:
-1) `pages`  
-2) `segments`  
-3) `entities`  
-4) `tables`  
-5) `analyses`
+5. **Documentation**  
+   - Keep `docs/` aligned with OpenAPI-driven architecture and GUI entry points.
 
-All under `/corpora/{corpusId}/collections/{name}`.
+## 3) Capability Negotiation
+- On startup, each service calls its counterpart’s `/v1/capabilities`.  
+- If an operation requires a missing capability, respond with `400 NotSupported`, log the request (`"need": "<capability>"`), and surface the feedback in the GUI.  
+- Forward capability requests to the Launcher for telemetry.
 
----
+## 4) Tests & CI (Lean by Default)
+Maintainers delegate the **entire test strategy to you**.  
+You may run, limit, or skip tests to keep iterations fast.
 
-## 3) Capability Negotiation (Ask-for-More)
-Expose and consume neutral corpus-aware capability surface:
-
-**FountainStore** must serve:
-```http
-GET /v1/capabilities
-→ {
-  "corpus": true,
-  "documents": ["upsert","get","delete"],
-  "query": ["byId","byIndexEq","prefixScan","filters","sort"],
-  "transactions": ["snapshot","restore"],
-  "admin": ["health","backup","compaction","metrics"],
-  "experimental": []
-}
-```
-
-**Clients**:
-1. Resolve corpus context via Bootstrapping + Baseline Awareness.  
-2. Call `/v1/capabilities` on startup.  
-3. If a requested op isn’t present, return `400 NotSupported` upstream with `"need": "query.fullText"` (example), log a **capability request**, and fall back.
-
----
-
-## 4) Query Model (Phase-1)
-Supported query shapes inside a corpus:
-- **byId**
-- **byIndexEq**
-- **prefixScan**
-- Boolean **filters**, `limit/offset`, `sort`
-
-No other query shapes are guaranteed. Advanced features require capability negotiation.
-
----
+- Use `swift build` or `swift run` for quick GUI cycles (no tests).  
+- Run targeted tests via `swift test --filter <Pattern>` when needed.  
+- Full suite only when `FULL_TESTS=1` or contract changes demand it.
 
 ## 5) Configuration & Security
-Environment variables:
-```
+Required environment variables for all services:
+
 FOUNTAINSTORE_URL
 FOUNTAINSTORE_API_KEY
-```
-- Health at `/v1/health`.  
-- Prometheus metrics at `/metrics`.  
-- All access must resolve a corpus context first.  
-- Launcher remains the **golden key** and links to this file.
 
----
+- Health checks: `/v1/health`  
+- Metrics: `/metrics`  
+- Launcher remains the golden entry point referencing this file.
 
-## 6) Migration (Populate FountainStore)
-One-shot ingest job:
-- For each Bootstrapped corpus, replay Semantic Browser exports (pages/segments/entities/tables/analyses) into the corpus-aware FountainStore structure.  
-- No residual indexer pathways remain.
+## 6) Acceptance Checklist
+- [ ] Every service implementation matches its OpenAPI spec.  
+- [ ] Bootstrapping + Baseline Awareness define corpus semantics across the platform.  
+- [ ] Teatro GUI communicates solely via documented OpenAPIs.  
+- [ ] Capability negotiation implemented and logged.  
+- [ ] Lean CI (your chosen tier) green.  
+- [ ] `FOUNTAINSTORE_*` environment variables documented in Launcher/Ops.
 
----
-
-## 7) Tests & CI (Lean by Default)
-Follow the **Ultra-Lean Root Agent Directive**:
-- **Tier-A (default)**: build only impacted targets; run only unit + contract tests for those; finish under ~5 minutes; print one summary block.  
-- **Tier-B**: escalate if contracts / public APIs / corpus model changed.
-
-**Minimum coverage**:
-- Unit tests for `FountainStoreClient` corpus methods.  
-- Semantic Browser corpus indexing path tests.  
-- Capability fallback tests (NotSupported → degrade & log).  
-
----
-
-## 8) Acceptance Checklist
-- [x] All Typesense/Evolved indexer APIs removed.  
-- [ ] Corpus-first persistence rules applied.  
-- [ ] Semantic Browser writes to corpus collections only.  
-- [ ] Bootstrapping + Baseline Awareness OpenAPIs integrated as corpus model.  
-- [ ] `/v1/capabilities` consumed; requests logged.  
-- [ ] Lean CI (Tier-A) green.  
-- [ ] Launcher/ops docs list `FOUNTAINSTORE_*` env and reference corpus model.
-
----
-
-## 9) Output Format
-At the end of every Codex run, print:
+## 7) Output Format
+At the end of every run, print:
 
 ```json
 {
@@ -143,13 +108,11 @@ At the end of every Codex run, print:
 }
 ```
 
----
-
-## 10) Placement
-This file **lives at the repository root** as `agent.md` and is the canonical contract for Codex-driven repository improvement.
-
----
+## 8) Placement
+This file lives at the repository root as agent.md and is your canonical contract.
 
 ```
 © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
 ```
+
+
