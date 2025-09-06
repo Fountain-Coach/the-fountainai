@@ -1,5 +1,6 @@
 # HelloFountainAITeatro
 
+
 This example queries a running Semantic Browser service and renders the response status using Teatro.
 
 ## Linux
