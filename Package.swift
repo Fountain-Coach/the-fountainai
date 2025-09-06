@@ -811,6 +811,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.3.0"),
         .package(url: "https://github.com/Fountain-Coach/Fountain-Store.git", from: "0.1.0"),
         .package(url: "https://github.com/Fountain-Coach/semantic-browser.git", exact: "0.0.2"),
+        .package(url: "https://github.com/Fountain-Coach/Teatro.git", branch: "main"),
         .package(path: "libs/OpenAPICurator"),
     ],
     targets: targets

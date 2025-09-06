@@ -79,10 +79,13 @@ final class TokenValidationTests: XCTestCase {
     }
 
     func testJWKSKeyProvider() async throws {
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [MockURLProtocol.self]
+        let session = URLSession(configuration: config)
         let url = URL(string: "https://example.com/jwks")!
         let jwksJSON = "{\"keys\":[{\"kty\":\"oct\",\"k\":\"" + Data("jwksSecret".utf8).base64URLEncodedString() + "\"}]}"
         MockURLProtocol.handlers[url] = { _ in (200, Data(jwksJSON.utf8)) }
-        guard let provider = JWKSKeyProvider(jwksURL: url.absoluteString) else { return XCTFail("provider") }
+        guard let provider = JWKSKeyProvider(jwksURL: url.absoluteString, session: session) else { return XCTFail("provider") }
         await provider.refresh()
         let keyData = provider.symmetricKey().withUnsafeBytes { Data($0) }
         XCTAssertEqual(keyData, Data("jwksSecret".utf8))
@@ -107,6 +110,9 @@ final class TokenValidationTests: XCTestCase {
     }
 
     func testOAuth2Validator() async throws {
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [MockURLProtocol.self]
+        let session = URLSession(configuration: config)
         let url = URL(string: "https://example.com/introspect")!
         // success
         MockURLProtocol.handlers[url] = { req in
@@ -117,13 +123,13 @@ final class TokenValidationTests: XCTestCase {
             let json = "{\"active\":true,\"scope\":\"s1 s2\",\"role\":\"r1\"}"
             return (200, Data(json.utf8))
         }
-        var validator = OAuth2Validator(introspectionURL: url, clientId: "id", clientSecret: "secret")
+        var validator = OAuth2Validator(introspectionURL: url, clientId: "id", clientSecret: "secret", session: session)
         var claims = await validator.validate(token: "good")
         XCTAssertEqual(claims?.role, "r1")
         XCTAssertEqual(claims?.scopes, ["s1", "s2"])
         // inactive
         MockURLProtocol.handlers[url] = { _ in (200, Data("{\"active\":false}".utf8)) }
-        validator = OAuth2Validator(introspectionURL: url)
+        validator = OAuth2Validator(introspectionURL: url, session: session)
         claims = await validator.validate(token: "bad")
         XCTAssertNil(claims)
         // invalid JSON

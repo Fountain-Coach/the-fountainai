@@ -50,13 +50,18 @@ final class AuthGatewayPluginTests: XCTestCase {
     }
 
     func testClaimsUsesLLM() async throws {
-        _ = URLProtocol.registerClass(MockURLProtocol.self)
-        defer { URLProtocol.unregisterClass(MockURLProtocol.self); MockURLProtocol.lastRequest = nil }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [MockURLProtocol.self]
+        let session = URLSession(configuration: config)
+
         let token = "Bearer stub-token"
         MockURLProtocol.error = nil
         MockURLProtocol.responseData = Data("{\"ok\":true}".utf8)
+        MockURLProtocol.lastRequest = nil
 
-        let plugin = AuthGatewayPlugin()
+        let client = LLMPluginClient(personaPath: "openapi/personas/auth.md", session: session)
+        let handlers = Handlers(client: client)
+        let plugin = AuthGatewayPlugin(router: Router(handlers: handlers))
         let request = HTTPRequest(method: "POST", path: "/auth/claims", headers: ["Authorization": token])
         let response = try await plugin.router.route(request)
         XCTAssertEqual(response?.status, 200)

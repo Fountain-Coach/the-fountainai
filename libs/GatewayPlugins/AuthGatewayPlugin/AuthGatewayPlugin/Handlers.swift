@@ -6,9 +6,11 @@ import FountainRuntime
 
 /// Collection of handlers for auth gateway endpoints backed by an LLM.
 public actor Handlers {
-    private let client = LLMPluginClient(personaPath: "openapi/personas/auth.md")
+    private let client: LLMPluginClient
 
-    public init() {}
+    public init(client: LLMPluginClient = LLMPluginClient(personaPath: "openapi/personas/auth.md")) {
+        self.client = client
+    }
 
     /// Delegates validation to the LLM using the Auth persona.
     public func authValidate(_ request: HTTPRequest, body: ValidateRequest?) async throws -> HTTPResponse {
@@ -26,23 +28,26 @@ public actor Handlers {
 }
 
 /// Minimal client that forwards prompts and persona to the LLM Gateway.
-struct LLMPluginClient {
-    let persona: String
-    let url: URL
+public struct LLMPluginClient: Sendable {
+    public let persona: String
+    public let url: URL
+    public let session: URLSession
 
-    init(personaPath: String,
-         url: URL = URL(string: ProcessInfo.processInfo.environment["LLM_GATEWAY_URL"] ?? "http://localhost:8080/chat")!) {
+    public init(personaPath: String,
+                url: URL = URL(string: ProcessInfo.processInfo.environment["LLM_GATEWAY_URL"] ?? "http://localhost:8080/chat")!,
+                session: URLSession = .shared) {
         self.persona = (try? String(contentsOfFile: personaPath, encoding: .utf8)) ?? ""
         self.url = url
+        self.session = session
     }
 
-    func call(prompt: String) async throws -> String {
+    public func call(prompt: String) async throws -> String {
         var req = URLRequest(url: url)
         req.httpMethod = "POST"
         req.addValue("application/json", forHTTPHeaderField: "Content-Type")
         let payload = ["persona": persona, "prompt": prompt]
         req.httpBody = try JSONSerialization.data(withJSONObject: payload)
-        let (data, _) = try await URLSession.shared.data(for: req)
+        let (data, _) = try await session.data(for: req)
         return String(data: data, encoding: .utf8) ?? "{}"
     }
 }
