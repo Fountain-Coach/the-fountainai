@@ -3,6 +3,9 @@ import PackageDescription
 
 let package = Package(
     name: "HelloFountainAITeatro",
+    platforms: [
+        .macOS(.v14)
+    ],
     products: [
         .executable(name: "hello-fountainai-teatro", targets: ["HelloFountainAITeatro"])
     ],
@@ -16,6 +19,11 @@ let package = Package(
                 .product(name: "TeatroRenderAPI", package: "Teatro")
             ],
             path: "Linux"
+        ),
+        .testTarget(
+            name: "HelloFountainAITeatroTests",
+            dependencies: ["HelloFountainAITeatro"],
+            path: "Tests/HelloFountainAITeatroTests"
         )
     ]
 )
