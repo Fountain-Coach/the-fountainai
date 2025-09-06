@@ -43,9 +43,11 @@ public struct EnvKeyProvider: KeyProvider {
 public final class JWKSKeyProvider: @unchecked Sendable, KeyProvider {
     private var key: SymmetricKey
     private let url: URL
-    public init?(jwksURL: String) {
+    private let session: URLSession
+    public init?(jwksURL: String, session: URLSession = .shared) {
         guard let u = URL(string: jwksURL) else { return nil }
         self.url = u
+        self.session = session
         self.key = SymmetricKey(data: Data())
         // Best-effort fetch at init; failures will keep an empty key which will fail validation.
         Task.detached { [weak self] in await self?.refresh() }
@@ -55,7 +57,7 @@ public final class JWKSKeyProvider: @unchecked Sendable, KeyProvider {
         var req = URLRequest(url: url)
         req.httpMethod = "GET"
         do {
-            let (data, resp) = try await URLSession.shared.data(for: req)
+            let (data, resp) = try await session.data(for: req)
             guard (resp as? HTTPURLResponse)?.statusCode == 200 else { return }
             if let obj = try JSONSerialization.jsonObject(with: data) as? [String: Any], let keys = obj["keys"] as? [[String: Any]] {
                 // Pick first symmetric (oct) key
@@ -147,19 +149,22 @@ public struct OAuth2Validator: TokenValidator {
     private let introspectionURL: URL
     private let clientId: String?
     private let clientSecret: String?
+    private let session: URLSession
     public init(introspectionURL: URL,
                 clientId: String? = nil,
-                clientSecret: String? = nil) {
+                clientSecret: String? = nil,
+                session: URLSession = .shared) {
         self.introspectionURL = introspectionURL
         self.clientId = clientId
         self.clientSecret = clientSecret
+        self.session = session
     }
-    public init?(environment: [String: String] = ProcessInfo.processInfo.environment) {
+    public init?(environment: [String: String] = ProcessInfo.processInfo.environment, session: URLSession = .shared) {
         guard let urlStr = environment["GATEWAY_OAUTH2_INTROSPECTION_URL"],
               let url = URL(string: urlStr) else { return nil }
         let id = environment["GATEWAY_OAUTH2_CLIENT_ID"]
         let secret = environment["GATEWAY_OAUTH2_CLIENT_SECRET"]
-        self.init(introspectionURL: url, clientId: id, clientSecret: secret)
+        self.init(introspectionURL: url, clientId: id, clientSecret: secret, session: session)
     }
     public func validate(token: String) async -> TokenClaims? {
         var request = URLRequest(url: introspectionURL)
@@ -172,7 +177,7 @@ public struct OAuth2Validator: TokenValidator {
             request.setValue("Basic \(auth)", forHTTPHeaderField: "Authorization")
         }
         do {
-            let (data, resp) = try await URLSession.shared.data(for: request)
+            let (data, resp) = try await session.data(for: request)
             guard (resp as? HTTPURLResponse)?.statusCode == 200 else { return nil }
             struct IntrospectionResponse: Decodable {
                 let active: Bool
