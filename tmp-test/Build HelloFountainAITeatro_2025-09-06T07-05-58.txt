@@ -1,0 +1,12 @@
+
+Showing All Issues
+
+Build target hello-fountainai-teatro with configuration Debug
+error: The package product 'TeatroRenderAPI' requires minimum platform version 14.0 for the macOS platform, but this target supports 10.13 (in target 'hello-fountainai-teatro' from project 'HelloFountainAITeatro')
+
+
+The package product 'TeatroRenderAPI' requires minimum platform version 14.0 for the macOS platform, but this target supports 10.13
+
+
+
+Build failed    06.09.25, 07:05    1.2 seconds
