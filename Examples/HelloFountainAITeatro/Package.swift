@@ -3,27 +3,22 @@ import PackageDescription
 
 let package = Package(
     name: "HelloFountainAITeatro",
-    platforms: [
-        .macOS(.v14)
-    ],
     products: [
-        .executable(name: "HelloFountainAITeatro", targets: ["HelloFountainAITeatro"])
+        .executable(name: "hello-fountainai-teatro", targets: ["HelloFountainAITeatro"])
     ],
     dependencies: [
-        .package(url: "https://github.com/Fountain-Coach/Teatro.git", branch: "main"),
-        .package(path: "../..")
+        .package(url: "https://github.com/Fountain-Coach/Teatro.git", branch: "main")
     ],
     targets: [
         .executableTarget(
             name: "HelloFountainAITeatro",
             dependencies: [
-                .product(name: "Teatro", package: "teatro"),
-                .product(name: "TeatroRenderAPI", package: "teatro"),
-                .product(name: "FountainRuntime", package: "the-fountainai")
+                .product(name: "TeatroRenderAPI", package: "Teatro")
             ],
-            path: "macOS"
+            path: "Linux"
         )
     ]
 )
 
 // © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
+

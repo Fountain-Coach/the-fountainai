@@ -1,13 +1,15 @@
 # HelloFountainAITeatro
 
-Minimal macOS SwiftUI example for rendering a message with **Teatro** after
-calling the FountainAI Semantic Browser health endpoint.
 
-## Build & Run (macOS)
+This example queries a running Semantic Browser service and renders the response status using Teatro.
+
+## Linux
+
+Build and run:
 
 ```bash
-swift run HelloFountainAITeatro
+swift run hello-fountainai-teatro > output.svg
 ```
 
-The app requests `GET http://localhost:8007/v1/health` and renders the response
-status inside a Teatro scene.
+The SVG is written to `stdout`, redirect it to a file to save.
+
