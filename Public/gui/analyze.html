@@ -25,6 +25,7 @@
           <label>Corpus <input id="corpus" placeholder="gui" value="gui" /></label>
           <label>Labels <input id="labels" placeholder="comma,separated,labels" /></label>
           <button id="btnAnalyze">Analyze</button>
+          <button id="btnSample">Try sample</button>
         </div>
         <p class="note">Optional auth: append <code>&apiKey=YOUR_KEY</code> to the URL so requests include <code>X-API-Key</code>.</p>
       </div>
@@ -88,7 +89,7 @@
         }
       }
       document.getElementById('btnAnalyze').onclick = ()=>analyze();
+      document.getElementById('btnSample').onclick = ()=>{ urlEl.value='https://www.swift.org/blog/swift-6/'; labelsEl.value='swift,blog'; };
     </script>
   </body>
   </html>
-

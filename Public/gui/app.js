@@ -47,3 +47,9 @@ function el(tag, attrs = {}, ...children) {
 }
 
 window.Gui = { params, fetchJSON, fetchText, postJSON, el };
+
+// Basic settings persisted locally for convenience
+window.GuiStore = {
+  get(k, d=''){ try { return localStorage.getItem(k) ?? d } catch { return d } },
+  set(k, v){ try { localStorage.setItem(k, v) } catch {} }
+}

@@ -17,8 +17,16 @@
         <input id="q" placeholder="Ask a question" style="width: 60ch" />
         <input id="url" placeholder="Optional: paste a link" style="width: 60ch" />
         <button id="go">Go</button>
+        <button id="sample">Try sample</button>
       </div>
-      <p id="status"></p>
+      <details style="margin-top:.5rem;"><summary>Model settings</summary>
+        <div>
+          <input id="llmUrl" placeholder="LLM API base (e.g., https://llm-gateway.../api/v1)" style="width: 60ch" />
+          <input id="llmKey" placeholder="Optional: Bearer token" style="width: 40ch" />
+          <button id="saveCfg">Save</button>
+        </div>
+      </details>
+      <p id="status" style="color:#a00;"></p>
       <h2>Answer</h2>
       <div id="answer"></div>
       <h3>Sources</h3>
@@ -30,6 +38,10 @@
       const urlEl = document.getElementById('url');
       qEl.value = qp.get('q') || '';
       urlEl.value = qp.get('url') || '';
+      const llmUrlEl = document.getElementById('llmUrl');
+      const llmKeyEl = document.getElementById('llmKey');
+      llmUrlEl.value = GuiStore.get('llmUrl', qp.get('llm') || '');
+      llmKeyEl.value = GuiStore.get('llmKey', qp.get('llmKey') || '');
       const statusEl = document.getElementById('status');
       const answerEl = document.getElementById('answer');
       const sourcesEl = document.getElementById('sources');
@@ -57,9 +69,9 @@
         }
 
         try {
-          const llmUrl = (new URLSearchParams(location.search)).get('llm') || (window.LLM_GATEWAY_URL || '');
-          if (!llmUrl) { statusEl.textContent = 'LLM not configured. Append ?llm=https://.../api/v1 and optionally &llmKey=...'; return; }
-          const key = (new URLSearchParams(location.search)).get('llmKey') || '';
+          const llmUrl = llmUrlEl.value.trim();
+          const key = llmKeyEl.value.trim();
+          if (!llmUrl) { statusEl.textContent = 'Model not configured. Click “Model settings” above and set LLM API base.'; return; }
           const headers = key ? { 'Authorization': `Bearer ${key}` } : {};
           const messages = [];
           if (context) messages.push({ role: 'system', content: `Use this context from the link if relevant: ${context}` });
@@ -82,8 +94,9 @@
         }
       }
       document.getElementById('go').onclick = ()=>ask();
+      document.getElementById('saveCfg').onclick = ()=>{ GuiStore.set('llmUrl', llmUrlEl.value.trim()); GuiStore.set('llmKey', llmKeyEl.value.trim()); statusEl.textContent='Saved model settings.'; };
+      document.getElementById('sample').onclick = ()=>{ qEl.value='Summarize this page with bullet points'; urlEl.value='https://www.swift.org/blog/swift-6/'; };
       if (qEl.value || urlEl.value) ask().catch(console.error);
     </script>
   </body>
   </html>
-
