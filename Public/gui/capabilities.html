@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Capabilities</title>
+    <script src="/gui/app.js"></script>
+  </head>
+  <body>
+    <h1>Persist Capabilities</h1>
+    <pre id="out"></pre>
+    <script>
+      (async () => {
+        const {persist} = Gui.params();
+        const data = await Gui.fetchJSON(`${persist}/capabilities`);
+        document.getElementById('out').textContent = JSON.stringify(data, null, 2);
+      })().catch(err => document.body.append(`Error: ${err}`));
+    </script>
+  </body>
+  </html>
+

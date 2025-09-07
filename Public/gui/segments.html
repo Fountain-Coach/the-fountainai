@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Segments</title>
+    <script src="/gui/app.js"></script>
+    <style>
+      input, select, button { margin-right: .5rem; }
+      .item { margin: .5rem 0; padding: .5rem; border-bottom: 1px solid #ddd; }
+    </style>
+  </head>
+  <body>
+    <h1>Segments</h1>
+    <input id="q" placeholder="query" />
+    <select id="kind">
+      <option value="">(any kind)</option>
+      <option>heading</option>
+      <option>paragraph</option>
+      <option>code</option>
+      <option>caption</option>
+      <option>table</option>
+    </select>
+    <input id="entity" placeholder="entity filter" />
+    <input id="limit" placeholder="limit" value="20" size="4" />
+    <input id="offset" placeholder="offset" value="0" size="6" />
+    <button id="go">Search</button>
+    <button id="prev">Prev</button>
+    <button id="next">Next</button>
+    <div id="results"></div>
+    <script>
+      const q = document.getElementById('q');
+      const kind = document.getElementById('kind');
+      const entity = document.getElementById('entity');
+      const limit = document.getElementById('limit');
+      const offset = document.getElementById('offset');
+      const btn = document.getElementById('go');
+      const prev = document.getElementById('prev');
+      const next = document.getElementById('next');
+      const out = document.getElementById('results');
+      async function run() {
+        const {sem} = Gui.params();
+        const params = new URLSearchParams({
+          q: q.value||'',
+          kind: kind.value||'',
+          entity: entity.value||'',
+          limit: limit.value||'20',
+          offset: offset.value||'0'
+        });
+        const url = `${sem}/v1/segments?${params}`;
+        const data = await Gui.fetchJSON(url);
+        out.innerHTML = '';
+        (data.items||[]).forEach(s => out.appendChild(Gui.el('div',{class:'item'}, JSON.stringify(s))));
+        // Update paging
+        const lim = parseInt(limit.value||'20',10)||20;
+        const off = parseInt(offset.value||'0',10)||0;
+        prev.disabled = off<=0;
+        next.disabled = (off+lim) >= (data.total||0);
+      }
+      btn.onclick = () => run().catch(err=>alert(err));
+      prev.onclick = () => { offset.value = Math.max(0, (parseInt(offset.value||'0',10)||0) - (parseInt(limit.value||'20',10)||20)); run().catch(err=>alert(err)); };
+      next.onclick = () => { offset.value = (parseInt(offset.value||'0',10)||0) + (parseInt(limit.value||'20',10)||20); run().catch(err=>alert(err)); };
+    </script>
+  </body>
+  </html>

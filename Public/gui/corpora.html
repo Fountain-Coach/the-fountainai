@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Corpora</title>
+    <script src="/gui/app.js"></script>
+  </head>
+  <body>
+    <h1>Corpora</h1>
+    <ul id="list"></ul>
+    <script>
+      (async () => {
+        const {persist} = Gui.params();
+        const data = await Gui.fetchJSON(`${persist}/corpora?limit=200&offset=0`);
+        const ul = document.getElementById('list');
+        (data.corpora||[]).forEach(c => ul.appendChild(Gui.el('li',{}, c)));
+      })().catch(err => document.body.append(`Error: ${err}`));
+    </script>
+  </body>
+  </html>
+

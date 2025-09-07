@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Page Detail</title>
+    <script src="/gui/app.js"></script>
+    <style>
+      textarea { width: 100%; height: 320px; }
+      iframe { width: 100%; height: 60vh; border: 1px solid #ccc; }
+    </style>
+  </head>
+  <body>
+    <h1>Page Detail</h1>
+    <label>Page ID <input id="pid" placeholder="page id" /></label>
+    <button id="loadMeta">Load Metadata</button>
+    <select id="format">
+      <option value="snapshot.html">snapshot.html</option>
+      <option value="snapshot.text">snapshot.text</option>
+      <option value="analysis.json">analysis.json</option>
+      <option value="summary.md">summary.md</option>
+      <option value="tables.csv">tables.csv</option>
+    </select>
+    <button id="loadExport">Load Export</button>
+    <h2>Metadata</h2>
+    <pre id="meta"></pre>
+    <h2>Export</h2>
+    <div id="viewer"></div>
+    <script>
+      const pid = document.getElementById('pid');
+      const meta = document.getElementById('meta');
+      const viewer = document.getElementById('viewer');
+      const fsel = document.getElementById('format');
+      const urlp = new URLSearchParams(location.search);
+      if (urlp.get('id')) pid.value = urlp.get('id');
+      async function loadMeta() {
+        const {sem} = Gui.params();
+        const r = await Gui.fetchJSON(`${sem}/v1/pages/${encodeURIComponent(pid.value)}`);
+        meta.textContent = JSON.stringify(r, null, 2);
+      }
+      async function loadExport() {
+        const {sem} = Gui.params();
+        const fmt = fsel.value;
+        const res = await fetch(`${sem}/v1/export?pageId=${encodeURIComponent(pid.value)}&format=${encodeURIComponent(fmt)}`);
+        if (!res.ok) { viewer.textContent = `HTTP ${res.status}`; return; }
+        const ct = res.headers.get('content-type')||'';
+        viewer.innerHTML = '';
+        if (fmt.endsWith('.html')) {
+          const html = await res.text();
+          const frame = document.createElement('iframe');
+          viewer.appendChild(frame);
+          const doc = frame.contentDocument || frame.contentWindow.document;
+          doc.open(); doc.write(html); doc.close();
+        } else if (fmt.endsWith('.json')) {
+          const json = await res.json();
+          const pre = document.createElement('pre'); pre.textContent = JSON.stringify(json,null,2); viewer.appendChild(pre);
+        } else {
+          const text = await res.text();
+          const pre = document.createElement('pre'); pre.textContent = text; viewer.appendChild(pre);
+        }
+      }
+      document.getElementById('loadMeta').onclick = ()=>loadMeta().catch(err=>alert(err));
+      document.getElementById('loadExport').onclick = ()=>loadExport().catch(err=>alert(err));
+    </script>
+  </body>
+  </html>
+

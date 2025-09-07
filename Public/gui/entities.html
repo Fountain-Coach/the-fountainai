@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Entities</title>
+    <script src="/gui/app.js"></script>
+  </head>
+  <body>
+    <h1>Entities</h1>
+    <input id="q" placeholder="query" />
+    <select id="type">
+      <option value="">(any type)</option>
+      <option>PERSON</option>
+      <option>ORG</option>
+      <option>LOC</option>
+      <option>PROD</option>
+      <option>EVENT</option>
+      <option>OTHER</option>
+    </select>
+    <input id="limit" placeholder="limit" value="20" size="4" />
+    <input id="offset" placeholder="offset" value="0" size="6" />
+    <button id="go">Search</button>
+    <button id="prev">Prev</button>
+    <button id="next">Next</button>
+    <ul id="list"></ul>
+    <script>
+      const q = document.getElementById('q');
+      const type = document.getElementById('type');
+      const btn = document.getElementById('go');
+      const prev = document.getElementById('prev');
+      const next = document.getElementById('next');
+      const limit = document.getElementById('limit');
+      const offset = document.getElementById('offset');
+      const ul = document.getElementById('list');
+      async function run() {
+        const {sem} = Gui.params();
+        const params = new URLSearchParams({q:q.value||'', type:type.value||'', limit:limit.value||'20', offset:offset.value||'0'});
+        const data = await Gui.fetchJSON(`${sem}/v1/entities?${params}`);
+        ul.innerHTML = '';
+        (data.items||[]).forEach(e => ul.appendChild(Gui.el('li',{}, JSON.stringify(e))));
+        const lim = parseInt(limit.value||'20',10)||20;
+        const off = parseInt(offset.value||'0',10)||0;
+        prev.disabled = off<=0;
+        next.disabled = (off+lim) >= (data.total||0);
+      }
+      btn.onclick = () => run().catch(err=>alert(err));
+      prev.onclick = () => { offset.value = Math.max(0, (parseInt(offset.value||'0',10)||0) - (parseInt(limit.value||'20',10)||20)); run().catch(err=>alert(err)); };
+      next.onclick = () => { offset.value = (parseInt(offset.value||'0',10)||0) + (parseInt(limit.value||'20',10)||20); run().catch(err=>alert(err)); };
+    </script>
+  </body>
+  </html>
