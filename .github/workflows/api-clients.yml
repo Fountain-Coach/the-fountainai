@@ -1,0 +1,31 @@
+name: API Clients Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set lean mode
+        run: echo "Lean mode active (FULL_TESTS=0)"
+      - name: Build and test API client suites
+        run: |
+          swift test --enable-code-coverage --filter ApiClientsCoreTests
+          swift test --enable-code-coverage --filter GatewayAPITests2
+          swift test --enable-code-coverage --filter PersistAPITests
+          swift test --enable-code-coverage --filter SemanticBrowserAPITests
+      - name: Gather coverage
+        run: |
+          xcrun llvm-cov export -format=text \
+            .build/debug/the-fountainaiPackageTests.xctest/Contents/MacOS/the-fountainaiPackageTests \
+            -instr-profile .build/debug/codecov/default.profdata > coverage.txt || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: api-clients-coverage
+          path: coverage.txt
+

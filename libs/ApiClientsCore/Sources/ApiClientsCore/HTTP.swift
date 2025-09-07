@@ -20,7 +20,7 @@ public struct APIRequest: Sendable {
 
 public struct APIResponse: Sendable {
     public var status: Int
-    public var headers: [AnyHashable: Any]
+    public var headers: [String: String]
     public var data: Data
 }
 
@@ -33,10 +33,12 @@ public enum APIError: Error, Equatable, Sendable {
 public final class RESTClient: @unchecked Sendable {
     public let baseURL: URL
     public var defaultHeaders: [String: String]
+    private let session: URLSession
 
-    public init(baseURL: URL, defaultHeaders: [String: String] = [:]) {
+    public init(baseURL: URL, defaultHeaders: [String: String] = [:], session: URLSession = .shared) {
         self.baseURL = baseURL
         self.defaultHeaders = defaultHeaders
+        self.session = session
     }
 
     public func send(_ request: APIRequest) async throws -> APIResponse {
@@ -45,7 +47,7 @@ public final class RESTClient: @unchecked Sendable {
         let headers = defaultHeaders.merging(request.headers, uniquingKeysWith: { _, new in new })
         for (k, v) in headers { urlRequest.setValue(v, forHTTPHeaderField: k) }
         urlRequest.httpBody = request.body
-        let (data, resp) = try await URLSession.shared.data(for: urlRequest)
+        let (data, resp) = try await session.data(for: urlRequest)
         guard let http = resp as? HTTPURLResponse else {
             throw APIError.httpStatus(-1, "Non-HTTP response")
         }
@@ -53,7 +55,13 @@ public final class RESTClient: @unchecked Sendable {
             let text = String(data: data, encoding: .utf8) ?? ""
             throw APIError.httpStatus(http.statusCode, text)
         }
-        return APIResponse(status: http.statusCode, headers: http.allHeaderFields, data: data)
+        var hdrs: [String: String] = [:]
+        for (k, v) in http.allHeaderFields {
+            guard let key = k as? String else { continue }
+            if let s = v as? String { hdrs[key] = s }
+            else { hdrs[key] = String(describing: v) }
+        }
+        return APIResponse(status: http.statusCode, headers: hdrs, data: data)
     }
 
     public func buildURL(path: String, query: [String: String?] = [:]) -> URL? {
@@ -71,4 +79,3 @@ public final class RESTClient: @unchecked Sendable {
 }
 
 public struct EmptyBody: Codable, Sendable {}
-

@@ -32,20 +32,11 @@ let fullProducts: [Product] = [
     .executable(name: "semantic-browser-server", targets: ["semantic-browser-server"])]
 
 let leanProducts: [Product] = [
-    .library(name: "FountainCodex", targets: ["FountainCodex"]),
-    .library(name: "FountainRuntime", targets: ["FountainRuntime"]),
-    .executable(name: "gateway-server", targets: ["gateway-server"]),
-    .library(name: "LLMGatewayPlugin", targets: ["LLMGatewayPlugin"]),
-    .library(name: "AuthGatewayPlugin", targets: ["AuthGatewayPlugin"]),
-    .library(name: "RateLimiterGatewayPlugin", targets: ["RateLimiterGatewayPlugin"]),
-    .library(name: "BudgetBreakerGatewayPlugin", targets: ["BudgetBreakerGatewayPlugin"]),
-    .library(name: "PayloadInspectionGatewayPlugin", targets: ["PayloadInspectionGatewayPlugin"]),
-    .library(name: "DestructiveGuardianGatewayPlugin", targets: ["DestructiveGuardianGatewayPlugin"]),
-    .library(name: "RoleHealthCheckGatewayPlugin", targets: ["RoleHealthCheckGatewayPlugin"]),
-    .library(name: "SecuritySentinelGatewayPlugin", targets: ["SecuritySentinelGatewayPlugin"]),
-    .library(name: "CuratorGatewayPlugin", targets: ["CuratorGatewayPlugin"]),
-    .library(name: "GatewayPersonaOrchestrator", targets: ["GatewayPersonaOrchestrator"]),
-    .executable(name: "semantic-browser-server", targets: ["semantic-browser-server"])
+    .library(name: "ApiClientsCore", targets: ["ApiClientsCore"]),
+    .library(name: "GatewayAPI", targets: ["GatewayAPI"]),
+    .library(name: "PersistAPI", targets: ["PersistAPI"]),
+    .library(name: "SemanticBrowserAPI", targets: ["SemanticBrowserAPI"]),
+    .library(name: "LLMGatewayAPI", targets: ["LLMGatewayAPI"]) 
 ]
 
 var products: [Product] = LEAN ? leanProducts : fullProducts
@@ -336,6 +327,31 @@ let fullTargets: [Target] = [
         exclude: ["README.md"]
     ),
     .testTarget(
+        name: "ApiClientsCoreTests",
+        dependencies: ["ApiClientsCore"],
+        path: "Tests/ApiClientsCoreTests"
+    ),
+    .testTarget(
+        name: "GatewayAPITests2",
+        dependencies: ["GatewayAPI", "ApiClientsCore"],
+        path: "Tests/GatewayAPITests2"
+    ),
+    .testTarget(
+        name: "PersistAPITests",
+        dependencies: ["PersistAPI", "ApiClientsCore"],
+        path: "Tests/PersistAPITests"
+    ),
+    .testTarget(
+        name: "SemanticBrowserAPITests",
+        dependencies: ["SemanticBrowserAPI", "ApiClientsCore"],
+        path: "Tests/SemanticBrowserAPITests"
+    ),
+    .testTarget(
+        name: "LLMGatewayAPITests",
+        dependencies: ["LLMGatewayAPI", "ApiClientsCore"],
+        path: "Tests/LLMGatewayAPITests"
+    ),
+    .testTarget(
         name: "SSEClientIntegrationTests",
         dependencies: ["sse-client"],
         path: "Tests/SSEClientIntegrationTests"
@@ -572,6 +588,31 @@ let leanTargets: [Target] = [
         name: "LLMGatewayAPI",
         dependencies: ["ApiClientsCore"],
         path: "libs/LLMGatewayAPI/Sources/LLMGatewayAPI"
+    ),
+    .testTarget(
+        name: "ApiClientsCoreTests",
+        dependencies: ["ApiClientsCore"],
+        path: "Tests/ApiClientsCoreTests"
+    ),
+    .testTarget(
+        name: "GatewayAPITests2",
+        dependencies: ["GatewayAPI", "ApiClientsCore"],
+        path: "Tests/GatewayAPITests2"
+    ),
+    .testTarget(
+        name: "PersistAPITests",
+        dependencies: ["PersistAPI", "ApiClientsCore"],
+        path: "Tests/PersistAPITests"
+    ),
+    .testTarget(
+        name: "SemanticBrowserAPITests",
+        dependencies: ["SemanticBrowserAPI", "ApiClientsCore"],
+        path: "Tests/SemanticBrowserAPITests"
+    ),
+    .testTarget(
+        name: "LLMGatewayAPITests",
+        dependencies: ["LLMGatewayAPI", "ApiClientsCore"],
+        path: "Tests/LLMGatewayAPITests"
     ),
     .target(
         name: "FountainCodex",
@@ -831,16 +872,20 @@ let leanTargets: [Target] = [
     ),
 ]
 
-var targets: [Target] = LEAN ? leanTargets : fullTargets
+// Minimal lean target set focused on API clients + tests to avoid linking heavy executables during local runs.
+let uiLeanTargets: [Target] = [
+    .target(name: "ApiClientsCore", dependencies: [], path: "libs/ApiClientsCore/Sources/ApiClientsCore"),
+    .target(name: "GatewayAPI", dependencies: ["ApiClientsCore"], path: "libs/GatewayAPI/Sources/GatewayAPI"),
+    .target(name: "PersistAPI", dependencies: ["ApiClientsCore"], path: "libs/PersistAPI/Sources/PersistAPI"),
+    .target(name: "SemanticBrowserAPI", dependencies: ["ApiClientsCore"], path: "libs/SemanticBrowserAPI/Sources/SemanticBrowserAPI"),
+    .target(name: "LLMGatewayAPI", dependencies: ["ApiClientsCore"], path: "libs/LLMGatewayAPI/Sources/LLMGatewayAPI"),
+    .testTarget(name: "ApiClientsCoreTests", dependencies: ["ApiClientsCore", "LLMGatewayAPI"], path: "Tests/ApiClientsCoreTests"),
+    .testTarget(name: "GatewayAPITests2", dependencies: ["GatewayAPI", "ApiClientsCore"], path: "Tests/GatewayAPITests2"),
+    .testTarget(name: "PersistAPITests", dependencies: ["PersistAPI", "ApiClientsCore"], path: "Tests/PersistAPITests"),
+    .testTarget(name: "SemanticBrowserAPITests", dependencies: ["SemanticBrowserAPI", "ApiClientsCore"], path: "Tests/SemanticBrowserAPITests"),
+    ]
 
-#if os(Linux)
-products.append(.library(name: "PDFiumExtractor", targets: ["PDFiumExtractor"]))
-targets.append(.target(name: "PDFiumExtractor", dependencies: [], path: "libs/PDFiumExtractor"))
-#endif
-// After appending core targets, include Linux-specific tests.
-#if os(Linux)
-targets.append(.testTarget(name: "PDFiumExtractorTests", dependencies: ["PDFiumExtractor"], path: "Tests/PDFiumExtractorTests"))
-#endif
+var targets: [Target] = LEAN ? uiLeanTargets : fullTargets
 
 let package = Package(
     name: "the-fountainai",
