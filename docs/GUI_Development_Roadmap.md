@@ -189,6 +189,13 @@ API → GUI Mapping
 - E2E smoke: GUI boots; user completes core flows without internal errors.
 - Stream tests: Simulated SSE sessions; verify token timing and UI state transitions.
 
+Client Libraries
+- ApiClientsCore: shared HTTP + JSON.
+- GatewayAPI: Gateway health and metrics.
+- PersistAPI: Capabilities, corpora, functions, reflections.
+- SemanticBrowserAPI: Segments, entities, pages, export, health.
+- LLMGatewayAPI: Chat and metrics.
+
 ## Telemetry & Output Format
 - Collect `capabilityRequests` aggregated by `need` from gateway responses and display in the capabilities dashboard.
 - Standard run output (for CI/dev) should include:

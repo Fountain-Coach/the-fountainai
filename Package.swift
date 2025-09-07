@@ -52,6 +52,31 @@ var products: [Product] = LEAN ? leanProducts : fullProducts
 
 let fullTargets: [Target] = [
     .target(
+        name: "ApiClientsCore",
+        dependencies: [],
+        path: "libs/ApiClientsCore/Sources/ApiClientsCore"
+    ),
+    .target(
+        name: "GatewayAPI",
+        dependencies: ["ApiClientsCore"],
+        path: "libs/GatewayAPI/Sources/GatewayAPI"
+    ),
+    .target(
+        name: "PersistAPI",
+        dependencies: ["ApiClientsCore"],
+        path: "libs/PersistAPI/Sources/PersistAPI"
+    ),
+    .target(
+        name: "SemanticBrowserAPI",
+        dependencies: ["ApiClientsCore"],
+        path: "libs/SemanticBrowserAPI/Sources/SemanticBrowserAPI"
+    ),
+    .target(
+        name: "LLMGatewayAPI",
+        dependencies: ["ApiClientsCore"],
+        path: "libs/LLMGatewayAPI/Sources/LLMGatewayAPI"
+    ),
+    .target(
         name: "FountainCodex",
         dependencies: ["FountainRuntime"],
         path: "libs/FountainCodex",
@@ -523,6 +548,31 @@ let fullTargets: [Target] = [
 ]
 
 let leanTargets: [Target] = [
+    .target(
+        name: "ApiClientsCore",
+        dependencies: [],
+        path: "libs/ApiClientsCore/Sources/ApiClientsCore"
+    ),
+    .target(
+        name: "GatewayAPI",
+        dependencies: ["ApiClientsCore"],
+        path: "libs/GatewayAPI/Sources/GatewayAPI"
+    ),
+    .target(
+        name: "PersistAPI",
+        dependencies: ["ApiClientsCore"],
+        path: "libs/PersistAPI/Sources/PersistAPI"
+    ),
+    .target(
+        name: "SemanticBrowserAPI",
+        dependencies: ["ApiClientsCore"],
+        path: "libs/SemanticBrowserAPI/Sources/SemanticBrowserAPI"
+    ),
+    .target(
+        name: "LLMGatewayAPI",
+        dependencies: ["ApiClientsCore"],
+        path: "libs/LLMGatewayAPI/Sources/LLMGatewayAPI"
+    ),
     .target(
         name: "FountainCodex",
         dependencies: ["FountainRuntime"],
