@@ -36,7 +36,8 @@ let leanProducts: [Product] = [
     .library(name: "GatewayAPI", targets: ["GatewayAPI"]),
     .library(name: "PersistAPI", targets: ["PersistAPI"]),
     .library(name: "SemanticBrowserAPI", targets: ["SemanticBrowserAPI"]),
-    .library(name: "LLMGatewayAPI", targets: ["LLMGatewayAPI"]) 
+    .library(name: "LLMGatewayAPI", targets: ["LLMGatewayAPI"]),
+    .executable(name: "publishing-frontend", targets: ["publishing-frontend"]) 
 ]
 
 var products: [Product] = LEAN ? leanProducts : fullProducts
@@ -90,6 +91,11 @@ let fullTargets: [Target] = [
         ],
         path: "libs/FountainRuntime",
         exclude: ["DNS/README.md"]
+    ),
+    .target(
+        name: "FountainStoreClient",
+        dependencies: [.product(name: "FountainStore", package: "fountain-store")],
+        path: "libs/FountainStoreClient"
     ),
     .target(
         name: "LauncherSignature",
@@ -884,6 +890,40 @@ let uiLeanTargets: [Target] = [
     .target(name: "PersistAPI", dependencies: ["ApiClientsCore"], path: "libs/PersistAPI/Sources/PersistAPI"),
     .target(name: "SemanticBrowserAPI", dependencies: ["ApiClientsCore"], path: "libs/SemanticBrowserAPI/Sources/SemanticBrowserAPI"),
     .target(name: "LLMGatewayAPI", dependencies: ["ApiClientsCore"], path: "libs/LLMGatewayAPI/Sources/LLMGatewayAPI"),
+    // Minimal server to host static GUI files
+    .target(
+        name: "PublishingFrontend",
+        dependencies: ["FountainRuntime", "Yams"],
+        path: "libs/PublishingFrontend/PublishingFrontend"
+    ),
+    .executableTarget(
+        name: "publishing-frontend",
+        dependencies: ["PublishingFrontend"],
+        path: "tools/PublishingFrontendCLI/publishing-frontend"
+    ),
+    // Runtime needed by PublishingFrontend
+    .target(
+        name: "FountainRuntime",
+        dependencies: [
+            .product(name: "AsyncHTTPClient", package: "async-http-client"),
+            .product(name: "NIO", package: "swift-nio"),
+            .product(name: "NIOCore", package: "swift-nio"),
+            .product(name: "NIOHTTP1", package: "swift-nio"),
+            "Yams",
+            .product(name: "Crypto", package: "swift-crypto"),
+            .product(name: "Logging", package: "swift-log"),
+            .product(name: "Atomics", package: "swift-atomics"),
+            "FountainStoreClient",
+            .product(name: "FountainStore", package: "fountain-store")
+        ],
+        path: "libs/FountainRuntime",
+        exclude: ["DNS/README.md"]
+    ),
+    .target(
+        name: "FountainStoreClient",
+        dependencies: [.product(name: "FountainStore", package: "fountain-store")],
+        path: "libs/FountainStoreClient"
+    ),
     .executableTarget(name: "gui-diagnostics", dependencies: ["ApiClientsCore", "GatewayAPI", "PersistAPI", "SemanticBrowserAPI", "LLMGatewayAPI"], path: "tools/GuiDiagnostics"),
     .executableTarget(name: "gui-seed", dependencies: ["ApiClientsCore", "PersistAPI"], path: "tools/GuiSeed"),
     .executableTarget(name: "gui-browse", dependencies: ["ApiClientsCore", "PersistAPI", "SemanticBrowserAPI"], path: "tools/GuiBrowse"),
