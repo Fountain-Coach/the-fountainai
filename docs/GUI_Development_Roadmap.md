@@ -65,6 +65,20 @@ Acceptance
 - Given seeded corpus, a user can: list items, run an FTS query, open a detail view, and see historical versions.
 - All calls traceable in gateway logs; no undocumented endpoints used.
 
+API → GUI Mapping
+- Specs: `openapi/v1/semantic-browser.yml`, `openapi/v1/persist.yml`
+- Operations
+  - Semantic Browser
+    - GET `/v1/segments` (querySegments) → GUI route `/gui/segments?q=&kind=&entity=`
+    - GET `/v1/entities` (queryEntities) → GUI route `/gui/entities?q=&type=`
+    - GET `/v1/pages/{id}` (getPage) → GUI route `/gui/pages/:id`
+    - GET `/v1/export?pageId=&format=` (exportArtifacts) → GUI action button in page detail
+  - Persist
+    - GET `/corpora?limit=&offset=` (listCorpora) → corpus picker `/gui/corpora`
+
+Notes
+- If FTS/Vector modules are disabled, GUI fallbacks to substring filtering on available fields.
+
 ### M2 — Annotation & Provenance
 Goals
 - Create/read/update annotations bound to items and versions.
@@ -78,6 +92,16 @@ Acceptance
 - Users can add annotations to a specific version and retrieve them reliably.
 - Provenance view shows at least: source op(s), time, actor/service, outcome.
 
+API → GUI Mapping
+- Specs: `openapi/v1/persist.yml`
+- Operations
+  - POST `/corpora/{corpusId}/reflections` (addReflection) → create annotation
+  - GET `/corpora/{corpusId}/reflections?limit=&offset=` (listReflections) → list annotations
+
+Notes
+- Until a dedicated annotations API exists, reflections serve as the interim annotation store (type-tagged payloads).
+- Provenance is derived from gateway/persona logs and stored metadata; expose as a panel in page detail.
+
 ### M3 — Capability‑Aware UX
 Goals
 - Surface missing capabilities returned by services; guide user to resolve (e.g., enable module, set config, open issue).
@@ -89,6 +113,16 @@ Deliverables
 Acceptance
 - When backend lacks a capability, GUI shows a clear message and a resolution path; no silent failures.
 
+API → GUI Mapping
+- Specs: `openapi/v1/persist.yml` (and per‑service variants)
+- Operations
+  - GET `/capabilities` (persist) → source of capability flags
+  - GET `/v1/capabilities` (convention for other services) → attempt and cache; if 404, infer via errors
+  - Health fallbacks: GET `/v1/health` (semantic-browser), GET `/health` (gateway)
+
+Notes
+- Display `{"need": "<capability>"}` from error bodies inline, link to docs/enablement.
+
 ### M4 — Streams, Playback, and Teatro Integration
 Goals
 - Visualize token streams from the LLM Gateway and support synchronized playback using Teatro primitives.
@@ -99,6 +133,15 @@ Deliverables
 
 Acceptance
 - Users can initiate a stream request, observe tokens and timing, and replay segments deterministically.
+
+API → GUI Mapping
+- Specs: `openapi/v1/llm-gateway.yml`
+- Operations
+  - POST `/chat` (chatWithObjective) → chat/stream start from `/gui/chat`
+  - GET `/metrics` (optional) → stream reliability stats overlay
+
+Notes
+- If SSE streaming is unavailable, fall back to polling until streaming is standardized in the spec.
 
 ### M5 — Persistence UX Enhancements
 Goals
@@ -112,6 +155,15 @@ Deliverables
 Acceptance
 - Saved searches survive reload; deep links restore filters and selection.
 
+API → GUI Mapping
+- Specs: `openapi/v1/persist.yml`
+- Operations
+  - GET `/functions?q=&limit=&offset=` (listFunctions) → list saved artifacts
+  - GET `/functions/{functionId}` (getFunctionDetails) → detail view for saved definitions
+
+Notes
+- Interim storage of saved searches may use `reflections` with a `kind: SavedSearch` tag until a dedicated endpoint exists.
+
 ### M6 — Hardening & Observability
 Goals
 - Close gaps, improve performance, and finalize diagnostics.
@@ -123,6 +175,13 @@ Deliverables
 Acceptance
 - Green lean CI by default; full suites green on demand.
 - SLOs defined for search latency, stream jitter, and annotation saves.
+
+API → GUI Mapping
+- Specs: `openapi/v1/gateway.yml`, `openapi/v1/persist.yml`, `openapi/v1/semantic-browser.yml`
+- Operations
+  - GET `/metrics` (gateway) → overall service metrics
+  - GET `/metrics` (persist) → persistence metrics (latency, errors)
+  - GET `/v1/health` (semantic-browser) → readiness details (browser pool)
 
 ## Testing Strategy
 - Contract tests: Validate requests/responses against OpenAPI via Curator; fail on drift.
@@ -169,4 +228,3 @@ Acceptance
 - PDF: `docs/FountainAI Platform_ Current Status and Roadmap to GUI Development.pdf`
 - Repos: Fountain‑Store, Teatro, midi2, the‑fountainai
 - Platform overview: `README.md`, `agent.md`
-

@@ -1,0 +1,91 @@
+{
+  "M0": {
+    "notes": [
+      "Curate OpenAPI specs and verify health/metrics",
+      "Implement /capabilities per service where available"
+    ],
+    "operations": [
+      {"spec": "openapi/v1/gateway.yml", "method": "GET", "path": "/health"},
+      {"spec": "openapi/v1/gateway.yml", "method": "GET", "path": "/metrics"},
+      {"spec": "openapi/v1/semantic-browser.yml", "method": "GET", "path": "/v1/health"},
+      {"spec": "openapi/v1/persist.yml", "method": "GET", "path": "/capabilities"}
+    ]
+  },
+  "M1": {
+    "guiRoutes": [
+      "/gui/corpora",
+      "/gui/segments",
+      "/gui/entities",
+      "/gui/pages/:id"
+    ],
+    "operations": [
+      {"spec": "openapi/v1/persist.yml", "method": "GET", "path": "/corpora"},
+      {"spec": "openapi/v1/semantic-browser.yml", "method": "GET", "path": "/v1/segments"},
+      {"spec": "openapi/v1/semantic-browser.yml", "method": "GET", "path": "/v1/entities"},
+      {"spec": "openapi/v1/semantic-browser.yml", "method": "GET", "path": "/v1/pages/{id}"},
+      {"spec": "openapi/v1/semantic-browser.yml", "method": "GET", "path": "/v1/export"}
+    ]
+  },
+  "M2": {
+    "guiRoutes": [
+      "/gui/pages/:id/annotations",
+      "/gui/annotations"
+    ],
+    "operations": [
+      {"spec": "openapi/v1/persist.yml", "method": "POST", "path": "/corpora/{corpusId}/reflections"},
+      {"spec": "openapi/v1/persist.yml", "method": "GET", "path": "/corpora/{corpusId}/reflections"}
+    ],
+    "notes": [
+      "Use Reflections as interim annotation storage with kind=SavedNote or similar"
+    ]
+  },
+  "M3": {
+    "guiRoutes": [
+      "/gui/capabilities"
+    ],
+    "operations": [
+      {"spec": "openapi/v1/persist.yml", "method": "GET", "path": "/capabilities"},
+      {"spec": "openapi/v1/semantic-browser.yml", "method": "GET", "path": "/v1/health"}
+    ],
+    "notes": [
+      "Attempt GET /v1/capabilities for services that support it; if 404, infer via error messages with {\"need\": <capability>}"
+    ]
+  },
+  "M4": {
+    "guiRoutes": [
+      "/gui/chat",
+      "/gui/streams"
+    ],
+    "operations": [
+      {"spec": "openapi/v1/llm-gateway.yml", "method": "POST", "path": "/chat"},
+      {"spec": "openapi/v1/llm-gateway.yml", "method": "GET", "path": "/metrics"}
+    ],
+    "notes": [
+      "If SSE is not yet standardized, use polling or simulated streams for UI until spec update"
+    ]
+  },
+  "M5": {
+    "guiRoutes": [
+      "/gui/saved",
+      "/gui/saved/:id"
+    ],
+    "operations": [
+      {"spec": "openapi/v1/persist.yml", "method": "GET", "path": "/functions"},
+      {"spec": "openapi/v1/persist.yml", "method": "GET", "path": "/functions/{functionId}"}
+    ],
+    "notes": [
+      "Saved searches may be persisted as reflections with kind=SavedSearch until a dedicated endpoint exists"
+    ]
+  },
+  "M6": {
+    "guiRoutes": [
+      "/gui/observability"
+    ],
+    "operations": [
+      {"spec": "openapi/v1/gateway.yml", "method": "GET", "path": "/metrics"},
+      {"spec": "openapi/v1/persist.yml", "method": "GET", "path": "/metrics"},
+      {"spec": "openapi/v1/semantic-browser.yml", "method": "GET", "path": "/v1/health"}
+    ]
+  }
+}
+
