@@ -326,6 +326,11 @@ let fullTargets: [Target] = [
         path: "services/BootstrapServer",
         exclude: ["README.md"]
     ),
+    .executableTarget(
+        name: "gui-diagnostics",
+        dependencies: ["ApiClientsCore", "GatewayAPI", "PersistAPI", "SemanticBrowserAPI", "LLMGatewayAPI"],
+        path: "tools/GuiDiagnostics"
+    ),
     .testTarget(
         name: "ApiClientsCoreTests",
         dependencies: ["ApiClientsCore"],

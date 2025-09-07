@@ -45,11 +45,18 @@ Deliverables
 - Curated OpenAPI set under `openapi/` (validated by the OpenAPI Curator).
 - Seed scripts under `seeding/` produce minimal yet realistic data.
 - Health/metrics surfaces verified and documented.
+- Diagnostics CLI: `gui-diagnostics` aggregates service health/capabilities and prints acceptance JSON.
 
 Acceptance
 - All gateway/persona specs pass curation; `services/*` routes match contracts.
 - `FOUNTAINSTORE_*` documented and validated in a local runbook.
 - Capability map rendered via a simple diagnostic view (JSON output acceptable in M0).
+
+How to Run (Diagnostics)
+- Set endpoints as env vars or rely on defaults:
+  - `GATEWAY_URL`, `PERSIST_URL`, `FOUNTAINSTORE_API_KEY`, `SEMANTIC_BROWSER_URL`, `LLM_GATEWAY_URL`
+- Execute: `swift run gui-diagnostics` or `Scripts/run-gui-diagnostics.sh`
+- Output matches the required JSON format under “Telemetry & Output Format”.
 
 ### M1 — Corpus Browser MVP
 Goals
