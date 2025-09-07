@@ -25,17 +25,40 @@
     <pre id="meta"></pre>
     <h2>Export</h2>
     <div id="viewer"></div>
+    <h2>Add Note (Annotation)</h2>
+    <div>
+      <label>Corpus ID <input id="corpusId" placeholder="corpus id" /></label>
+      <label>Question <input id="noteQ" placeholder="What is this about?" /></label>
+      <br/>
+      <label>Content</label>
+      <textarea id="noteContent" placeholder="Write your note..."></textarea>
+      <br/>
+      <button id="btnSaveNote">Save Note</button>
+      <span id="noteStatus"></span>
+      <p><small>Tip: you can add <code>&apiKey=YOUR_KEY</code> to the URL to authorize requests to Persist.</small></p>
+    </div>
+    <h2>Provenance (Placeholder)</h2>
+    <div id="prov">
+      <p>This panel will show gateway/persona provenance for the page once telemetry is wired. For now, it lists the actions taken in this session.</p>
+      <ul id="provList"></ul>
+    </div>
     <script>
       const pid = document.getElementById('pid');
       const meta = document.getElementById('meta');
       const viewer = document.getElementById('viewer');
       const fsel = document.getElementById('format');
+      const corpus = document.getElementById('corpusId');
+      const noteQ = document.getElementById('noteQ');
+      const noteContent = document.getElementById('noteContent');
+      const noteStatus = document.getElementById('noteStatus');
+      const provList = document.getElementById('provList');
       const urlp = new URLSearchParams(location.search);
       if (urlp.get('id')) pid.value = urlp.get('id');
       async function loadMeta() {
         const {sem} = Gui.params();
         const r = await Gui.fetchJSON(`${sem}/v1/pages/${encodeURIComponent(pid.value)}`);
         meta.textContent = JSON.stringify(r, null, 2);
+        recordProv(`Loaded metadata for page ${pid.value}`);
       }
       async function loadExport() {
         const {sem} = Gui.params();
@@ -57,10 +80,41 @@
           const text = await res.text();
           const pre = document.createElement('pre'); pre.textContent = text; viewer.appendChild(pre);
         }
+        recordProv(`Loaded export ${fmt} for page ${pid.value}`);
+      }
+      function recordProv(msg) {
+        provList.appendChild(Gui.el('li',{}, msg));
+      }
+      function generateId(prefix) {
+        const t = new Date().toISOString().replace(/[-:.TZ]/g,'');
+        return `${prefix}-${t}`;
+      }
+      async function saveNote() {
+        const {persist} = Gui.params();
+        const c = corpus.value.trim();
+        const q = noteQ.value.trim();
+        const content = noteContent.value.trim();
+        if (!c || !q || !content) { noteStatus.textContent = 'Please fill corpus, question, and content.'; return; }
+        noteStatus.textContent = 'Saving...';
+        const reflection = {
+          reflectionId: generateId('note'),
+          corpusId: c,
+          question: q,
+          content: content
+        };
+        try {
+          const r = await Gui.postJSON(`${persist}/corpora/${encodeURIComponent(c)}/reflections`, reflection);
+          noteStatus.textContent = 'Saved.';
+          recordProv(`Added note ${reflection.reflectionId} to corpus ${c}`);
+          noteQ.value = '';
+          noteContent.value = '';
+        } catch (e) {
+          noteStatus.textContent = `Error: ${e.message}`;
+        }
       }
       document.getElementById('loadMeta').onclick = ()=>loadMeta().catch(err=>alert(err));
       document.getElementById('loadExport').onclick = ()=>loadExport().catch(err=>alert(err));
+      document.getElementById('btnSaveNote').onclick = ()=>saveNote().catch(err=>alert(err));
     </script>
   </body>
   </html>
-
