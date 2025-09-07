@@ -29,6 +29,11 @@ public struct Baseline: Codable, Sendable, Equatable {
     public var baselineId: String
     public var corpusId: String
     public var content: String
+    public init(baselineId: String, corpusId: String, content: String) {
+        self.baselineId = baselineId
+        self.corpusId = corpusId
+        self.content = content
+    }
 }
 
 public struct Reflection: Codable, Sendable, Equatable {
@@ -36,6 +41,12 @@ public struct Reflection: Codable, Sendable, Equatable {
     public var corpusId: String
     public var question: String
     public var content: String
+    public init(reflectionId: String, corpusId: String, question: String, content: String) {
+        self.reflectionId = reflectionId
+        self.corpusId = corpusId
+        self.question = question
+        self.content = content
+    }
 }
 
 public struct SuccessResponse: Codable, Sendable, Equatable {

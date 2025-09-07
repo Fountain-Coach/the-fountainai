@@ -19,15 +19,14 @@ struct GuiDiagnostics {
         let sessionCfg = URLSessionConfiguration.default
         sessionCfg.timeoutIntervalForRequest = 5
         sessionCfg.timeoutIntervalForResource = 5
-        let session = URLSession(configuration: sessionCfg)
 
-        let gateway = await GatewayClient(baseURL: gatewayURL)
+        let gateway = GatewayClient(baseURL: gatewayURL)
         let persist = PersistClient(baseURL: persistURL, apiKey: persistKey)
         let sem = SemanticBrowserClient(baseURL: semURL)
         let llm = LLMGatewayClient(baseURL: llmURL)
 
         struct ServiceStatus: Codable { let ok: Bool; let details: [String: String] }
-        struct Report: Codable {
+        struct Report: Codable, Sendable {
             let mode: String
             let impactedTargets: [String]
             let build: String
@@ -37,7 +36,7 @@ struct GuiDiagnostics {
             let services: [String: ServiceStatus]
         }
 
-        func measure<T>(_ label: String, _ block: @escaping () async throws -> T) async -> (T?, Double) {
+        func measure<T: Sendable>(_ label: String, _ block: @escaping () async throws -> T) async -> (T?, Double) {
             let start = Date()
             do { let v = try await block(); return (v, Date().timeIntervalSince(start)) } catch { return (nil, Date().timeIntervalSince(start)) }
         }
@@ -68,14 +67,9 @@ struct GuiDiagnostics {
             services["semantic-browser"] = ServiceStatus(ok: val != nil, details: [:])
         }
         // LLM Gateway metrics (optional)
-        do {
-            let (_, dt) = await measure("llm.metrics") { try await llm.metrics() }
-            durations["llm.metrics"] = dt
-            services["llm-gateway"] = ServiceStatus(ok: true, details: [:])
-        } catch {
-            durations["llm.metrics"] = 0
-            services["llm-gateway"] = ServiceStatus(ok: false, details: ["error": String(describing: error)])
-        }
+        let (_, dtLLM) = await measure("llm.metrics") { try await llm.metrics() }
+        durations["llm.metrics"] = dtLLM
+        services["llm-gateway"] = ServiceStatus(ok: dtLLM > 0, details: [:])
 
         let report = Report(
             mode: env["MODE"] ?? "Tier-B",
@@ -90,4 +84,3 @@ struct GuiDiagnostics {
         FileHandle.standardOutput.write(data)
     }
 }
-

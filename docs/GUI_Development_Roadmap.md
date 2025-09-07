@@ -89,11 +89,17 @@ API → GUI Mapping
     - GET `/v1/entities` (queryEntities) → GUI route `/gui/entities?q=&type=`
     - GET `/v1/pages/{id}` (getPage) → GUI route `/gui/pages/:id`
     - GET `/v1/export?pageId=&format=` (exportArtifacts) → GUI action button in page detail
-  - Persist
-    - GET `/corpora?limit=&offset=` (listCorpora) → corpus picker `/gui/corpora`
+- Persist
+  - GET `/corpora?limit=&offset=` (listCorpora) → corpus picker `/gui/corpora`
 
 Notes
 - If FTS/Vector modules are disabled, GUI fallbacks to substring filtering on available fields.
+
+CLI Stubs (M1)
+- `gui-browse corpora` — lists corpora
+- `gui-browse segments q=swift limit=10` — queries segments
+- `gui-browse entities q=FountainAI type=ORG` — queries entities
+- `gui-browse get-page id=<PAGE_ID>` — fetches a single page
 
 ### M2 — Annotation & Provenance
 Goals
@@ -138,6 +144,10 @@ API → GUI Mapping
 
 Notes
 - Display `{"need": "<capability>"}` from error bodies inline, link to docs/enablement.
+
+
+CLI Stub (M3)
+- `gui-capabilities` — prints Persist capabilities JSON to stdout for quick inspection.
 
 ### M4 — Streams, Playback, and Teatro Integration
 Goals

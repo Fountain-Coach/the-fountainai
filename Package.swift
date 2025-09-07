@@ -886,6 +886,8 @@ let uiLeanTargets: [Target] = [
     .target(name: "LLMGatewayAPI", dependencies: ["ApiClientsCore"], path: "libs/LLMGatewayAPI/Sources/LLMGatewayAPI"),
     .executableTarget(name: "gui-diagnostics", dependencies: ["ApiClientsCore", "GatewayAPI", "PersistAPI", "SemanticBrowserAPI", "LLMGatewayAPI"], path: "tools/GuiDiagnostics"),
     .executableTarget(name: "gui-seed", dependencies: ["ApiClientsCore", "PersistAPI"], path: "tools/GuiSeed"),
+    .executableTarget(name: "gui-browse", dependencies: ["ApiClientsCore", "PersistAPI", "SemanticBrowserAPI"], path: "tools/GuiBrowse"),
+    .executableTarget(name: "gui-capabilities", dependencies: ["ApiClientsCore", "PersistAPI"], path: "tools/GuiCapabilities"),
     .testTarget(name: "ApiClientsCoreTests", dependencies: ["ApiClientsCore", "LLMGatewayAPI"], path: "Tests/ApiClientsCoreTests"),
     .testTarget(name: "GatewayAPITests2", dependencies: ["GatewayAPI", "ApiClientsCore"], path: "Tests/GatewayAPITests2"),
     .testTarget(name: "PersistAPITests", dependencies: ["PersistAPI", "ApiClientsCore"], path: "Tests/PersistAPITests"),

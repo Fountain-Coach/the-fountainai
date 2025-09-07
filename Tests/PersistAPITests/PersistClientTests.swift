@@ -85,6 +85,40 @@ final class PersistClientTests: XCTestCase {
         let d = try await client.getFunctionDetails(functionId: "f1")
         XCTAssertEqual(d?.functionId, "f1")
     }
+
+    func testSeedingFlow() async throws {
+        var step = 0
+        MockURLProtocol.requestHandler = { req in
+            step += 1
+            if step == 1 {
+                // POST /corpora
+                XCTAssertEqual(req.httpMethod, "POST")
+                XCTAssertEqual(req.url?.path, "/corpora")
+                let resp = HTTPURLResponse(url: req.url!, statusCode: 201, httpVersion: nil, headerFields: ["Content-Type":"application/json"])!
+                let body = Data("{\"corpusId\":\"gui\",\"message\":\"created\"}".utf8)
+                return (resp, body)
+            } else if step == 2 {
+                // POST /corpora/{id}/baselines
+                XCTAssertEqual(req.httpMethod, "POST")
+                XCTAssertTrue(req.url!.path.hasSuffix("/corpora/gui/baselines"))
+                let resp = HTTPURLResponse(url: req.url!, statusCode: 200, httpVersion: nil, headerFields: ["Content-Type":"application/json"])!
+                let body = Data("{\"message\":\"ok\"}".utf8)
+                return (resp, body)
+            } else {
+                // POST /corpora/{id}/reflections
+                XCTAssertEqual(req.httpMethod, "POST")
+                XCTAssertTrue(req.url!.path.hasSuffix("/corpora/gui/reflections"))
+                let resp = HTTPURLResponse(url: req.url!, statusCode: 200, httpVersion: nil, headerFields: ["Content-Type":"application/json"])!
+                let body = Data("{\"message\":\"ok\"}".utf8)
+                return (resp, body)
+            }
+        }
+        let client = PersistClient(baseURL: URL(string: "http://persist.local")!)
+        let created = try await client.createCorpus(.init(corpusId: "gui"))
+        XCTAssertEqual(created.corpusId, "gui")
+        _ = try await client.addBaseline(corpusId: "gui", baseline: .init(baselineId: "b1", corpusId: "gui", content: "seed"))
+        _ = try await client.addReflection(corpusId: "gui", reflection: .init(reflectionId: "r1", corpusId: "gui", question: "q", content: "a"))
+    }
 }
 
 @MainActor
