@@ -46,6 +46,7 @@ Deliverables
 - Seed scripts under `seeding/` produce minimal yet realistic data.
 - Health/metrics surfaces verified and documented.
 - Diagnostics CLI: `gui-diagnostics` aggregates service health/capabilities and prints acceptance JSON.
+- Seeding CLI: `gui-seed` creates a corpus and seeds a baseline + reflection for GUI MVP flows.
 
 Acceptance
 - All gateway/persona specs pass curation; `services/*` routes match contracts.
@@ -57,6 +58,14 @@ How to Run (Diagnostics)
   - `GATEWAY_URL`, `PERSIST_URL`, `FOUNTAINSTORE_API_KEY`, `SEMANTIC_BROWSER_URL`, `LLM_GATEWAY_URL`
 - Execute: `swift run gui-diagnostics` or `Scripts/run-gui-diagnostics.sh`
 - Output matches the required JSON format under “Telemetry & Output Format”.
+
+How to Run (Seeding)
+- Env vars (defaults):
+  - `PERSIST_URL=http://persist.local`
+  - `CORPUS_ID=gui`, `BASELINE_ID=baseline-1`, `BASELINE_CONTENT=Initial baseline seeded by gui-seed`
+  - `REFLECTION_ID=refl-1`, `REFLECTION_Q=What is the GUI MVP?`, `REFLECTION_A=Corpus browser + detail with FTS.`
+- Execute: `swift run gui-seed` or `Scripts/seed-corpus.sh`
+- Output: JSON map of step outcomes (createCorpus, addBaseline, addReflection).
 
 ### M1 — Corpus Browser MVP
 Goals

@@ -15,6 +15,22 @@ public struct ListCorporaResponse: Codable, Sendable, Equatable {
     public var corpora: [String]
 }
 
+public struct CorpusCreateRequest: Codable, Sendable, Equatable {
+    public var corpusId: String
+    public init(corpusId: String) { self.corpusId = corpusId }
+}
+
+public struct CorpusResponse: Codable, Sendable, Equatable {
+    public var corpusId: String
+    public var message: String?
+}
+
+public struct Baseline: Codable, Sendable, Equatable {
+    public var baselineId: String
+    public var corpusId: String
+    public var content: String
+}
+
 public struct Reflection: Codable, Sendable, Equatable {
     public var reflectionId: String
     public var corpusId: String
@@ -64,6 +80,14 @@ public actor PersistClient {
         return try JSONDecoder().decode(ListCorporaResponse.self, from: resp.data)
     }
 
+    // POST /corpora
+    public func createCorpus(_ req: CorpusCreateRequest) async throws -> CorpusResponse {
+        guard let url = http.buildURL(path: "/corpora") else { throw APIError.invalidURL }
+        let body = try JSONEncoder().encode(req)
+        let resp = try await http.send(APIRequest(method: .POST, url: url, headers: ["Content-Type": "application/json"], body: body))
+        return try JSONDecoder().decode(CorpusResponse.self, from: resp.data)
+    }
+
     // POST /corpora/{corpusId}/reflections
     public func addReflection(corpusId: String, reflection: Reflection) async throws -> SuccessResponse {
         guard let url = http.buildURL(path: "/corpora/\(corpusId)/reflections") else { throw APIError.invalidURL }
@@ -85,6 +109,14 @@ public actor PersistClient {
             return try? JSONSerialization.data(withJSONObject: o.mapValues { $0.toAny() }, options: []).decode(Reflection.self)
         }
         return (total, list)
+    }
+
+    // POST /corpora/{corpusId}/baselines
+    public func addBaseline(corpusId: String, baseline: Baseline) async throws -> SuccessResponse {
+        guard let url = http.buildURL(path: "/corpora/\(corpusId)/baselines") else { throw APIError.invalidURL }
+        let body = try JSONEncoder().encode(baseline)
+        let resp = try await http.send(APIRequest(method: .POST, url: url, headers: ["Content-Type": "application/json"], body: body))
+        return try JSONDecoder().decode(SuccessResponse.self, from: resp.data)
     }
 
     // GET /functions
@@ -122,4 +154,3 @@ private extension JSONValue {
 private extension Data {
     func decode<T: Decodable>(_ t: T.Type = T.self) throws -> T { try JSONDecoder().decode(T.self, from: self) }
 }
-

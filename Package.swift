@@ -884,11 +884,13 @@ let uiLeanTargets: [Target] = [
     .target(name: "PersistAPI", dependencies: ["ApiClientsCore"], path: "libs/PersistAPI/Sources/PersistAPI"),
     .target(name: "SemanticBrowserAPI", dependencies: ["ApiClientsCore"], path: "libs/SemanticBrowserAPI/Sources/SemanticBrowserAPI"),
     .target(name: "LLMGatewayAPI", dependencies: ["ApiClientsCore"], path: "libs/LLMGatewayAPI/Sources/LLMGatewayAPI"),
+    .executableTarget(name: "gui-diagnostics", dependencies: ["ApiClientsCore", "GatewayAPI", "PersistAPI", "SemanticBrowserAPI", "LLMGatewayAPI"], path: "tools/GuiDiagnostics"),
+    .executableTarget(name: "gui-seed", dependencies: ["ApiClientsCore", "PersistAPI"], path: "tools/GuiSeed"),
     .testTarget(name: "ApiClientsCoreTests", dependencies: ["ApiClientsCore", "LLMGatewayAPI"], path: "Tests/ApiClientsCoreTests"),
     .testTarget(name: "GatewayAPITests2", dependencies: ["GatewayAPI", "ApiClientsCore"], path: "Tests/GatewayAPITests2"),
     .testTarget(name: "PersistAPITests", dependencies: ["PersistAPI", "ApiClientsCore"], path: "Tests/PersistAPITests"),
     .testTarget(name: "SemanticBrowserAPITests", dependencies: ["SemanticBrowserAPI", "ApiClientsCore"], path: "Tests/SemanticBrowserAPITests"),
-    ]
+]
 
 var targets: [Target] = LEAN ? uiLeanTargets : fullTargets
 
