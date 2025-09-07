@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Ask FountainAI</title>
+    <script src="/gui/app.js"></script>
+    <style>
+      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 2rem; line-height: 1.5; }
+      #answer { white-space: pre-wrap; }
+      .sources a { display: block; }
+    </style>
+  </head>
+  <body>
+    <h1>Ask FountainAI</h1>
+    <div>
+      <div>
+        <input id="q" placeholder="Ask a question" style="width: 60ch" />
+        <input id="url" placeholder="Optional: paste a link" style="width: 60ch" />
+        <button id="go">Go</button>
+      </div>
+      <p id="status"></p>
+      <h2>Answer</h2>
+      <div id="answer"></div>
+      <h3>Sources</h3>
+      <div id="sources" class="sources"></div>
+    </div>
+    <script>
+      const qp = new URLSearchParams(location.search);
+      const qEl = document.getElementById('q');
+      const urlEl = document.getElementById('url');
+      qEl.value = qp.get('q') || '';
+      urlEl.value = qp.get('url') || '';
+      const statusEl = document.getElementById('status');
+      const answerEl = document.getElementById('answer');
+      const sourcesEl = document.getElementById('sources');
+
+      async function ask() {
+        const { sem, } = Gui.params();
+        const question = qEl.value.trim();
+        const link = urlEl.value.trim();
+        if (!question && !link) { statusEl.textContent = 'Enter a question or a link'; return; }
+        statusEl.textContent = 'Working...'; answerEl.textContent = ''; sourcesEl.innerHTML = '';
+        let context = '';
+        let sourceTitle = '', sourceUrl = link;
+        try {
+          if (link) {
+            // Best-effort: analyze and summarize the link for grounding
+            const body = { url: link, wait: { strategy: 'networkidle', timeoutMs: 15000 }, mode: 'full', storeArtifacts: false };
+            const resp = await Gui.postJSON(`${sem}/v1/browse`, body);
+            const a = resp && resp.analysis || {};
+            const sum = a.summary || a.summaries || a.overview || a.notes || null;
+            context = sum ? (typeof sum === 'string' ? sum : JSON.stringify(sum)) : '';
+            if (resp && resp.snapshot && resp.snapshot.title) sourceTitle = resp.snapshot.title;
+          }
+        } catch(e) {
+          // Ignore browse failures; proceed with question only.
+        }
+
+        try {
+          const llmUrl = (new URLSearchParams(location.search)).get('llm') || (window.LLM_GATEWAY_URL || '');
+          if (!llmUrl) { statusEl.textContent = 'LLM not configured. Append ?llm=https://.../api/v1 and optionally &llmKey=...'; return; }
+          const key = (new URLSearchParams(location.search)).get('llmKey') || '';
+          const headers = key ? { 'Authorization': `Bearer ${key}` } : {};
+          const messages = [];
+          if (context) messages.push({ role: 'system', content: `Use this context from the link if relevant: ${context}` });
+          messages.push({ role: 'user', content: question || `Summarize: ${link}` });
+          const req = { model: 'gpt-4o-mini', messages };
+          const res = await fetch(`${llmUrl}/chat`, { method: 'POST', headers: Object.assign({'Content-Type':'application/json'}, headers), body: JSON.stringify(req) });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const json = await res.json();
+          // Best-effort: display entire JSON or text field if present
+          const text = (typeof json === 'string') ? json : (json.text || json.answer || JSON.stringify(json, null, 2));
+          answerEl.textContent = text;
+          if (link) {
+            const a = document.createElement('a');
+            a.href = link; a.textContent = sourceTitle || link; a.target = '_blank';
+            sourcesEl.appendChild(a);
+          }
+          statusEl.textContent = 'Done.';
+        } catch (e) {
+          statusEl.textContent = `Error: ${e.message}`;
+        }
+      }
+      document.getElementById('go').onclick = ()=>ask();
+      if (qEl.value || urlEl.value) ask().catch(console.error);
+    </script>
+  </body>
+  </html>
+

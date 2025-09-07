@@ -18,65 +18,25 @@
     <script src="/gui/app.js"></script>
   </head>
   <body>
-    <h1>FountainAI GUI</h1>
-    <p>This is a minimal OpenAPI-driven GUI shell. It reads directly from your running services. Use the cards below to verify connectivity and jump into the core flows.</p>
+    <h1>FountainAI</h1>
+    <p>Tell FountainAI what you need. It will read, analyze, and summarize sources for you — with citations.</p>
 
-    <div class="grid">
-      <div class="card">
-        <h3>Endpoints</h3>
-        <p>Override via URL params, for example:<br><code>?persist=http://persist.local&sem=http://semantic-browser.local</code></p>
-        <p><b>Persist</b><br><input id="ep-persist" /></p>
-        <p><b>Semantic Browser</b><br><input id="ep-sem" /></p>
-        <p><button id="btn-apply">Apply</button> <small>Reloads with updated params.</small></p>
-      </div>
-      <div class="card">
-        <h3>Connectivity</h3>
-        <p id="ck-persist">Persist: <span>unknown</span></p>
-        <p id="ck-sem">Semantic Browser: <span>unknown</span></p>
-        <p><button id="btn-check">Check Now</button></p>
-        <small>If either shows red, verify the service or run the seed script below.</small>
-      </div>
-      <div class="card">
-        <h3>Quick Start</h3>
-        <ol>
-          <li>Seed minimal data: <code>bash Scripts/seed-corpus.sh</code></li>
-          <li>Open <a href="/gui/corpora.html">Corpora</a> to confirm your corpus exists.</li>
-          <li>Search <a href="/gui/segments.html">Segments</a> or <a href="/gui/entities.html">Entities</a>.</li>
-          <li>Open a specific page via <a href="/gui/page.html">Page Detail</a> (enter page id).</li>
-        </ol>
-      </div>
-      <div class="card">
-        <h3>Tools</h3>
-        <nav>
-          <a href="/gui/corpora.html">Corpora</a>
-          <a href="/gui/segments.html">Segments</a>
-          <a href="/gui/entities.html">Entities</a>
-          <a href="/gui/capabilities.html">Capabilities</a>
-          <a href="/gui/page.html">Page Detail</a>
-          <a href="/gui/analyze.html">Analyze URL → Insight</a>
-        </nav>
-      </div>
+    <div class="card" style="max-width: 760px;">
+      <h3>Ask FountainAI</h3>
+      <form id="askForm" action="/gui/ask.html" method="get" class="row">
+        <input name="q" id="q" placeholder="e.g., Summarize this article and give me 5 action items" style="flex:1" />
+        <input name="url" id="u" placeholder="Optional: paste a link" style="flex:1" />
+        <button type="submit">Go</button>
+      </form>
+      <small>Paste a link to include source content. FountainAI will analyze and cite it.</small>
     </div>
 
+    <div style="margin-top: 2rem;">
+      <small>Advanced users: corpus tools remain available — <a href="/gui/analyze.html">Analyze URL → Insight</a>, <a href="/gui/page.html">Page Detail</a>.</small>
+    </div>
     <script>
-      const p = Gui.params();
-      const epPersist = document.getElementById('ep-persist');
-      const epSem = document.getElementById('ep-sem');
-      epPersist.value = p.persist; epSem.value = p.sem;
-      document.getElementById('btn-apply').onclick = () => {
-        const url = new URL(location.href);
-        url.searchParams.set('persist', epPersist.value);
-        url.searchParams.set('sem', epSem.value);
-        location.href = url.toString();
-      };
-      function setStatus(id, ok) {
-        const el = document.getElementById(id).querySelector('span');
-        el.textContent = ok ? 'ok' : 'unreachable';
-        el.className = ok ? 'ok' : 'bad';
-      }
-      document.getElementById('btn-check').onclick = async () => {
-        try { await Gui.fetchJSON(`${epPersist.value}/capabilities`); setStatus('ck-persist', true); } catch { setStatus('ck-persist', false); }
-        try { await Gui.fetchJSON(`${epSem.value}/v1/health`); setStatus('ck-sem', true); } catch { setStatus('ck-sem', false); }
+      document.getElementById('askForm').onsubmit = (e) => {
+        const f = e.target; if (!f.q.value && !f.url.value) { e.preventDefault(); alert('Please enter a question or a URL.'); }
       };
     </script>
   </body>
