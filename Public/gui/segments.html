@@ -49,7 +49,15 @@
         const url = `${sem}/v1/segments?${params}`;
         const data = await Gui.fetchJSON(url);
         out.innerHTML = '';
-        (data.items||[]).forEach(s => out.appendChild(Gui.el('div',{class:'item'}, JSON.stringify(s))));
+        (data.items||[]).forEach(s => {
+          const wrap = Gui.el('div', {class:'item'});
+          // Try to extract a page id from common fields
+          const pageId = s.pageId || (s.page && s.page.id) || s.id || '';
+          const link = pageId ? Gui.el('a', {href:`/gui/page.html?id=${encodeURIComponent(pageId)}`}, 'Open page') : Gui.el('span',{},'');
+          wrap.appendChild(link);
+          wrap.appendChild(Gui.el('pre',{}, JSON.stringify(s,null,2)));
+          out.appendChild(wrap);
+        });
         // Update paging
         const lim = parseInt(limit.value||'20',10)||20;
         const off = parseInt(offset.value||'0',10)||0;

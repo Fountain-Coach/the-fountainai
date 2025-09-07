@@ -4,18 +4,79 @@
     <meta charset="utf-8" />
     <title>FountainAI GUI</title>
     <style>
-      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 2rem; }
-      a { display: block; margin: .5rem 0; }
+      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 2rem; line-height: 1.4; }
+      nav a { display: inline-block; margin: .25rem .5rem .25rem 0; padding: .25rem .5rem; border: 1px solid #ddd; border-radius: 4px; text-decoration: none; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1rem; }
+      .card { border: 1px solid #eee; border-radius: 8px; padding: 1rem; }
+      code { background: #f6f8fa; padding: 0 .25rem; border-radius: 3px; }
+      .ok { color: #0a0; }
+      .bad { color: #a00; }
+      button { margin-left: .5rem; }
+      input { width: 100%; margin-top: .25rem; }
+      small { color: #666; }
     </style>
+    <script src="/gui/app.js"></script>
   </head>
   <body>
     <h1>FountainAI GUI</h1>
-    <nav>
-      <a href="/gui/corpora.html">Corpora</a>
-      <a href="/gui/segments.html">Segments</a>
-      <a href="/gui/entities.html">Entities</a>
-    </nav>
-    <p>Use query parameters to override backends, e.g. <code>?persist=http://persist.local&sem=http://semantic-browser.local</code></p>
+    <p>This is a minimal OpenAPI-driven GUI shell. It reads directly from your running services. Use the cards below to verify connectivity and jump into the core flows.</p>
+
+    <div class="grid">
+      <div class="card">
+        <h3>Endpoints</h3>
+        <p>Override via URL params, for example:<br><code>?persist=http://persist.local&sem=http://semantic-browser.local</code></p>
+        <p><b>Persist</b><br><input id="ep-persist" /></p>
+        <p><b>Semantic Browser</b><br><input id="ep-sem" /></p>
+        <p><button id="btn-apply">Apply</button> <small>Reloads with updated params.</small></p>
+      </div>
+      <div class="card">
+        <h3>Connectivity</h3>
+        <p id="ck-persist">Persist: <span>unknown</span></p>
+        <p id="ck-sem">Semantic Browser: <span>unknown</span></p>
+        <p><button id="btn-check">Check Now</button></p>
+        <small>If either shows red, verify the service or run the seed script below.</small>
+      </div>
+      <div class="card">
+        <h3>Quick Start</h3>
+        <ol>
+          <li>Seed minimal data: <code>bash Scripts/seed-corpus.sh</code></li>
+          <li>Open <a href="/gui/corpora.html">Corpora</a> to confirm your corpus exists.</li>
+          <li>Search <a href="/gui/segments.html">Segments</a> or <a href="/gui/entities.html">Entities</a>.</li>
+          <li>Open a specific page via <a href="/gui/page.html">Page Detail</a> (enter page id).</li>
+        </ol>
+      </div>
+      <div class="card">
+        <h3>Tools</h3>
+        <nav>
+          <a href="/gui/corpora.html">Corpora</a>
+          <a href="/gui/segments.html">Segments</a>
+          <a href="/gui/entities.html">Entities</a>
+          <a href="/gui/capabilities.html">Capabilities</a>
+          <a href="/gui/page.html">Page Detail</a>
+        </nav>
+      </div>
+    </div>
+
+    <script>
+      const p = Gui.params();
+      const epPersist = document.getElementById('ep-persist');
+      const epSem = document.getElementById('ep-sem');
+      epPersist.value = p.persist; epSem.value = p.sem;
+      document.getElementById('btn-apply').onclick = () => {
+        const url = new URL(location.href);
+        url.searchParams.set('persist', epPersist.value);
+        url.searchParams.set('sem', epSem.value);
+        location.href = url.toString();
+      };
+      function setStatus(id, ok) {
+        const el = document.getElementById(id).querySelector('span');
+        el.textContent = ok ? 'ok' : 'unreachable';
+        el.className = ok ? 'ok' : 'bad';
+      }
+      document.getElementById('btn-check').onclick = async () => {
+        try { await Gui.fetchJSON(`${epPersist.value}/capabilities`); setStatus('ck-persist', true); } catch { setStatus('ck-persist', false); }
+        try { await Gui.fetchJSON(`${epSem.value}/v1/health`); setStatus('ck-sem', true); } catch { setStatus('ck-sem', false); }
+      };
+    </script>
   </body>
   </html>
-
