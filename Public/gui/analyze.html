@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Analyze URL → Insight</title>
+    <script src="/gui/app.js"></script>
+    <style>
+      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 2rem; line-height: 1.4; }
+      input, button { margin-right: .5rem; }
+      textarea { width: 100%; height: 240px; }
+      iframe { width: 100%; height: 60vh; border: 1px solid #ccc; }
+      .grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+      .row { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
+      label { display: inline-block; }
+      .note { color: #666; }
+      pre { background: #f6f8fa; padding: .5rem; border-radius: 6px; }
+    </style>
+  </head>
+  <body>
+    <h1>Analyze URL → Insight</h1>
+    <div class="grid">
+      <div>
+        <div class="row">
+          <input id="url" placeholder="https://example.com/article" size="60" />
+          <label>Corpus <input id="corpus" placeholder="gui" value="gui" /></label>
+          <label>Labels <input id="labels" placeholder="comma,separated,labels" /></label>
+          <button id="btnAnalyze">Analyze</button>
+        </div>
+        <p class="note">Optional auth: append <code>&apiKey=YOUR_KEY</code> to the URL so requests include <code>X-API-Key</code>.</p>
+      </div>
+      <div id="status"></div>
+      <div>
+        <h2>Snapshot</h2>
+        <div id="snapshot"></div>
+      </div>
+      <div>
+        <h2>Summary</h2>
+        <pre id="summary"></pre>
+      </div>
+      <div>
+        <h2>Top Entities (from analysis)</h2>
+        <pre id="entities"></pre>
+      </div>
+    </div>
+    <script>
+      const urlEl = document.getElementById('url');
+      const corpusEl = document.getElementById('corpus');
+      const labelsEl = document.getElementById('labels');
+      const statusEl = document.getElementById('status');
+      const snapshotEl = document.getElementById('snapshot');
+      const summaryEl = document.getElementById('summary');
+      const entitiesEl = document.getElementById('entities');
+
+      const qp = new URLSearchParams(location.search);
+      if (qp.get('url')) urlEl.value = qp.get('url');
+
+      async function analyze() {
+        const { sem } = Gui.params();
+        const url = urlEl.value.trim();
+        const corpus = corpusEl.value.trim() || 'gui';
+        const labels = labelsEl.value.trim() ? labelsEl.value.trim().split(',').map(s=>s.trim()).filter(Boolean) : [];
+        if (!url) { statusEl.textContent = 'Enter a URL'; return; }
+        statusEl.textContent = 'Analyzing...'; snapshotEl.innerHTML = ''; summaryEl.textContent=''; entitiesEl.textContent='';
+        try {
+          const body = {
+            url,
+            wait: { strategy: 'networkidle', timeoutMs: 15000 },
+            mode: 'full',
+            index: { corpusId: corpus, labels },
+            storeArtifacts: true
+          };
+          const resp = await Gui.postJSON(`${sem}/v1/browse`, body);
+          statusEl.textContent = 'Done.';
+          // Render snapshot HTML if present
+          if (resp && resp.snapshot && resp.snapshot.html) {
+            const frame = document.createElement('iframe'); snapshotEl.appendChild(frame);
+            const doc = frame.contentDocument || frame.contentWindow.document;
+            doc.open(); doc.write(resp.snapshot.html); doc.close();
+          }
+          // Extract summary and entities, best-effort
+          const a = resp.analysis || {};
+          const sum = a.summary || a.summaries || a.overview || a.notes || null;
+          summaryEl.textContent = sum ? (typeof sum === 'string' ? sum : JSON.stringify(sum, null, 2)) : '(no summary found)';
+          const ents = a.entities || a.topEntities || [];
+          entitiesEl.textContent = ents.length ? JSON.stringify(ents.slice(0,10), null, 2) : '(no entities found)';
+        } catch (e) {
+          statusEl.textContent = `Error: ${e.message}`;
+        }
+      }
+      document.getElementById('btnAnalyze').onclick = ()=>analyze();
+    </script>
+  </body>
+  </html>
+
