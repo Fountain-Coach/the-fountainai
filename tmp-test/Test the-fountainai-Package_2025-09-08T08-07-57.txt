@@ -1,0 +1,80 @@
+
+Showing All Issues
+Launch actions
+Test Suite 'All tests' started at 2025-09-08 08:08:37.565.
+Test Suite 'ApiClientsCoreTests.xctest' started at 2025-09-08 08:08:37.565.
+Test Suite 'LLMGatewayEmbeddedTests' started at 2025-09-08 08:08:37.566.
+Test Case '-[ApiClientsCoreTests.LLMGatewayEmbeddedTests testChatEncodesModelAndMessages]' started.
+Test Case '-[ApiClientsCoreTests.LLMGatewayEmbeddedTests testChatEncodesModelAndMessages]' passed (0.003 seconds).
+Test Suite 'LLMGatewayEmbeddedTests' passed at 2025-09-08 08:08:37.569.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.003 (0.003) seconds
+Test Suite 'RESTClientTests' started at 2025-09-08 08:08:37.569.
+Test Case '-[ApiClientsCoreTests.RESTClientTests testBuildURLAndGET]' started.
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/ApiClientsCoreTests/RESTClientTests.swift:19: error: -[ApiClientsCoreTests.RESTClientTests testBuildURLAndGET] : XCTAssertTrue failed
+Test Case '-[ApiClientsCoreTests.RESTClientTests testBuildURLAndGET]' failed (0.651 seconds).
+Test Case '-[ApiClientsCoreTests.RESTClientTests testHTTPError]' started.
+Test Case '-[ApiClientsCoreTests.RESTClientTests testHTTPError]' passed (0.002 seconds).
+Test Suite 'RESTClientTests' failed at 2025-09-08 08:08:38.223.
+	 Executed 2 tests, with 1 failure (0 unexpected) in 0.653 (0.654) seconds
+Test Suite 'ApiClientsCoreTests.xctest' failed at 2025-09-08 08:08:38.223.
+	 Executed 3 tests, with 1 failure (0 unexpected) in 0.656 (0.657) seconds
+Test Suite 'All tests' failed at 2025-09-08 08:08:38.223.
+	 Executed 3 tests, with 1 failure (0 unexpected) in 0.656 (0.658) seconds
+Test Suite 'All tests' started at 2025-09-08 08:08:37.565.
+Test Suite 'ApiClientsCoreTests.xctest' started at 2025-09-08 08:08:37.565.
+Test Suite 'LLMGatewayEmbeddedTests' started at 2025-09-08 08:08:37.566.
+Test Case '-[ApiClientsCoreTests.LLMGatewayEmbeddedTests testChatEncodesModelAndMessages]' started.
+Test Case '-[ApiClientsCoreTests.LLMGatewayEmbeddedTests testChatEncodesModelAndMessages]' passed (0.003 seconds).
+Test Suite 'LLMGatewayEmbeddedTests' passed at 2025-09-08 08:08:37.569.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.003 (0.003) seconds
+Test Suite 'RESTClientTests' started at 2025-09-08 08:08:37.569.
+Test Case '-[ApiClientsCoreTests.RESTClientTests testBuildURLAndGET]' started.
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/ApiClientsCoreTests/RESTClientTests.swift:19: error: -[ApiClientsCoreTests.RESTClientTests testBuildURLAndGET] : XCTAssertTrue failed
+Test Case '-[ApiClientsCoreTests.RESTClientTests testBuildURLAndGET]' failed (0.651 seconds).
+Test Case '-[ApiClientsCoreTests.RESTClientTests testHTTPError]' started.
+Test Case '-[ApiClientsCoreTests.RESTClientTests testHTTPError]' passed (0.002 seconds).
+Test Suite 'RESTClientTests' failed at 2025-09-08 08:08:38.223.
+	 Executed 2 tests, with 1 failure (0 unexpected) in 0.653 (0.654) seconds
+Test Suite 'ApiClientsCoreTests.xctest' failed at 2025-09-08 08:08:38.223.
+	 Executed 3 tests, with 1 failure (0 unexpected) in 0.656 (0.657) seconds
+Test Suite 'All tests' failed at 2025-09-08 08:08:38.223.
+	 Executed 3 tests, with 1 failure (0 unexpected) in 0.656 (0.658) seconds
+Test Suite 'ApiClientsCoreTests.xctest' started at 2025-09-08 08:08:37.565.
+Test Suite 'LLMGatewayEmbeddedTests' started at 2025-09-08 08:08:37.566.
+Test Case '-[ApiClientsCoreTests.LLMGatewayEmbeddedTests testChatEncodesModelAndMessages]' started.
+Test Case '-[ApiClientsCoreTests.LLMGatewayEmbeddedTests testChatEncodesModelAndMessages]' passed (0.003 seconds).
+Test Suite 'LLMGatewayEmbeddedTests' passed at 2025-09-08 08:08:37.569.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.003 (0.003) seconds
+Test Suite 'RESTClientTests' started at 2025-09-08 08:08:37.569.
+Test Case '-[ApiClientsCoreTests.RESTClientTests testBuildURLAndGET]' started.
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/ApiClientsCoreTests/RESTClientTests.swift:19: error: -[ApiClientsCoreTests.RESTClientTests testBuildURLAndGET] : XCTAssertTrue failed
+Test Case '-[ApiClientsCoreTests.RESTClientTests testBuildURLAndGET]' failed (0.651 seconds).
+Test Case '-[ApiClientsCoreTests.RESTClientTests testHTTPError]' started.
+Test Case '-[ApiClientsCoreTests.RESTClientTests testHTTPError]' passed (0.002 seconds).
+Test Suite 'RESTClientTests' failed at 2025-09-08 08:08:38.223.
+	 Executed 2 tests, with 1 failure (0 unexpected) in 0.653 (0.654) seconds
+Test Suite 'ApiClientsCoreTests.xctest' failed at 2025-09-08 08:08:38.223.
+	 Executed 3 tests, with 1 failure (0 unexpected) in 0.656 (0.657) seconds
+Test Suite 'RESTClientTests' started at 2025-09-08 08:08:37.569.
+Test Case '-[ApiClientsCoreTests.RESTClientTests testBuildURLAndGET]' started.
+Test Case '-[ApiClientsCoreTests.RESTClientTests testBuildURLAndGET]' started.
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/ApiClientsCoreTests/RESTClientTests.swift:19: error: -[ApiClientsCoreTests.RESTClientTests testBuildURLAndGET] : XCTAssertTrue failed
+Test Case '-[ApiClientsCoreTests.RESTClientTests testBuildURLAndGET]' failed (0.651 seconds).
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/ApiClientsCoreTests/RESTClientTests.swift:19: error: -[ApiClientsCoreTests.RESTClientTests testBuildURLAndGET] : XCTAssertTrue failed
+Test Case '-[ApiClientsCoreTests.RESTClientTests testBuildURLAndGET]' failed (0.651 seconds).
+Test Case '-[ApiClientsCoreTests.RESTClientTests testHTTPError]' started.
+Test Case '-[ApiClientsCoreTests.RESTClientTests testHTTPError]' started.
+Test Case '-[ApiClientsCoreTests.RESTClientTests testHTTPError]' passed (0.002 seconds).
+Test Case '-[ApiClientsCoreTests.RESTClientTests testHTTPError]' passed (0.002 seconds).
+Test Suite 'RESTClientTests' failed at 2025-09-08 08:08:38.223.
+	 Executed 2 tests, with 1 failure (0 unexpected) in 0.653 (0.654) seconds
+Test Suite 'RESTClientTests' failed at 2025-09-08 08:08:38.223.
+	 Executed 2 tests, with 1 failure (0 unexpected) in 0.653 (0.654) seconds
+Test Case '-[ApiClientsCoreTests.RESTClientTests testBuildURLAndGET]' started.
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/ApiClientsCoreTests/RESTClientTests.swift:19: error: -[ApiClientsCoreTests.RESTClientTests testBuildURLAndGET] : XCTAssertTrue failed
+Test Case '-[ApiClientsCoreTests.RESTClientTests testBuildURLAndGET]' failed (0.651 seconds).
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/ApiClientsCoreTests/RESTClientTests.swift:19: XCTAssertTrue failed
+
+
+
+Testing Complete    08.09.25, 08:08    48.6 seconds

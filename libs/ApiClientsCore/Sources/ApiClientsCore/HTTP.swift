@@ -69,10 +69,16 @@ public final class RESTClient: @unchecked Sendable {
         let trimmed = path.hasPrefix("/") ? String(path.dropFirst()) : path
         comps?.path = baseURL.path.appending("/").appending(trimmed)
         if !query.isEmpty {
-            comps?.queryItems = query.compactMap { (k, v) in
+            var items: [URLQueryItem] = query.compactMap { (k, v) in
                 if let v = v { return URLQueryItem(name: k, value: v) }
                 return nil
             }
+            // Ensure deterministic ordering for tests and caching
+            items.sort { (a, b) in
+                if a.name == b.name { return (a.value ?? "") < (b.value ?? "") }
+                return a.name < b.name
+            }
+            comps?.queryItems = items
         }
         return comps?.url
     }
