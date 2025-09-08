@@ -14,8 +14,9 @@ final class AskViewModelTests: XCTestCase {
         let src = await vm.sourceURL
         XCTAssertEqual(src, "https://example.com")
         // Verify the LLM saw a system context first
-        XCTAssertEqual(llm.messages.first?.role, .system)
-        XCTAssertTrue(llm.messages.first?.content.contains("Key points") == true)
+        let msgs1 = await llm.snapshot()
+        XCTAssertEqual(msgs1.first?.role, .system)
+        XCTAssertTrue(msgs1.first?.content.contains("Key points") == true)
     }
 
     func testAskWithoutURLJustAnswers() async throws {
@@ -26,10 +27,13 @@ final class AskViewModelTests: XCTestCase {
         await vm.ask(question: "Hello", url: nil, model: "test", corpusId: nil)
         let s = await vm.state
         XCTAssertEqual(s, .done)
-        XCTAssertEqual(await vm.answer, "Plain answer.")
-        XCTAssertEqual(llm.messages.count, 1)
-        XCTAssertEqual(llm.messages.first?.role, .user)
-        XCTAssertEqual(persist.saved.count, 1)
+        let answer = await vm.answer
+        XCTAssertEqual(answer, "Plain answer.")
+        let msgs = await llm.snapshot()
+        XCTAssertEqual(msgs.count, 1)
+        XCTAssertEqual(msgs.first?.role, .user)
+        let savedCount = await persist.count()
+        XCTAssertEqual(savedCount, 1)
     }
 }
 
@@ -43,6 +47,7 @@ final actor MockLLM: LLMService {
         self.messages = messages
         return answer
     }
+    func snapshot() -> [ChatMessage] { messages }
 }
 
 final actor MockBrowser: BrowserService {
@@ -59,4 +64,5 @@ final actor MockPersistence: PersistenceService {
     func save(question: String, url: String?, answer: String, sourceURL: String?, sourceTitle: String?, corpusId: String?) async throws {
         saved.append((question,url,answer,sourceURL,sourceTitle,corpusId))
     }
+    func count() -> Int { saved.count }
 }

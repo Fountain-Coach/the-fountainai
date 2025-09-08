@@ -1,0 +1,80 @@
+
+Showing All Issues
+
+Build target FountainAICoreTests with configuration Debug
+
+SwiftCompile normal arm64 Compiling\ AskViewModelTests.swift /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/AskViewModelTests.swift (in target 'FountainAICoreTests' from project 'the-fountainai')
+
+Failed frontend command:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -c -primary-file /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/AskViewModelTests.swift /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/SettingsTests.swift -emit-dependencies-path /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAICoreTests.build/Objects-normal/arm64/AskViewModelTests.d -emit-const-values-path /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAICoreTests.build/Objects-normal/arm64/AskViewModelTests.swiftconstvalues -emit-reference-dependencies-path /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAICoreTests.build/Objects-normal/arm64/AskViewModelTests.swiftdeps -serialize-diagnostics-path /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAICoreTests.build/Objects-normal/arm64/AskViewModelTests.dia -target arm64-apple-macos14.0 -Xllvm -aarch64-use-tbi -enable-objc-interop -stack-check -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -I /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Products/Debug -I /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Products/Debug/PackageFrameworks -F /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -no-color-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=4 -module-cache-path /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -profile-generate -profile-coverage-mapping -swift-version 6 -enforce-exclusivity\=checked -Onone -D SWIFT_PACKAGE -D DEBUG -D Xcode -serialize-debugging-options -const-gather-protocols-file /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAICoreTests.build/Objects-normal/arm64/FountainAICoreTests_const_extract_protocols.json -enable-experimental-feature DebugDescriptionMacro -empty-abi-descriptor -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -validate-clang-modules-once -clang-build-session-file /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/.swiftpm/xcode -resource-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift -enable-anonymous-context-mangled-names -file-compilation-dir /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/.swiftpm/xcode -Xcc -ivfsstatcache -Xcc /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.5-24F74-8254517eb8b97d462ccbc072ba9094c9.sdkstatcache -Xcc -I/Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Products/Debug/include -Xcc -I/Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAICoreTests.build/DerivedSources-normal/arm64 -Xcc -I/Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAICoreTests.build/DerivedSources/arm64 -Xcc -I/Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAICoreTests.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -module-name FountainAICoreTests -package-name the_fountainai -frontend-parseable-output -disable-clang-spi -target-sdk-version 15.5 -target-sdk-name macosx15.5 -external-plugin-path /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server -external-plugin-path /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/local/lib/swift/host/plugins\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server -in-process-plugin-server-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/local/lib/swift/host/plugins -o /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAICoreTests.build/Objects-normal/arm64/AskViewModelTests.o -index-unit-output-path /the-fountainai.build/Debug/FountainAICoreTests.build/Objects-normal/arm64/AskViewModelTests.o -index-store-path /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Index.noindex/DataStore -index-system-modules
+
+SwiftCompile normal arm64 /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/AskViewModelTests.swift (in target 'FountainAICoreTests' from project 'the-fountainai')
+    cd /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/.swiftpm/xcode
+    
+
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/AskViewModelTests.swift:17:28: error: actor-isolated property 'messages' can not be referenced from a nonisolated autoclosure
+        XCTAssertEqual(llm.messages.first?.role, .system)
+                           ^
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/AskViewModelTests.swift:40:22: note: property declared here
+    private(set) var messages: [ChatMessage] = []
+                     ^
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/AskViewModelTests.swift:18:27: error: actor-isolated property 'messages' can not be referenced from a nonisolated autoclosure
+        XCTAssertTrue(llm.messages.first?.content.contains("Key points") == true)
+                          ^
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/AskViewModelTests.swift:40:22: note: property declared here
+    private(set) var messages: [ChatMessage] = []
+                     ^
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/AskViewModelTests.swift:29:33: error: actor-isolated property 'answer' can not be referenced from a nonisolated autoclosure
+        XCTAssertEqual(await vm.answer, "Plain answer.")
+                                ^
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/libs/FountainAICore/Sources/FountainAICore/AskViewModel.swift:30:29: note: property declared here
+    public private(set) var answer: String = ""
+                            ^
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/AskViewModelTests.swift:30:28: error: actor-isolated property 'messages' can not be referenced from a nonisolated autoclosure
+        XCTAssertEqual(llm.messages.count, 1)
+                           ^
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/AskViewModelTests.swift:40:22: note: property declared here
+    private(set) var messages: [ChatMessage] = []
+                     ^
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/AskViewModelTests.swift:31:28: error: actor-isolated property 'messages' can not be referenced from a nonisolated autoclosure
+        XCTAssertEqual(llm.messages.first?.role, .user)
+                           ^
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/AskViewModelTests.swift:40:22: note: property declared here
+    private(set) var messages: [ChatMessage] = []
+                     ^
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/AskViewModelTests.swift:32:32: error: actor-isolated property 'saved' can not be referenced from a nonisolated autoclosure
+        XCTAssertEqual(persist.saved.count, 1)
+                               ^
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/AskViewModelTests.swift:58:9: note: property declared here
+    var saved: [(q:String,u:String?,a:String,su:String?,st:String?,c:String?)] = []
+        ^
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/AskViewModelTests.swift:29:24: error: 'await' in an autoclosure that does not support concurrency
+        XCTAssertEqual(await vm.answer, "Plain answer.")
+                       ^
+
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/AskViewModelTests.swift:17:28: Actor-isolated property 'messages' can not be referenced from a nonisolated autoclosure
+
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/AskViewModelTests.swift:18:27: Actor-isolated property 'messages' can not be referenced from a nonisolated autoclosure
+
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/AskViewModelTests.swift:29:33: Actor-isolated property 'answer' can not be referenced from a nonisolated autoclosure
+
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/AskViewModelTests.swift:30:28: Actor-isolated property 'messages' can not be referenced from a nonisolated autoclosure
+
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/AskViewModelTests.swift:31:28: Actor-isolated property 'messages' can not be referenced from a nonisolated autoclosure
+
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/AskViewModelTests.swift:32:32: Actor-isolated property 'saved' can not be referenced from a nonisolated autoclosure
+
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/AskViewModelTests.swift:29:24: 'await' in an autoclosure that does not support concurrency
+
+
+Build target DequeModule with configuration Debug
+
+SwiftCompile normal arm64 Compiling\ Deque+Codable.swift,\ Deque+Collection.swift /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/SourcePackages/checkouts/swift-collections/Sources/DequeModule/Deque+Codable.swift /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/SourcePackages/checkouts/swift-collections/Sources/DequeModule/Deque+Collection.swift (in target 'DequeModule' from project 'swift-collections')
+
+Command SwiftCompile failed with a nonzero exit code
+
+Command SwiftCompile failed with a nonzero exit code
+
+
+
+Build failed    08.09.25, 07:07    21.2 seconds
