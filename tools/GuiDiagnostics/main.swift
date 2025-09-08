@@ -1,13 +1,23 @@
 import Foundation
+import Dispatch
 import ApiClientsCore
 import GatewayAPI
 import PersistAPI
 import SemanticBrowserAPI
 import LLMGatewayAPI
 
-@main
-struct GuiDiagnostics {
-    static func main() async {
+private struct ServiceStatus: Codable { let ok: Bool; let details: [String: String] }
+private struct Report: Codable, Sendable {
+    let mode: String
+    let impactedTargets: [String]
+    let build: String
+    let tests: String
+    let durations: [String: Double]
+    let capabilityRequests: [[String: String]]
+    let services: [String: ServiceStatus]
+}
+
+private func run() async {
         let env = ProcessInfo.processInfo.environment
         func url(_ key: String, _ def: String) -> URL { URL(string: env[key] ?? def)! }
         let gatewayURL = url("GATEWAY_URL", "http://gateway.local")
@@ -24,17 +34,6 @@ struct GuiDiagnostics {
         let persist = PersistClient(baseURL: persistURL, apiKey: persistKey)
         let sem = SemanticBrowserClient(baseURL: semURL)
         let llm = LLMGatewayClient(baseURL: llmURL)
-
-        struct ServiceStatus: Codable { let ok: Bool; let details: [String: String] }
-        struct Report: Codable, Sendable {
-            let mode: String
-            let impactedTargets: [String]
-            let build: String
-            let tests: String
-            let durations: [String: Double]
-            let capabilityRequests: [[String: String]]
-            let services: [String: ServiceStatus]
-        }
 
         func measure<T: Sendable>(_ label: String, _ block: @escaping () async throws -> T) async -> (T?, Double) {
             let start = Date()
@@ -82,5 +81,12 @@ struct GuiDiagnostics {
         )
         let data = try! JSONEncoder().encode(report)
         FileHandle.standardOutput.write(data)
-    }
 }
+
+// Top-level entry point using Task to support async
+let semaphore = DispatchSemaphore(value: 0)
+Task {
+    await run()
+    semaphore.signal()
+}
+semaphore.wait()

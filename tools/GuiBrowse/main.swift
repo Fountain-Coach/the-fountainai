@@ -1,10 +1,9 @@
 import Foundation
+import Dispatch
 import PersistAPI
 import SemanticBrowserAPI
 
-@main
-struct GuiBrowse {
-    static func main() async {
+private func run() async {
         let args = Array(CommandLine.arguments.dropFirst())
         guard args.count >= 1 else {
             print("Usage: gui-browse <corpora|segments|entities|get-page> [options]\n" +
@@ -46,6 +45,12 @@ struct GuiBrowse {
         default:
             print("unknown command: \(cmd)")
         }
-    }
 }
 
+// Top-level entry for async support
+let semaphore = DispatchSemaphore(value: 0)
+Task {
+    await run()
+    semaphore.signal()
+}
+semaphore.wait()

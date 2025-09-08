@@ -1,9 +1,8 @@
 import Foundation
+import Dispatch
 import PersistAPI
 
-@main
-struct GuiCapabilities {
-    static func main() async {
+private func run() async {
         let env = ProcessInfo.processInfo.environment
         let persistURL = URL(string: env["PERSIST_URL"] ?? "http://persist.local")!
         let apiKey = env["FOUNTAINSTORE_API_KEY"]
@@ -16,6 +15,12 @@ struct GuiCapabilities {
             FileHandle.standardError.write(Data("error: \(error)\n".utf8))
             exit(2)
         }
-    }
 }
 
+// Top-level entry for async support
+let semaphore = DispatchSemaphore(value: 0)
+Task {
+    await run()
+    semaphore.signal()
+}
+semaphore.wait()
