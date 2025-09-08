@@ -1,0 +1,105 @@
+
+Showing All Issues
+Prepare build
+Prepare packages
+Build target swift-nio_NIOPosix
+Build target swift-nio-ssl_NIOSSL
+Build target swift-crypto_Crypto
+Build target LLMGatewayAPI
+Build target publishing-frontend
+Build target gui-seed
+Build target gui-diagnostics
+Build target gui-capabilities
+Build target gui-browse
+Build target SemanticBrowserAPITests
+Build target SemanticBrowserAPI
+Build target PersistAPITests
+Build target PersistAPI
+Build target GatewayAPITests2
+Build target GatewayAPI
+Build target FountainAICoreTests
+Build target FountainAICore
+SwiftEmitModule normal arm64 Emitting\ module\ for\ FountainAICore (in target 'FountainAICore' from project 'the-fountainai')
+
+Failed frontend command:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -emit-module -experimental-skip-non-inlinable-function-bodies-without-types /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/libs/FountainAICore/Sources/FountainAICore/AskViewModel.swift /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/libs/FountainAICore/Sources/FountainAICore/Settings/AppSettings.swift /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/libs/FountainAICore/Sources/FountainAICore/Settings/SettingsStore.swift -target arm64-apple-macos14.0 -Xllvm -aarch64-use-tbi -enable-objc-interop -stack-check -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -I /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Products/Debug -I /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -no-color-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=4 -module-cache-path /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -profile-generate -profile-coverage-mapping -swift-version 6 -enforce-exclusivity\=checked -Onone -D SWIFT_PACKAGE -D DEBUG -D Xcode -serialize-debugging-options -const-gather-protocols-file /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAICore.build/Objects-normal/arm64/FountainAICore_const_extract_protocols.json -enable-experimental-feature DebugDescriptionMacro -empty-abi-descriptor -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -validate-clang-modules-once -clang-build-session-file /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/.swiftpm/xcode -resource-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift -enable-anonymous-context-mangled-names -file-compilation-dir /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/.swiftpm/xcode -Xcc -ivfsstatcache -Xcc /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.5-24F74-8254517eb8b97d462ccbc072ba9094c9.sdkstatcache -Xcc -I/Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAICore.build/swift-overrides.hmap -Xcc -I/Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Products/Debug/include -Xcc -I/Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAICore.build/DerivedSources-normal/arm64 -Xcc -I/Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAICore.build/DerivedSources/arm64 -Xcc -I/Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAICore.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -module-name FountainAICore -package-name the_fountainai -frontend-parseable-output -disable-clang-spi -target-sdk-version 15.5 -target-sdk-name macosx15.5 -external-plugin-path /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server -external-plugin-path /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/local/lib/swift/host/plugins\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server -in-process-plugin-server-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/local/lib/swift/host/plugins -emit-module-doc-path /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAICore.build/Objects-normal/arm64/FountainAICore.swiftdoc -emit-module-source-info-path /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAICore.build/Objects-normal/arm64/FountainAICore.swiftsourceinfo -emit-objc-header-path /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAICore.build/Objects-normal/arm64/FountainAICore-Swift.h -serialize-diagnostics-path /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAICore.build/Objects-normal/arm64/FountainAICore-master-emit-module.dia -emit-dependencies-path /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAICore.build/Objects-normal/arm64/FountainAICore-master-emit-module.d -o /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAICore.build/Objects-normal/arm64/FountainAICore.swiftmodule -emit-abi-descriptor-path /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAICore.build/Objects-normal/arm64/FountainAICore.abi.json
+
+EmitSwiftModule normal arm64 (in target 'FountainAICore' from project 'the-fountainai')
+    cd /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/.swiftpm/xcode
+    
+
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/libs/FountainAICore/Sources/FountainAICore/AskViewModel.swift:5:16: error: stored property 'role' of 'Sendable'-conforming struct 'ChatMessage' has non-sendable type 'ChatMessage.Role'
+    public var role: Role
+               ^
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/libs/FountainAICore/Sources/FountainAICore/AskViewModel.swift:4:17: note: consider making enum 'Role' conform to the 'Sendable' protocol
+    public enum Role: String { case system, user }
+                ^
+                            , Sendable
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/libs/FountainAICore/Sources/FountainAICore/Settings/SettingsStore.swift:11:17: error: stored property 'defaults' of 'Sendable'-conforming struct 'DefaultSettingsStore' has non-sendable type 'UserDefaults'
+    private let defaults: UserDefaults
+                ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSUserDefaults.h:49:12: note: class 'UserDefaults' does not conform to the 'Sendable' protocol
+@interface NSUserDefaults : NSObject {
+           ^
+
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/libs/FountainAICore/Sources/FountainAICore/AskViewModel.swift:5:16: Stored property 'role' of 'Sendable'-conforming struct 'ChatMessage' has non-sendable type 'ChatMessage.Role'
+
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/libs/FountainAICore/Sources/FountainAICore/Settings/SettingsStore.swift:11:17: Stored property 'defaults' of 'Sendable'-conforming struct 'DefaultSettingsStore' has non-sendable type 'UserDefaults'
+
+Build target ApiClientsCoreTests
+Build target ApiClientsCore
+Build target _AtomicsShims
+Build target CYaml
+Build target Logging
+Build target CNIOAtomics
+Build target _NumericsShims
+Build target RealModule
+Build target Yams
+Build target FountainStoreCore
+Build target InternalCollectionsUtilities
+Build target FountainFTS
+Build target FountainVector
+Build target FountainStore
+Build target NIOConcurrencyHelpers
+Build target _NIOBase64
+Build target CNIOLinux
+Build target CNIOExtrasZlib
+Build target CNIODarwin
+Build target CNIOWindows
+Build target CNIOWASI
+Build target _NIODataStructures
+Build target CAsyncHTTPClient
+Build target FountainStoreClient
+Build target Algorithms
+Build target Atomics
+Build target DequeModule
+Build target NIOCore
+Build target CNIOPosix
+Build target NIOEmbedded
+Build target NIOPosix
+Build target NIO
+Build target CNIOLLHTTP
+Build target NIOHTTP1
+Build target NIOTLS
+Build target NIOSOCKS
+Build target NIOHPACK
+Build target NIOHTTP2
+Build target NIOHTTPCompression
+Build target Crypto
+Build target CNIOBoringSSL
+Build target CNIOBoringSSLShims
+Build target NIOSSL
+Build target NIOFoundationCompat
+Build target NIOTransportServices
+Build target AsyncHTTPClient
+Build target FountainRuntime
+Build target PublishingFrontend
+SwiftCompile normal arm64 Compiling\ PublishingFrontend.swift /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/libs/PublishingFrontend/PublishingFrontend/PublishingFrontend.swift (in target 'PublishingFrontend' from project 'the-fountainai')
+
+Command SwiftCompile failed with a nonzero exit code
+
+Command SwiftCompile failed with a nonzero exit code
+
+
+
+Activity Log Complete    08.09.25, 06:21    5.0 seconds
