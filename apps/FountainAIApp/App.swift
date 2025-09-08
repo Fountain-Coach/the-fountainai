@@ -23,44 +23,46 @@ struct FountainAIApp: App {
 
     var body: some Scene {
         WindowGroup {
-            if showOnboarding {
-                OnboardingView(
-                    settings: $settings,
-                    saveLLMToken: { key in
-                        // Ensure a default key ref exists
-                        if settings.apiKeyRef == nil || settings.apiKeyRef?.isEmpty == true {
-                            settings.apiKeyRef = "openai-key"
+            Group {
+                if showOnboarding {
+                    OnboardingView(
+                        settings: $settings,
+                        saveLLMToken: { key in
+                            // Ensure a default key ref exists
+                            if settings.apiKeyRef == nil || settings.apiKeyRef?.isEmpty == true {
+                                settings.apiKeyRef = "openai-key"
+                            }
+                            saveLLMToken(key)
+                        },
+                        onContinue: {
+                            showOnboarding = false
+                            configure()
+                        },
+                        errorMessage: $errorMessage
+                    )
+                } else {
+                    ContentView(settings: $settings,
+                                browserURL: $browserURL,
+                                llmTokenInput: $llmTokenInput,
+                                persistTokenInput: $persistTokenInput,
+                                saveLLMToken: saveLLMToken,
+                                savePersistToken: savePersistToken,
+                                vm: vm,
+                                onSave: configure)
+                        .onAppear {
+                            configure()
+                            // Trigger onboarding if OpenAI selected and no token saved
+                            if settings.provider == .openai && !hasLLMToken() {
+                                showOnboarding = true
+                            }
                         }
-                        saveLLMToken(key)
-                    },
-                    onContinue: {
-                        showOnboarding = false
-                        configure()
-                    },
-                    errorMessage: $errorMessage
-                )
-            } else {
-                ContentView(settings: $settings,
-                            browserURL: $browserURL,
-                            llmTokenInput: $llmTokenInput,
-                            persistTokenInput: $persistTokenInput,
-                            saveLLMToken: saveLLMToken,
-                            savePersistToken: savePersistToken,
-                            vm: vm,
-                            onSave: configure)
-                    .onAppear {
-                        configure()
-                        // Trigger onboarding if OpenAI selected and no token saved
-                        if settings.provider == .openai && !hasLLMToken() {
-                            showOnboarding = true
-                        }
-                    }
+                }
             }
-                .alert(item: Binding(get: {
-                    errorMessage.map { Msg(text: $0) }
-                }, set: { _ in }), content: { msg in
-                    Alert(title: Text("Error"), message: Text(msg.text), dismissButton: .default(Text("OK")))
-                })
+            .alert(item: Binding(get: {
+                errorMessage.map { Msg(text: $0) }
+            }, set: { _ in }), content: { msg in
+                Alert(title: Text("Error"), message: Text(msg.text), dismissButton: .default(Text("OK")))
+            })
         }
     }
 
@@ -285,12 +287,8 @@ struct OnboardingView: View {
     private func proceed() {
         let key = openAIKey.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !key.isEmpty else { return }
-        do {
-            saveLLMToken(key)
-            onContinue()
-        } catch {
-            errorMessage = String(describing: error)
-        }
+        saveLLMToken(key)
+        onContinue()
     }
 }
 
