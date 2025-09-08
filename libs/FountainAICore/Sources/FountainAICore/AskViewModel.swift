@@ -1,7 +1,7 @@
 import Foundation
 
 public struct ChatMessage: Sendable, Equatable {
-    public enum Role: String { case system, user }
+    public enum Role: String, Sendable { case system, user }
     public var role: Role
     public var content: String
     public init(role: Role, content: String) { self.role = role; self.content = content }
@@ -38,14 +38,15 @@ public actor AskViewModel {
     }
 
     public func ask(question: String, url: String? = nil, model: String = "gpt-4o-mini", corpusId: String? = nil) async {
-        await setState(.working)
+        self.state = .working
         var messages: [ChatMessage] = []
         var context: String? = nil
         if let link = url, !link.isEmpty {
             do {
                 let (title, summary) = try await browser.analyze(url: link, corpusId: corpusId)
                 context = summary
-                await setSource(url: link, title: title)
+                self.sourceURL = link
+                self.sourceTitle = title
                 if let c = context, !c.isEmpty {
                     messages.append(.init(role: .system, content: "Use this context if relevant: \(c)"))
                 }
@@ -57,17 +58,13 @@ public actor AskViewModel {
         messages.append(.init(role: .user, content: prompt))
         do {
             let text = try await llm.chat(model: model, messages: messages)
-            await setAnswer(text)
-            await setState(.done)
+            self.answer = text
+            self.state = .done
             if let p = persistence {
-                try? await p.save(question: prompt, url: url, answer: text, sourceURL: await sourceURL, sourceTitle: await sourceTitle, corpusId: corpusId)
+                try? await p.save(question: prompt, url: url, answer: text, sourceURL: self.sourceURL, sourceTitle: self.sourceTitle, corpusId: corpusId)
             }
         } catch {
-            await setState(.failed(String(describing: error)))
+            self.state = .failed(String(describing: error))
         }
     }
-
-    private func setState(_ s: AskState) { self.state = s }
-    private func setAnswer(_ a: String) { self.answer = a }
-    private func setSource(url: String, title: String?) { self.sourceURL = url; self.sourceTitle = title }
 }

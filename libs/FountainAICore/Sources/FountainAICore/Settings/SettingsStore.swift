@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol SettingsStore: Sendable {
+public protocol SettingsStore {
     func load() throws -> AppSettings
     func save(_ settings: AppSettings) throws
     func setSecret(_ data: Data, for account: String) throws
@@ -99,4 +99,3 @@ private enum PersistDTO: Codable {
         }
     }
 }
-

@@ -17,6 +17,7 @@ let fullProducts: [Product] = [
     .executable(name: "gateway-server", targets: ["gateway-server"]),
     .executable(name: "clientgen-service", targets: ["clientgen-service"]),
     .executable(name: "publishing-frontend", targets: ["publishing-frontend"]),
+    .executable(name: "FountainAIApp", targets: ["FountainAIApp"]),
     .executable(name: "flexctl", targets: ["flexctl"]),
     .executable(name: "tools-factory-server", targets: ["tools-factory-server"]),
     .executable(name: "sse-client", targets: ["sse-client"]),
@@ -37,7 +38,8 @@ let leanProducts: [Product] = [
     .library(name: "PersistAPI", targets: ["PersistAPI"]),
     .library(name: "SemanticBrowserAPI", targets: ["SemanticBrowserAPI"]),
     .library(name: "LLMGatewayAPI", targets: ["LLMGatewayAPI"]),
-    .executable(name: "publishing-frontend", targets: ["publishing-frontend"]) 
+    .executable(name: "publishing-frontend", targets: ["publishing-frontend"]),
+    .executable(name: "FountainAIApp", targets: ["FountainAIApp"]) 
 ]
 
 var products: [Product] = LEAN ? leanProducts : fullProducts
@@ -892,6 +894,7 @@ let uiLeanTargets: [Target] = [
     .target(name: "LLMGatewayAPI", dependencies: ["ApiClientsCore"], path: "libs/LLMGatewayAPI/Sources/LLMGatewayAPI"),
     .target(name: "FountainAICore", dependencies: [], path: "libs/FountainAICore/Sources/FountainAICore"),
     .target(name: "FountainAIAdapters", dependencies: ["FountainAICore", "LLMGatewayAPI", "SemanticBrowserAPI", "PersistAPI"], path: "libs/FountainAIAdapters/Sources/FountainAIAdapters"),
+    .executableTarget(name: "FountainAIApp", dependencies: ["FountainAICore", "FountainAIAdapters", "LLMGatewayAPI", "SemanticBrowserAPI", "PersistAPI"], path: "apps/FountainAIApp"),
     // Minimal server to host static GUI files
     .target(
         name: "PublishingFrontend",
