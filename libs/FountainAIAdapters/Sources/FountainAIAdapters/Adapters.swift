@@ -7,7 +7,7 @@ import PersistAPI
 public final class LLMGatewayAdapter: LLMService {
     private let client: LLMGatewayClient
     public init(client: LLMGatewayClient) { self.client = client }
-    public func chat(model: String, messages: [ChatMessage]) async throws -> String {
+    public func chat(model: String, messages: [FountainAICore.ChatMessage]) async throws -> String {
         let req = ChatRequest(model: model, messages: messages.map { .init(role: $0.role.rawValue, content: $0.content) })
         let json = try await client.chat(req)
         // best-effort: extract a text field
@@ -44,4 +44,3 @@ public final class PersistReflectionsAdapter: PersistenceService {
         _ = try await client.addReflection(corpusId: corpusId, reflection: refl)
     }
 }
-
