@@ -1,0 +1,85 @@
+
+Showing All Issues
+
+Build target GatewayAPITests2 with configuration Debug
+
+SwiftCompile normal arm64 Compiling\ GatewayClientTests.swift /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/GatewayAPITests2/GatewayClientTests.swift (in target 'GatewayAPITests2' from project 'the-fountainai')
+
+SwiftCompile normal arm64 /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/GatewayAPITests2/GatewayClientTests.swift (in target 'GatewayAPITests2' from project 'the-fountainai')
+    cd /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/.swiftpm/xcode
+    
+
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/GatewayAPITests2/GatewayClientTests.swift:24:22: warning: no 'async' operations occur within 'await' expression
+        let client = await GatewayClient(baseURL: URL(string: "http://gateway.local")!)
+                     ^
+
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/GatewayAPITests2/GatewayClientTests.swift:24:22: No 'async' operations occur within 'await' expression
+
+
+Build target FountainAICoreTests with configuration Debug
+
+SwiftCompile normal arm64 Compiling\ SettingsTests.swift /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/SettingsTests.swift (in target 'FountainAICoreTests' from project 'the-fountainai')
+
+SwiftCompile normal arm64 /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/SettingsTests.swift (in target 'FountainAICoreTests' from project 'the-fountainai')
+    cd /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/.swiftpm/xcode
+    
+
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/SettingsTests.swift:6:13: warning: variable 's' was never mutated; consider changing to 'let' constant
+        var s = AppSettings(provider: .customHTTP, modelName: "", baseURL: nil, apiKeyRef: nil, persist: .embedded(path: ""), corpusId: "")
+        ~~~ ^
+        let
+
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/SettingsTests.swift:6:13: Variable 's' was never mutated; consider changing to 'let' constant
+
+
+Build target FountainAIAdapters with configuration Debug
+
+SwiftCompile normal arm64 Compiling\ Adapters.swift /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/libs/FountainAIAdapters/Sources/FountainAIAdapters/Adapters.swift (in target 'FountainAIAdapters' from project 'the-fountainai')
+
+Failed frontend command:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -c -primary-file /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/libs/FountainAIAdapters/Sources/FountainAIAdapters/Adapters.swift -emit-dependencies-path /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAIAdapters.build/Objects-normal/arm64/Adapters.d -emit-const-values-path /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAIAdapters.build/Objects-normal/arm64/Adapters.swiftconstvalues -emit-reference-dependencies-path /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAIAdapters.build/Objects-normal/arm64/Adapters.swiftdeps -serialize-diagnostics-path /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAIAdapters.build/Objects-normal/arm64/Adapters.dia -target arm64-apple-macos14.0 -Xllvm -aarch64-use-tbi -enable-objc-interop -stack-check -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -I /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Products/Debug -I /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Products/Debug/PackageFrameworks -F /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Products/Debug/PackageFrameworks -F /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Products/Debug/PackageFrameworks -F /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Products/Debug/PackageFrameworks -F /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Products/Debug/PackageFrameworks -F /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -no-color-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=4 -module-cache-path /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -profile-generate -profile-coverage-mapping -swift-version 6 -enforce-exclusivity\=checked -Onone -D SWIFT_PACKAGE -D DEBUG -D Xcode -serialize-debugging-options -const-gather-protocols-file /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAIAdapters.build/Objects-normal/arm64/FountainAIAdapters_const_extract_protocols.json -enable-experimental-feature DebugDescriptionMacro -empty-abi-descriptor -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -validate-clang-modules-once -clang-build-session-file /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/.swiftpm/xcode -resource-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift -enable-anonymous-context-mangled-names -file-compilation-dir /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/.swiftpm/xcode -Xcc -ivfsstatcache -Xcc /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.5-24F74-8254517eb8b97d462ccbc072ba9094c9.sdkstatcache -Xcc -I/Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAIAdapters.build/swift-overrides.hmap -Xcc -I/Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Products/Debug/include -Xcc -I/Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAIAdapters.build/DerivedSources-normal/arm64 -Xcc -I/Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAIAdapters.build/DerivedSources/arm64 -Xcc -I/Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAIAdapters.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -module-name FountainAIAdapters -package-name the_fountainai -frontend-parseable-output -disable-clang-spi -target-sdk-version 15.5 -target-sdk-name macosx15.5 -external-plugin-path /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server -external-plugin-path /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/local/lib/swift/host/plugins\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server -in-process-plugin-server-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/local/lib/swift/host/plugins -parse-as-library -o /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Build/Intermediates.noindex/the-fountainai.build/Debug/FountainAIAdapters.build/Objects-normal/arm64/Adapters.o -index-unit-output-path /the-fountainai.build/Debug/FountainAIAdapters.build/Objects-normal/arm64/Adapters.o -index-store-path /Users/benedikteickhoff/Library/Developer/Xcode/DerivedData/the-fountainai-cnpvaeiczfcowpclubehitqxwqdz/Index.noindex/DataStore -index-system-modules
+
+SwiftCompile normal arm64 /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/libs/FountainAIAdapters/Sources/FountainAIAdapters/Adapters.swift (in target 'FountainAIAdapters' from project 'the-fountainai')
+    cd /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/.swiftpm/xcode
+    
+
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/libs/FountainAIAdapters/Sources/FountainAIAdapters/Adapters.swift:11:75: error: extra arguments at positions #1, #2 in call
+        let req = ChatRequest(model: model, messages: messages.map { .init(role: $0.role.rawValue, content: $0.content) })
+                                                                          ^
+LLMGatewayAPI.ChatMessage.init:2:8: note: 'init(from:)' declared here
+public init(from decoder: any Decoder) throws}
+       ^
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/libs/FountainAIAdapters/Sources/FountainAIAdapters/Adapters.swift:11:76: error: missing argument for parameter 'from' in call
+        let req = ChatRequest(model: model, messages: messages.map { .init(role: $0.role.rawValue, content: $0.content) })
+                                                                           ^
+                                                                           from: <#any Decoder#>, 
+LLMGatewayAPI.ChatMessage.init:2:8: note: 'init(from:)' declared here
+public init(from decoder: any Decoder) throws}
+       ^
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/libs/FountainAIAdapters/Sources/FountainAIAdapters/Adapters.swift:17:40: error: type of expression is ambiguous without a type annotation
+            if case let .string(s)? = o["answer"] { return s }
+                                      ~^~~~~~~~~~
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/libs/FountainAIAdapters/Sources/FountainAIAdapters/Adapters.swift:18:40: error: type of expression is ambiguous without a type annotation
+            if case let .string(s)? = o["text"] { return s }
+                                      ~^~~~~~~~
+
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/libs/FountainAIAdapters/Sources/FountainAIAdapters/Adapters.swift:11:75: Extra arguments at positions #1, #2 in call
+
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/libs/FountainAIAdapters/Sources/FountainAIAdapters/Adapters.swift:11:76: Missing argument for parameter 'from' in call
+
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/libs/FountainAIAdapters/Sources/FountainAIAdapters/Adapters.swift:17:40: Type of expression is ambiguous without a type annotation
+
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/libs/FountainAIAdapters/Sources/FountainAIAdapters/Adapters.swift:18:40: Type of expression is ambiguous without a type annotation
+
+
+Build target ApiClientsCoreTests with configuration Debug
+
+SwiftCompile normal arm64 Compiling\ LLMGatewayEmbeddedTests.swift /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/ApiClientsCoreTests/LLMGatewayEmbeddedTests.swift (in target 'ApiClientsCoreTests' from project 'the-fountainai')
+
+Command SwiftCompile failed with a nonzero exit code
+
+Command SwiftCompile failed with a nonzero exit code
+
+
+
+Build failed    08.09.25, 07:45    23.6 seconds

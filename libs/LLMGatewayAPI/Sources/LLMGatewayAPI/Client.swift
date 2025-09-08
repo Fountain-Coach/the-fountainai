@@ -1,7 +1,11 @@
 import Foundation
 import ApiClientsCore
 
-public struct ChatMessage: Codable, Sendable, Equatable { public var role: String; public var content: String }
+public struct ChatMessage: Codable, Sendable, Equatable {
+    public var role: String
+    public var content: String
+    public init(role: String, content: String) { self.role = role; self.content = content }
+}
 public struct ChatFunction: Codable, Sendable, Equatable { public var name: String; public var description: String? }
 public struct ChatFunctionCall: Codable, Sendable, Equatable { public var name: String }
 
@@ -63,4 +67,3 @@ public actor LLMGatewayClient {
         return try JSONDecoder().decode(JSONValue.self, from: resp.data)
     }
 }
-
