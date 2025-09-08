@@ -76,8 +76,20 @@ You may run, limit, or skip tests to keep iterations fast.
 - Run targeted tests via `swift test --filter <Pattern>` when needed.  
 - Full suite only when `FULL_TESTS=1` or contract changes demand it.
 
+## 4.1) GUI Quickstart (No Xcode)
+The GUI is a SwiftUI app target named `FountainAIApp`. SwiftPM builds a binary; we provide a bundler to produce a clickable `.app`.
+
+- Build (binary):
+  - `swift build --product FountainAIApp`
+- Bundle (.app):
+  - `bash Scripts/make_app.sh FountainAIApp`
+- Launch (GUI):
+  - `open dist/FountainAIApp.app`
+
+On first launch, the onboarding screen asks only for an OpenAI API key. Paste → Continue → Ask a question. Advanced settings remain hidden unless opened later.
+
 ## 5) Configuration & Security
-Required environment variables for all services:
+Required environment variables for services:
 
 FOUNTAINSTORE_URL
 FOUNTAINSTORE_API_KEY
@@ -86,6 +98,11 @@ FOUNTAINSTORE_API_KEY
 - Metrics: `/metrics`  
 - Launcher remains the golden entry point referencing this file.
 
+GUI specific:
+- OpenAI provider requires only an API key (captured via onboarding, stored in Keychain).  
+- No base URL is required for OpenAI.  
+- Local advanced features (Persist/Semantic Browser) remain optional and off by default.
+
 ## 6) Acceptance Checklist
 - [ ] Every service implementation matches its OpenAPI spec.  
 - [ ] Bootstrapping + Baseline Awareness define corpus semantics across the platform.  
@@ -93,8 +110,16 @@ FOUNTAINSTORE_API_KEY
 - [ ] Capability negotiation implemented and logged.  
 - [ ] Lean CI (your chosen tier) green.  
 - [ ] `FOUNTAINSTORE_*` environment variables documented in Launcher/Ops.
+ - [ ] `FountainAIApp` builds, bundles, and launches via Build · Bundle · Launch sequence.  
+ - [ ] Onboarding requires only OpenAI API key; no additional config needed for first answer.
 
-## 7) Output Format
+## 7) Tooling & Permissions
+- Scripts are provided under `Scripts/` and are executable. When in doubt, run via bash:
+  - `bash Scripts/make_app.sh FountainAIApp`
+  - `bash Scripts/quickstart.sh` (optional local Persist demo)
+- The agent may perform any Swift build/test/run steps necessary to guide users to the Build · Bundle · Launch path.
+
+## 8) Output Format
 At the end of every run, print:
 
 ```json
@@ -108,11 +133,10 @@ At the end of every run, print:
 }
 ```
 
-## 8) Placement
+## 9) Placement
 This file lives at the repository root as agent.md and is your canonical contract.
 
 ```
 © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
 ```
-
 
