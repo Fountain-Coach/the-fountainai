@@ -14,6 +14,7 @@ struct FountainAIApp: App {
     @State private var browserURL: String = ""
     @State private var llmTokenInput: String = ""
     @State private var persistTokenInput: String = ""
+    @State private var showOnboarding: Bool = false
 
     init() {
         // Load settings if available
@@ -22,15 +23,39 @@ struct FountainAIApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView(settings: $settings,
-                        browserURL: $browserURL,
-                        llmTokenInput: $llmTokenInput,
-                        persistTokenInput: $persistTokenInput,
-                        saveLLMToken: saveLLMToken,
-                        savePersistToken: savePersistToken,
-                        vm: vm,
-                        onSave: configure)
-                .onAppear { configure() }
+            if showOnboarding {
+                OnboardingView(
+                    settings: $settings,
+                    saveLLMToken: { key in
+                        // Ensure a default key ref exists
+                        if settings.apiKeyRef == nil || settings.apiKeyRef?.isEmpty == true {
+                            settings.apiKeyRef = "openai-key"
+                        }
+                        saveLLMToken(key)
+                    },
+                    onContinue: {
+                        showOnboarding = false
+                        configure()
+                    },
+                    errorMessage: $errorMessage
+                )
+            } else {
+                ContentView(settings: $settings,
+                            browserURL: $browserURL,
+                            llmTokenInput: $llmTokenInput,
+                            persistTokenInput: $persistTokenInput,
+                            saveLLMToken: saveLLMToken,
+                            savePersistToken: savePersistToken,
+                            vm: vm,
+                            onSave: configure)
+                    .onAppear {
+                        configure()
+                        // Trigger onboarding if OpenAI selected and no token saved
+                        if settings.provider == .openai && !hasLLMToken() {
+                            showOnboarding = true
+                        }
+                    }
+            }
                 .alert(item: Binding(get: {
                     errorMessage.map { Msg(text: $0) }
                 }, set: { _ in }), content: { msg in
@@ -54,15 +79,19 @@ struct FountainAIApp: App {
     }
 
     private func makeLLM(_ s: AppSettings) -> LLMService {
+        let token: String? = (try? settingsStore.getSecret(for: s.apiKeyRef ?? ""))
+            .flatMap { String(data: $0, encoding: .utf8) }
         switch s.provider {
-        case .openai, .customHTTP, .localServer:
+        case .openai:
+            if let token, !token.isEmpty {
+                return OpenAIAdapter(apiKey: token)
+            } else {
+                return MockLLMService()
+            }
+        case .customHTTP, .localServer:
             guard let urlStr = s.baseURL, let url = URL(string: urlStr) else {
                 return MockLLMService()
             }
-            let token: String? = (try? settingsStore.getSecret(for: s.apiKeyRef ?? ""))
-                .flatMap { String(data: $0, encoding: .utf8) }
-            var headers: [String:String] = [:]
-            if let token, !token.isEmpty { headers["Authorization"] = "Bearer \(token)" }
             let client = LLMGatewayClient(baseURL: url, bearerToken: token)
             return LLMGatewayAdapter(client: client)
         }
@@ -101,6 +130,12 @@ struct FountainAIApp: App {
         } else {
             errorMessage = "Persist mode is Embedded; switch to Remote to save token"
         }
+    }
+
+    private func hasLLMToken() -> Bool {
+        guard let ref = settings.apiKeyRef, !ref.isEmpty else { return false }
+        if let data = try? settingsStore.getSecret(for: ref) { return !data.isEmpty }
+        return false
     }
 }
 
@@ -202,6 +237,60 @@ struct ContentView: View {
 final class MockLLMService: LLMService {
     func chat(model: String, messages: [FountainAICore.ChatMessage]) async throws -> String {
         return "(mock) Answer for model=\(model) based on: " + (messages.last?.content ?? "")
+    }
+}
+
+// MARK: - Onboarding
+
+struct OnboardingView: View {
+    @Binding var settings: AppSettings
+    var saveLLMToken: (String) -> Void
+    var onContinue: () -> Void
+    @Binding var errorMessage: String?
+    @State private var openAIKey: String = ""
+
+    var body: some View {
+        VStack(spacing: 16) {
+            Text("Welcome to FountainAI").font(.title)
+            Text("Paste your OpenAI API key to get started.")
+                .foregroundColor(.secondary)
+            SecureField("OpenAI API Key", text: $openAIKey)
+                .textFieldStyle(.roundedBorder)
+                .frame(maxWidth: 420)
+            Button(action: proceed) {
+                Text("Continue")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .disabled(openAIKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            .frame(maxWidth: 420)
+            
+            // Minimal link for users without a key yet
+            Link("Don’t have a key? Get one from OpenAI",
+                 destination: URL(string: "https://platform.openai.com/api-keys")!)
+                .font(.footnote)
+                .padding(.top, 8)
+        }
+        .padding(32)
+        .frame(minWidth: 500, minHeight: 300)
+        .onAppear {
+            // Ensure OpenAI provider is selected by default for smooth onboarding
+            settings.provider = .openai
+            if settings.apiKeyRef == nil || settings.apiKeyRef?.isEmpty == true {
+                settings.apiKeyRef = "openai-key"
+            }
+        }
+    }
+
+    private func proceed() {
+        let key = openAIKey.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !key.isEmpty else { return }
+        do {
+            saveLLMToken(key)
+            onContinue()
+        } catch {
+            errorMessage = String(describing: error)
+        }
     }
 }
 
