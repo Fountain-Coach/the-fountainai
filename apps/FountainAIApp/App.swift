@@ -7,6 +7,7 @@ import PersistAPI
 
 @main
 struct FountainAIApp: App {
+    @AppStorage("FountainAI.OnboardingDone") private var onboardingDone: Bool = false
     @State private var settings = AppSettings()
     @State private var vm: AskViewModel? = nil
     @State private var settingsStore = DefaultSettingsStore(keychain: KeychainDefault())
@@ -35,6 +36,7 @@ struct FountainAIApp: App {
                             saveLLMToken(key)
                         },
                         onContinue: {
+                            onboardingDone = true
                             showOnboarding = false
                             configure()
                         },
@@ -51,9 +53,14 @@ struct FountainAIApp: App {
                                 onSave: configure)
                         .onAppear {
                             configure()
-                            // Trigger onboarding if OpenAI selected and no token saved
-                            if settings.provider == .openai && !hasLLMToken() {
-                                showOnboarding = true
+                            // Show onboarding only if not completed yet
+                            if !onboardingDone {
+                                // Trigger onboarding if OpenAI selected and no token saved
+                                if settings.provider == .openai && !hasLLMToken() {
+                                    showOnboarding = true
+                                }
+                            } else {
+                                showOnboarding = false
                             }
                         }
                 }
