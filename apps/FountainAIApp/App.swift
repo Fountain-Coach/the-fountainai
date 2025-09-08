@@ -200,7 +200,7 @@ struct ContentView: View {
 // MARK: - Simple mocks and file persistence for embedded mode
 
 final class MockLLMService: LLMService {
-    func chat(model: String, messages: [ChatMessage]) async throws -> String {
+    func chat(model: String, messages: [FountainAICore.ChatMessage]) async throws -> String {
         return "(mock) Answer for model=\(model) based on: " + (messages.last?.content ?? "")
     }
 }
