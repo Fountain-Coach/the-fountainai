@@ -15,3 +15,20 @@ Props and past performances are stored in FountainStore by the [Persistence Serv
 Even the supporting cast has roles: the Bootstrap service seeds characters like [Drift](openapi/personas/drift.md) and [Semantic Arc](openapi/personas/semantic-arc.md) using [bootstrap.yml](openapi/v1/bootstrap.yml) so every play starts with the right troupe.
 
 When the curtain falls, the response is handed back to the audience as the final line, completing the journey from script to stage and back again. FountainAI’s theatre turns technical requests into performances, with each persona playing its part, guided by OpenAPI scripts and Swift code that keep the show running smoothly.
+
+## GUI Apps (Build · Bundle · Launch)
+
+Run the SwiftUI GUI without Xcode:
+
+- Build: `swift build --product FountainAIApp`
+- Bundle: `bash Scripts/make_app.sh FountainAIApp`
+- Launch: `open dist/FountainAIApp.app`
+
+Create new GUI apps with the same pattern:
+
+- Scaffold: `Scripts/new-gui-app.sh <AppName>`
+- Build/Bundle/Launch: `swift build --product <AppName> && bash Scripts/make_app.sh <AppName> && open dist/<AppName>.app`
+
+More details:
+- GUI Quickstart & Scaffolding: `docs/GUI_App_Quickstart_and_Scaffolding.md`
+- Q&A: `docs/Q&A/GUI_App_Scaffolding_QA.md`
