@@ -21,7 +21,7 @@ final class GatewayClientTests2: XCTestCase {
         let cfg = URLSessionConfiguration.default
         cfg.protocolClasses = [MockURLProtocol.self]
         let session = URLSession(configuration: cfg)
-        let client = await GatewayClient(baseURL: URL(string: "http://gateway.local")!)
+        let client = GatewayClient(baseURL: URL(string: "http://gateway.local")!)
         // Swap internal session via KVC is not possible; instead rely on registered protocol class
         let val = try await client.health()
         if case let .object(obj) = val { XCTAssertEqual((obj["status"]), .string("ok")) } else { XCTFail("bad json") }

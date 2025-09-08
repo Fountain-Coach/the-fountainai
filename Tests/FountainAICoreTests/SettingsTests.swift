@@ -3,7 +3,7 @@ import XCTest
 
 final class SettingsTests: XCTestCase {
     func testValidationCatchesMissingFields() throws {
-        var s = AppSettings(provider: .customHTTP, modelName: "", baseURL: nil, apiKeyRef: nil, persist: .embedded(path: ""), corpusId: "")
+        let s = AppSettings(provider: .customHTTP, modelName: "", baseURL: nil, apiKeyRef: nil, persist: .embedded(path: ""), corpusId: "")
         let issues = s.validate()
         XCTAssertTrue(issues.contains(where: { $0.contains("Model name") }))
         XCTAssertTrue(issues.contains(where: { $0.contains("Base URL") }))
@@ -36,10 +36,8 @@ final class SettingsTests: XCTestCase {
     }
 }
 
-struct MockKeychain: KeychainClient {
-    var map: [String: Data] = [:]
-    func set(secret: Data, account: String) throws {
-        var m = map; m[account] = secret
-    }
+final class MockKeychain: KeychainClient, @unchecked Sendable {
+    private var map: [String: Data] = [:]
+    func set(secret: Data, account: String) throws { map[account] = secret }
     func get(account: String) throws -> Data? { map[account] }
 }

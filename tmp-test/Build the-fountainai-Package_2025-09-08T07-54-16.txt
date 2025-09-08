@@ -1,0 +1,36 @@
+
+Showing All Issues
+
+Build target GatewayAPITests2 with configuration Debug
+
+SwiftCompile normal arm64 Compiling\ GatewayClientTests.swift /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/GatewayAPITests2/GatewayClientTests.swift (in target 'GatewayAPITests2' from project 'the-fountainai')
+
+SwiftCompile normal arm64 /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/GatewayAPITests2/GatewayClientTests.swift (in target 'GatewayAPITests2' from project 'the-fountainai')
+    cd /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/.swiftpm/xcode
+    
+
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/GatewayAPITests2/GatewayClientTests.swift:24:22: warning: no 'async' operations occur within 'await' expression
+        let client = await GatewayClient(baseURL: URL(string: "http://gateway.local")!)
+                     ^
+
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/GatewayAPITests2/GatewayClientTests.swift:24:22: No 'async' operations occur within 'await' expression
+
+
+Build target FountainAICoreTests with configuration Debug
+
+SwiftCompile normal arm64 Compiling\ SettingsTests.swift /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/SettingsTests.swift (in target 'FountainAICoreTests' from project 'the-fountainai')
+
+SwiftCompile normal arm64 /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/SettingsTests.swift (in target 'FountainAICoreTests' from project 'the-fountainai')
+    cd /Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/.swiftpm/xcode
+    
+
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/SettingsTests.swift:6:13: warning: variable 's' was never mutated; consider changing to 'let' constant
+        var s = AppSettings(provider: .customHTTP, modelName: "", baseURL: nil, apiKeyRef: nil, persist: .embedded(path: ""), corpusId: "")
+        ~~~ ^
+        let
+
+/Users/benedikteickhoff/Development/Github-Desktop/the-fountainai/Tests/FountainAICoreTests/SettingsTests.swift:6:13: Variable 's' was never mutated; consider changing to 'let' constant
+
+
+
+Build succeeded    08.09.25, 07:54    35.2 seconds
