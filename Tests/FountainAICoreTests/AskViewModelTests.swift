@@ -35,7 +35,7 @@ final class AskViewModelTests: XCTestCase {
 
 // MARK: - Mocks
 
-final class MockLLM: LLMService {
+final actor MockLLM: LLMService {
     let answer: String
     private(set) var messages: [ChatMessage] = []
     init(answer: String) { self.answer = answer }
@@ -45,7 +45,7 @@ final class MockLLM: LLMService {
     }
 }
 
-final class MockBrowser: BrowserService {
+final actor MockBrowser: BrowserService {
     let title: String?
     let summary: String?
     init(title: String? = nil, summary: String? = nil) { self.title = title; self.summary = summary }
@@ -54,7 +54,7 @@ final class MockBrowser: BrowserService {
     }
 }
 
-final class MockPersistence: PersistenceService {
+final actor MockPersistence: PersistenceService {
     var saved: [(q:String,u:String?,a:String,su:String?,st:String?,c:String?)] = []
     func save(question: String, url: String?, answer: String, sourceURL: String?, sourceTitle: String?, corpusId: String?) async throws {
         saved.append((question,url,answer,sourceURL,sourceTitle,corpusId))

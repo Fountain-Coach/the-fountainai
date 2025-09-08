@@ -36,9 +36,10 @@ final class SettingsTests: XCTestCase {
     }
 }
 
-final class MockKeychain: KeychainClient {
+struct MockKeychain: KeychainClient {
     var map: [String: Data] = [:]
-    func set(secret: Data, account: String) throws { map[account] = secret }
+    func set(secret: Data, account: String) throws {
+        var m = map; m[account] = secret
+    }
     func get(account: String) throws -> Data? { map[account] }
 }
-
