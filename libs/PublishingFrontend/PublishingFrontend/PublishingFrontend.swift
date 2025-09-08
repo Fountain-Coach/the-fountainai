@@ -44,7 +44,19 @@ public final class PublishingFrontend {
             let path = config.rootPath + (req.path == "/" ? "/index.html" : req.path)
             if let data = FileManager.default.contents(atPath: path) {
                 let contentType = mimeType(forPath: path)
-                return HTTPResponse(status: 200, headers: ["Content-Type": contentType], body: data)
+                var headers: [String:String] = [
+                    "Content-Type": contentType,
+                    // Strongly discourage browsers and proxies from caching while iterating fast.
+                    "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+                    "Pragma": "no-cache",
+                    "Expires": "0"
+                ]
+                if let attrs = try? FileManager.default.attributesOfItem(atPath: path),
+                   let mdate = attrs[.modificationDate] as? Date {
+                    let fmt = DateFormatter(); fmt.dateFormat = "EEE',' dd MMM yyyy HH':'mm':'ss 'GMT'"; fmt.locale = Locale(identifier: "en_US_POSIX"); fmt.timeZone = TimeZone(secondsFromGMT: 0)
+                    headers["Last-Modified"] = fmt.string(from: mdate)
+                }
+                return HTTPResponse(status: 200, headers: headers, body: data)
             }
             return HTTPResponse(status: 404)
         }
@@ -55,6 +67,7 @@ public final class PublishingFrontend {
     /// Starts the HTTP server on the configured port.
     public func start() async throws {
         port = try await server.start(port: config.port)
+        print("PublishingFrontend: serving \(config.rootPath) on :\(port)")
     }
 
     @MainActor

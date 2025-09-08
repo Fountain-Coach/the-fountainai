@@ -61,5 +61,28 @@ public actor SemanticBrowserClient {
         let resp = try await http.send(APIRequest(method: .GET, url: url))
         return try JSONDecoder().decode(JSONValue.self, from: resp.data)
     }
-}
 
+    // POST /v1/browse — best-effort analyzer to get snapshot/analysis
+    public func browse(url: String, corpusId: String? = nil, labels: [String] = []) async throws -> (title: String?, summary: String?) {
+        let body: [String: Any] = [
+            "url": url,
+            "wait": ["strategy": "networkidle", "timeoutMs": 15000],
+            "mode": "full",
+            "index": corpusId == nil ? [:] : ["corpusId": corpusId!, "labels": labels],
+            "storeArtifacts": corpusId != nil
+        ]
+        let data = try JSONSerialization.data(withJSONObject: body)
+        guard let urlReq = http.buildURL(path: "/v1/browse") else { throw APIError.invalidURL }
+        let resp = try await http.send(APIRequest(method: .POST, url: urlReq, headers: ["Content-Type":"application/json"], body: data))
+        if let obj = try? JSONSerialization.jsonObject(with: resp.data) as? [String: Any] {
+            let snapshot = obj["snapshot"] as? [String: Any]
+            let analysis = obj["analysis"] as? [String: Any]
+            let title = (snapshot?["title"] as? String)
+            let summary = (analysis?["summary"] as? String)
+                ?? (analysis?["summaries"] as? String)
+                ?? (analysis?["overview"] as? String)
+            return (title, summary)
+        }
+        return (nil, nil)
+    }
+}

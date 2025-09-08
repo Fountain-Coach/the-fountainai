@@ -890,6 +890,8 @@ let uiLeanTargets: [Target] = [
     .target(name: "PersistAPI", dependencies: ["ApiClientsCore"], path: "libs/PersistAPI/Sources/PersistAPI"),
     .target(name: "SemanticBrowserAPI", dependencies: ["ApiClientsCore"], path: "libs/SemanticBrowserAPI/Sources/SemanticBrowserAPI"),
     .target(name: "LLMGatewayAPI", dependencies: ["ApiClientsCore"], path: "libs/LLMGatewayAPI/Sources/LLMGatewayAPI"),
+    .target(name: "FountainAICore", dependencies: [], path: "libs/FountainAICore/Sources/FountainAICore"),
+    .target(name: "FountainAIAdapters", dependencies: ["FountainAICore", "LLMGatewayAPI", "SemanticBrowserAPI", "PersistAPI"], path: "libs/FountainAIAdapters/Sources/FountainAIAdapters"),
     // Minimal server to host static GUI files
     .target(
         name: "PublishingFrontend",
@@ -932,6 +934,7 @@ let uiLeanTargets: [Target] = [
     .testTarget(name: "GatewayAPITests2", dependencies: ["GatewayAPI", "ApiClientsCore"], path: "Tests/GatewayAPITests2"),
     .testTarget(name: "PersistAPITests", dependencies: ["PersistAPI", "ApiClientsCore"], path: "Tests/PersistAPITests"),
     .testTarget(name: "SemanticBrowserAPITests", dependencies: ["SemanticBrowserAPI", "ApiClientsCore"], path: "Tests/SemanticBrowserAPITests"),
+    .testTarget(name: "FountainAICoreTests", dependencies: ["FountainAICore"], path: "Tests/FountainAICoreTests"),
 ]
 
 var targets: [Target] = LEAN ? uiLeanTargets : fullTargets
