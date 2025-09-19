@@ -23,7 +23,7 @@ final class BuilderTests: XCTestCase {
         let original = try String(contentsOf: sigURL, encoding: .utf8)
         defer { try? original.write(to: sigURL, atomically: true, encoding: .utf8) }
 
-        try Builder.build(services: [], signature: "test-sig")
+        try Builder.build(services: [], signature: "test-sig", repositoryRoot: repoRoot)
         let content = try String(contentsOf: sigURL, encoding: .utf8)
         XCTAssertTrue(content.contains("test-sig"))
     }
@@ -44,7 +44,7 @@ final class BuilderTests: XCTestCase {
         defer { try? originalSig.write(to: sigURL, atomically: true, encoding: .utf8) }
 
         let service = Service(name: "Demo", binaryPath: "/tmp/Nonexistent")
-        XCTAssertThrowsError(try Builder.build(services: [service], signature: "sig")) { error in
+        XCTAssertThrowsError(try Builder.build(services: [service], signature: "sig", repositoryRoot: repoRoot)) { error in
             guard case BuilderError.buildFailed(let product) = error else {
                 return XCTFail("Expected buildFailed, got \(error)")
             }

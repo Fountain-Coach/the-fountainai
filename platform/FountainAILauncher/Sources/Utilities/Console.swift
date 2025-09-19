@@ -48,12 +48,13 @@ enum Console {
 
 final class Spinner {
     private static let frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
-    private let message: String
+    private var message: String
     private let interval: TimeInterval
     private var timer: DispatchSourceTimer?
     private var frameIndex: Int = 0
     private var lastRenderedCount: Int = 0
     private var heartbeat: Heartbeat?
+    private let lock = NSLock()
 
     init(message: String, interval: TimeInterval = 0.1) {
         self.message = message
@@ -85,14 +86,24 @@ final class Spinner {
         }
     }
 
-    private func tick() {
-        let frame = Spinner.frames[frameIndex % Spinner.frames.count]
-        frameIndex += 1
-        render(frame: frame, trailing: "")
+    func update(message: String) {
+        lock.lock()
+        self.message = message
+        lock.unlock()
     }
 
-    private func render(frame: String, trailing: String) {
-        var line = "\r\(frame) \(message)\(trailing)"
+    private func tick() {
+        lock.lock()
+        let frame = Spinner.frames[frameIndex % Spinner.frames.count]
+        frameIndex += 1
+        let currentMessage = message
+        lock.unlock()
+        render(frame: frame, trailing: "", message: currentMessage)
+    }
+
+    private func render(frame: String, trailing: String, message: String? = nil) {
+        let msg = message ?? self.message
+        var line = "\r\(frame) \(msg)\(trailing)"
         let visibleCount = line.count
         if lastRenderedCount > visibleCount {
             line += String(repeating: " ", count: lastRenderedCount - visibleCount)

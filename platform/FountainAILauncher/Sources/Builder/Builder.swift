@@ -2,23 +2,25 @@ import Foundation
 
 enum BuilderError: Error, CustomStringConvertible {
     case buildFailed(String)
-    case missingSignatureFile
 
     var description: String {
         switch self {
         case .buildFailed(let product):
             return "swift build failed for product: \(product)"
-        case .missingSignatureFile:
-            return "Could not locate libs/LauncherSignature/Signature.swift"
         }
     }
 }
 
 struct Builder {
-    static func build(services: [Service], signature: String) throws {
+    static func build(
+        services: [Service],
+        signature: String,
+        repositoryRoot: URL,
+        progressHandler: ((BuildProgressEvent) -> Void)? = nil
+    ) throws {
         // Embed launcher signature into shared library so each service
         // binary includes a compile-time token.
-        let sigURL = try locateSignatureFile()
+        let sigURL = repositoryRoot.appendingPathComponent("libs/LauncherSignature/Signature.swift")
         let sigContent = "public let embeddedLauncherSignature = \"\(signature)\"\n"
         try sigContent.write(to: sigURL, atomically: true, encoding: .utf8)
 
@@ -29,16 +31,37 @@ struct Builder {
             let (executable, arguments) = buildInvocation(for: product)
             process.executableURL = executable
             process.arguments = arguments
+            process.currentDirectoryURL = repositoryRoot
+            var environment = ProcessInfo.processInfo.environment
+            environment["FULL_TESTS"] = "1"
+            process.environment = environment
+
+            let pipe = Pipe()
+            process.standardOutput = pipe
+            process.standardError = pipe
+
             print("  • building \(product)…")
 
-            process.standardOutput = FileHandle.standardOutput
-            process.standardError = FileHandle.standardError
+            let tracker = BuildOutputTracker(product: product, handler: progressHandler)
+
+            pipe.fileHandleForReading.readabilityHandler = { handle in
+                let data = handle.availableData
+                if data.isEmpty {
+                    handle.readabilityHandler = nil
+                    return
+                }
+                FileHandle.standardOutput.write(data)
+                fflush(stdout)
+                if let chunk = String(data: data, encoding: .utf8) {
+                    tracker.consume(chunk: chunk)
+                }
+            }
 
             try process.run()
-            let heartbeat = Heartbeat(message: "    … still building \(product)")
-            heartbeat.start()
-            defer { heartbeat.stop() }
             process.waitUntilExit()
+            pipe.fileHandleForReading.readabilityHandler = nil
+            tracker.finalize()
+
             if process.terminationStatus != 0 {
                 throw BuilderError.buildFailed(product)
             }
@@ -54,19 +77,6 @@ private extension Service {
 }
 
 private extension Builder {
-    static func locateSignatureFile(fileManager fm: FileManager = .default) throws -> URL {
-        var directory = URL(fileURLWithPath: fm.currentDirectoryPath)
-        for _ in 0..<6 {
-            let candidate = directory.appendingPathComponent("libs/LauncherSignature/Signature.swift")
-            if fm.fileExists(atPath: candidate.path) {
-                return candidate
-            }
-            if directory.pathComponents.count <= 1 { break }
-            directory.deleteLastPathComponent()
-        }
-        throw BuilderError.missingSignatureFile
-    }
-
     static func buildInvocation(for product: String) -> (URL, [String]) {
         let scriptPath = "/usr/bin/script"
         if FileManager.default.isExecutableFile(atPath: scriptPath) {
@@ -77,5 +87,89 @@ private extension Builder {
         let exe = URL(fileURLWithPath: "/usr/bin/env")
         let args = ["swift", "build", "--configuration", "release", "--product", product]
         return (exe, args)
+    }
+}
+
+enum BuildProgressEvent {
+    case compile(module: String, index: Int)
+    case link(artifact: String)
+    case warning(String)
+    case error(String)
+}
+
+private final class BuildOutputTracker: @unchecked Sendable {
+    private var buffer = ""
+    private var compileCount = 0
+    private let product: String
+    private let handler: ((BuildProgressEvent) -> Void)?
+    private let queue = DispatchQueue(label: "build-output-tracker")
+
+    init(product: String, handler: ((BuildProgressEvent) -> Void)?) {
+        self.product = product
+        self.handler = handler
+    }
+
+    func consume(chunk: String) {
+        queue.async { [weak self] in
+            guard let self = self else { return }
+            self.buffer.append(chunk)
+            while let range = self.buffer.range(of: "\n") {
+                let line = String(self.buffer[..<range.lowerBound])
+                self.buffer.removeSubrange(..<range.upperBound)
+                self.process(line: line)
+            }
+        }
+    }
+
+    func finalize() {
+        queue.sync {
+            if !buffer.isEmpty {
+                process(line: buffer)
+                buffer.removeAll(keepingCapacity: false)
+            }
+        }
+    }
+
+    private func process(line: String) {
+        let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+
+        if let module = extractCompileModule(from: trimmed) {
+            compileCount += 1
+            handler?(.compile(module: module, index: compileCount))
+            return
+        }
+        if let artifact = extractLinkArtifact(from: trimmed) {
+            handler?(.link(artifact: artifact))
+            return
+        }
+        if trimmed.contains("warning:") {
+            handler?(.warning(trimmed))
+        } else if trimmed.contains("error:") {
+            handler?(.error(trimmed))
+        }
+    }
+
+    private func extractCompileModule(from line: String) -> String? {
+        if let range = line.range(of: "Compile ") {
+            let rest = line[range.upperBound...]
+            let components = rest.split(whereSeparator: { $0 == " " || $0 == "(" })
+            return components.first.map(String.init)
+        }
+        if let range = line.range(of: "Compiling ") {
+            let rest = line[range.upperBound...]
+            let components = rest.split(whereSeparator: { $0 == " " || $0 == "(" })
+            return components.first.map(String.init)
+        }
+        return nil
+    }
+
+    private func extractLinkArtifact(from line: String) -> String? {
+        if let range = line.range(of: "Linking ") {
+            let rest = line[range.upperBound...]
+            let components = rest.split(whereSeparator: { $0 == " " || $0 == "(" })
+            return components.first.map(String.init)
+        }
+        return nil
     }
 }

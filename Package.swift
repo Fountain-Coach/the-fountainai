@@ -84,6 +84,21 @@ let fullTargets: [Target] = [
         path: "libs/LLMGatewayAPI/Sources/LLMGatewayAPI"
     ),
     .target(
+        name: "FountainAICore",
+        dependencies: [],
+        path: "libs/FountainAICore/Sources/FountainAICore"
+    ),
+    .target(
+        name: "FountainAIAdapters",
+        dependencies: ["FountainAICore", "LLMGatewayAPI", "SemanticBrowserAPI", "PersistAPI"],
+        path: "libs/FountainAIAdapters/Sources/FountainAIAdapters"
+    ),
+    .executableTarget(
+        name: "FountainAIApp",
+        dependencies: ["FountainAICore", "FountainAIAdapters", "LLMGatewayAPI", "SemanticBrowserAPI", "PersistAPI"],
+        path: "apps/FountainAIApp"
+    ),
+    .target(
         name: "FountainCodex",
         dependencies: ["FountainRuntime"],
         path: "libs/FountainCodex",
@@ -106,11 +121,6 @@ let fullTargets: [Target] = [
         ],
         path: "libs/FountainRuntime",
         exclude: ["DNS/README.md"]
-    ),
-    .target(
-        name: "FountainStoreClient",
-        dependencies: [.product(name: "FountainStore", package: "fountain-store")],
-        path: "libs/FountainStoreClient"
     ),
     .target(
         name: "LauncherSignature",

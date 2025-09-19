@@ -15,24 +15,24 @@ enum InstallerError: Error, CustomStringConvertible {
 }
 
 struct Installer {
-    static func install(services: [Service]) throws {
+    static func install(services: [Service], repositoryRoot: URL) throws {
         let fm = FileManager.default
         let uniqueServices = ServiceDeduplicator.uniquedByBinaryPath(services).unique
         for service in uniqueServices {
             let product = service.productName
-            let sourcePath = ".build/release/\(product)"
-            guard fm.fileExists(atPath: sourcePath) else {
+            let sourceURL = repositoryRoot.appendingPathComponent(".build/release/\(product)")
+            guard fm.fileExists(atPath: sourceURL.path) else {
                 throw InstallerError.missingProduct(product)
             }
             let destination = service.binaryPath
             let destDir = (destination as NSString).deletingLastPathComponent
-            try fm.createDirectory(atPath: destDir, withIntermediateDirectories: true)
+            try fm.createDirectory(atPath: destDir, withIntermediateDirectories: true, attributes: nil)
             print("  • installing \(product) → \(destination)")
             do {
                 if fm.fileExists(atPath: destination) {
                     try fm.removeItem(atPath: destination)
                 }
-                try fm.copyItem(atPath: sourcePath, toPath: destination)
+                try fm.copyItem(atPath: sourceURL.path, toPath: destination)
                 print("    ✓ \(product) installed")
             } catch {
                 throw InstallerError.copyFailed(product)

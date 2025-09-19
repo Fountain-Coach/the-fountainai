@@ -44,3 +44,5 @@ third_party/typesense-swift/
 .clangmodulecache/
 **/.swift-modulecache/
 **/.clangmodulecache/
+service-manifest.json
+**/service-manifest.json
