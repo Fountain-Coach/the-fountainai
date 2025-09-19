@@ -9,7 +9,7 @@ public final class Supervisor: @unchecked Sendable {
     /// Directory where logs will be written.
     private let logDirectory: URL
     /// Environment variables propagated to child processes.
-    private let environment: [String: String]
+    private var environment: [String: String]
     /// Compile-time launcher signature each service must validate.
     private let launcherSignature: String
 
@@ -68,6 +68,12 @@ public final class Supervisor: @unchecked Sendable {
     public func restart(service: Service) {
         terminate(serviceName: service.name)
         try? start(service: service)
+    }
+
+    /// Merges new environment variables to be used for subsequent starts/restarts.
+    /// Existing processes are unaffected until restarted.
+    public func updateEnvironment(_ updates: [String: String]) {
+        for (k, v) in updates { environment[k] = v }
     }
 
     /// Terminates a single service by name.

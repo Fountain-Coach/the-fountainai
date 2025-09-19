@@ -86,6 +86,7 @@ final class Heartbeat {
     private let message: String
     private let interval: TimeInterval
     private var timer: DispatchSourceTimer?
+    private let queue = DispatchQueue(label: "heartbeat")
 
     init(message: String, interval: TimeInterval = 5) {
         self.message = message
@@ -94,7 +95,6 @@ final class Heartbeat {
 
     func start() {
         guard timer == nil else { return }
-        let queue = DispatchQueue(label: "heartbeat", qos: .utility)
         let timer = DispatchSource.makeTimerSource(queue: queue)
         timer.schedule(deadline: .now() + interval, repeating: interval)
         timer.setEventHandler { [message] in
@@ -106,7 +106,9 @@ final class Heartbeat {
     }
 
     func stop() {
-        timer?.cancel()
-        timer = nil
+        queue.sync {
+            timer?.cancel()
+            timer = nil
+        }
     }
 }

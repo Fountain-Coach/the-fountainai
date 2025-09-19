@@ -254,6 +254,9 @@ do {
     let healthSnapshot = HealthMonitor.initialCheck(services: builtServices)
 
     monitor.startMonitoring(services: builtServices)
+    // Start self-correction by scanning logs for known issues.
+    let corrector = SelfCorrector(supervisor: supervisor)
+    corrector.start(for: builtServices)
     Task {
         try await controlPlane.start(port: 9090)
     }
