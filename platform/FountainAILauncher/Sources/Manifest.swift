@@ -40,6 +40,10 @@ struct ManifestGenerator {
         var entries: [ServiceManifestEntry] = []
         let uniqueServices = ServiceDeduplicator.uniquedByBinaryPath(services).unique
         for service in uniqueServices {
+            guard fm.fileExists(atPath: service.binaryPath) else {
+                print("  • skipping (missing) \(service.name)")
+                continue
+            }
             print("  • hashing \(service.name)")
             let data = try Data(contentsOf: URL(fileURLWithPath: service.binaryPath))
             let digest = SHA256.hash(data: data)

@@ -7,8 +7,9 @@ struct PreflightOutcome {
     let note: String?
     let needsLocalStore: Bool
     let localStoreURL: URL?
+    let localStorePort: Int?
 
-    static let ok = PreflightOutcome(note: nil, needsLocalStore: false, localStoreURL: nil)
+    static let ok = PreflightOutcome(note: nil, needsLocalStore: false, localStoreURL: nil, localStorePort: nil)
 }
 
 enum PreflightError: Error, CustomStringConvertible {
@@ -36,10 +37,12 @@ struct Preflight {
         // If not configured, fall back to local embedded store
         guard let urlString = ProcessInfo.processInfo.environment["FOUNTAINSTORE_URL"],
               let url = URL(string: urlString) else {
+            let port = findAvailablePort()
             return PreflightOutcome(
                 note: "FOUNTAINSTORE_URL not set; routing to embedded local persist service.",
                 needsLocalStore: true,
-                localStoreURL: URL(string: "http://127.0.0.1:8005")
+                localStoreURL: URL(string: "http://127.0.0.1:\(port)"),
+                localStorePort: port
             )
         }
 
@@ -54,10 +57,12 @@ struct Preflight {
             if let error {
                 resultBox.store {
                     if isLocal(url: url) {
+                        let port = findAvailablePort()
                         return .success(PreflightOutcome(
                             note: "FountainStore at \(url.absoluteString) is not reachable yet; will launch local persist service.",
                             needsLocalStore: true,
-                            localStoreURL: URL(string: "http://127.0.0.1:8005")
+                            localStoreURL: URL(string: "http://127.0.0.1:\(port)"),
+                            localStorePort: port
                         ))
                     } else {
                         return .failure(PreflightError.fountainStoreUnreachable(url, underlying: error))
@@ -69,10 +74,12 @@ struct Preflight {
             guard let http = response as? HTTPURLResponse else {
                 resultBox.store {
                     if isLocal(url: url) {
+                        let port = findAvailablePort()
                         return .success(PreflightOutcome(
                             note: "FountainStore at \(url.absoluteString) returned no response; continuing with local service start.",
                             needsLocalStore: true,
-                            localStoreURL: URL(string: "http://127.0.0.1:8005")
+                            localStoreURL: URL(string: "http://127.0.0.1:\(port)"),
+                            localStorePort: port
                         ))
                     } else {
                         return .failure(PreflightError.fountainStoreUnreachable(url, underlying: nil))
@@ -89,10 +96,12 @@ struct Preflight {
                 )
                 resultBox.store {
                     if isLocal(url: url) {
+                        let port = findAvailablePort()
                         return .success(PreflightOutcome(
                             note: "FountainStore at \(url.absoluteString) responded with HTTP \(http.statusCode); attempting to launch local service.",
                             needsLocalStore: true,
-                            localStoreURL: URL(string: "http://127.0.0.1:8005")
+                            localStoreURL: URL(string: "http://127.0.0.1:\(port)"),
+                            localStorePort: port
                         ))
                     } else {
                         return .failure(PreflightError.fountainStoreUnreachable(url, underlying: err))
@@ -117,6 +126,31 @@ struct Preflight {
         guard let host = url.host?.lowercased() else { return false }
         return host == "localhost" || host == "127.0.0.1" || host == "0.0.0.0"
     }
+}
+
+// Very lightweight port availability check: pick first port in [8005, 8015]
+// that does not accept a TCP connection on 127.0.0.1.
+private func findAvailablePort() -> Int {
+    for p in 8005...8015 {
+        if !isPortOpen(port: p) { return p }
+    }
+    return 8005
+}
+
+private func isPortOpen(port: Int, timeout: TimeInterval = 0.2) -> Bool {
+    let url = URL(string: "http://127.0.0.1:\(port)/health")!
+    var request = URLRequest(url: url)
+    request.httpMethod = "GET"
+    let semaphore = DispatchSemaphore(value: 0)
+    var open = false
+    let task = URLSession.shared.dataTask(with: request) { _, response, error in
+        defer { semaphore.signal() }
+        if error == nil { open = true }
+        if let http = response as? HTTPURLResponse, http.statusCode > 0 { open = true }
+    }
+    task.resume()
+    _ = semaphore.wait(timeout: .now() + timeout)
+    return open
 }
 
 private final class ResultBox<Value>: @unchecked Sendable {

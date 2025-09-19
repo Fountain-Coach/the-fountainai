@@ -36,12 +36,9 @@ fi
 echo "==> Building Swift packages"
 swift build -c release
 
-# Start the launcher/demo
+# Start the launcher/demo with verbose heartbeat
 echo "==> Starting FountainAI launcher"
-export SWIFTPM_DISABLE_SANDBOX=${SWIFTPM_DISABLE_SANDBOX:-1}
-export CLANG_MODULE_CACHE_PATH=${CLANG_MODULE_CACHE_PATH:-"$REPO_ROOT/.tmp/clang-cache"}
-mkdir -p "$CLANG_MODULE_CACHE_PATH"
-swift run --package-path platform/FountainAILauncher FountainAiLauncher
+"$SCRIPT_DIR/run-launcher.sh"
 
 
 # © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.

@@ -42,7 +42,7 @@ func parseOptions() -> Options {
 }
 
 let options = parseOptions()
-let monitor = HealthMonitor(supervisor: supervisor)
+// monitor will be created after supervisor is initialized
 
 let phases = PhaseReporter(total: 7)
 
@@ -92,6 +92,7 @@ do {
 
         if preflightOutcome.needsLocalStore, let override = preflightOutcome.localStoreURL {
             setenv("FOUNTAINSTORE_URL", override.absoluteString, 1)
+            if let p = preflightOutcome.localStorePort { setenv("FOUNTAINSTORE_PORT", String(p), 1) }
             if (ProcessInfo.processInfo.environment["FOUNTAINSTORE_API_KEY"] ?? "").isEmpty {
                 setenv("FOUNTAINSTORE_API_KEY", "dev", 1)
             }
@@ -133,7 +134,12 @@ do {
         try? SignatureStore.save(fresh, layout: layout)
         return fresh
     }()
-    let supervisor = Supervisor(launcherSignature: selectedSignature)
+    // Seed defaults for services that require envs to start locally
+    var baseEnv = ProcessInfo.processInfo.environment
+    if baseEnv["SEC_SENTINEL_URL"] == nil { baseEnv["SEC_SENTINEL_URL"] = "http://127.0.0.1:0" }
+    if baseEnv["SEC_SENTINEL_API_KEY"] == nil { baseEnv["SEC_SENTINEL_API_KEY"] = "dev" }
+    let supervisor = Supervisor(environment: baseEnv, launcherSignature: selectedSignature)
+    let monitor = HealthMonitor(supervisor: supervisor)
     let controlPlane = ControlPlane(supervisor: supervisor, services: servicesToLaunch)
 
     if options.mode != .precompile {
@@ -150,9 +156,15 @@ do {
 
     let manifestURL = URL(fileURLWithPath: "service-manifest.json")
 
-    func buildAndInstall() throws {
+    func buildAndInstall() throws -> (built: [Service], failed: [Service]) {
+        let hb = Heartbeat(message: "[hb] building service binaries…", interval: 1)
+        hb.start()
+        var built: [Service] = []
+        var failed: [Service] = []
+
+        var result: Builder.Summary = .init(built: [], failed: [])
         try phases.begin("Build service binaries").execute {
-            try Builder.build(services: servicesToLaunch, signature: selectedSignature, repositoryRoot: layout.root) { event in
+            result = Builder.buildAll(services: servicesToLaunch, signature: selectedSignature, repositoryRoot: layout.root) { event in
                 switch event {
                 case let .compile(module, index):
                     print(Console.apply("    [build] #\(index) \(module)", .cyan))
@@ -164,30 +176,34 @@ do {
                     print(Console.apply("    [error] \(message)", .red))
                 }
             }
-            return servicesToLaunch.isEmpty ? "no targets" : "\(servicesToLaunch.count) targets"
+            return "built \(result.built.count), failed \(result.failed.count)"
         }
+        built = result.built
+        failed = result.failed.map { $0.0 }
 
         try phases.begin("Install service binaries").execute(spinnerMessage: "Copying artifacts") {
-            try Installer.install(services: servicesToLaunch, repositoryRoot: layout.root)
+            try Installer.install(services: built, repositoryRoot: layout.root)
             return nil
         }
 
         try phases.begin("Generate manifest").execute(spinnerMessage: "Hashing binaries") {
-            try ManifestGenerator.generate(services: servicesToLaunch, url: manifestURL)
+            try ManifestGenerator.generate(services: built, url: manifestURL)
             return manifestURL.path
         }
 
         try SignatureStore.save(selectedSignature, layout: layout)
 
         try phases.begin("Verify manifest").execute(spinnerMessage: "Validating signatures") {
-            try supervisor.verify(services: servicesToLaunch, manifestURL: manifestURL)
+            try supervisor.verify(services: built, manifestURL: manifestURL)
             return nil
         }
+        hb.stop()
+        return (built, failed)
     }
 
     // Precompile-only mode: build and install artifacts, then exit.
     if options.mode == .precompile {
-        try buildAndInstall()
+        _ = try buildAndInstall()
         print(Console.apply("Precompile complete. Artifacts installed to dist/bin", .green))
         exit(0)
     }
@@ -201,39 +217,60 @@ do {
         shouldBuild = true
     }
 
+    var builtServices: [Service] = []
+    var failedServices: [Service] = []
     if shouldBuild {
-        try buildAndInstall()
+        let result = try buildAndInstall()
+        builtServices = result.built
+        failedServices = result.failed
     } else {
         print(Console.apply("Using precompiled artifacts (skipping build)", .green))
+        // Verify and collect ready services
+        var ready: [Service] = []
+        for svc in servicesToLaunch {
+            do {
+                try supervisor.verify(services: [svc], manifestURL: manifestURL)
+                ready.append(svc)
+            } catch {
+                failedServices.append(svc)
+            }
+        }
+        builtServices = ready
         if !FileManager.default.fileExists(atPath: manifestURL.path) {
-            // Generate a manifest for verification/display if missing
             try phases.begin("Generate manifest").execute(spinnerMessage: "Hashing binaries") {
-                try ManifestGenerator.generate(services: servicesToLaunch, url: manifestURL)
+                try ManifestGenerator.generate(services: builtServices, url: manifestURL)
                 return manifestURL.path
             }
         }
-        try phases.begin("Verify manifest").execute(spinnerMessage: "Validating signatures") {
-            try supervisor.verify(services: servicesToLaunch, manifestURL: manifestURL)
-            return nil
-        }
     }
 
+    // Start ready services first
     try phases.begin("Start services").execute(spinnerMessage: "Booting processes") {
-        try supervisor.start(services: servicesToLaunch)
+        try supervisor.start(services: builtServices)
         return "Control plane on :9090"
     }
 
     Thread.sleep(forTimeInterval: 1)
-    let healthSnapshot = HealthMonitor.initialCheck(services: servicesToLaunch)
+    let healthSnapshot = HealthMonitor.initialCheck(services: builtServices)
 
-    monitor.startMonitoring(services: servicesToLaunch)
+    monitor.startMonitoring(services: builtServices)
     Task {
         try await controlPlane.start(port: 9090)
     }
-    print("\n" + Console.apply("All services running", .green))
+    if builtServices.isEmpty {
+        print("\n" + Console.apply("No services started yet — repair loop active", .yellow))
+    } else {
+        print("\n" + Console.apply("All services running", .green))
+    }
     print("Control plane: " + Console.apply("http://127.0.0.1:9090/status", .cyan))
-    printServiceSummary(servicesToLaunch, health: healthSnapshot)
+    printServiceSummary(builtServices, health: healthSnapshot)
     printHealthIssues(healthSnapshot)
+    if !failedServices.isEmpty {
+        let names = failedServices.map { $0.name }.joined(separator: ", ")
+        print(Console.apply("Background repair will attempt to build: \(names)", .yellow))
+        let worker = RepairWorker(services: failedServices, signature: selectedSignature, repositoryRoot: layout.root, supervisor: supervisor)
+        worker.start()
+    }
     print("\nPress CTRL+C to stop the launcher.")
     dispatchMain()
 } catch {
