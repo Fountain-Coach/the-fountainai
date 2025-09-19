@@ -150,8 +150,11 @@ do {
     if baseEnv["SEC_SENTINEL_API_KEY"] == nil { baseEnv["SEC_SENTINEL_API_KEY"] = "dev" }
     // Quiet gateway certificate renewal unless explicitly enabled.
     if baseEnv["GATEWAY_ENABLE_CERT_RENEWAL"] == nil { baseEnv["GATEWAY_ENABLE_CERT_RENEWAL"] = "0" }
+    // Disable healthcheck restarts by default in constrained environments; enable explicitly when desired.
+    if baseEnv["LAUNCHER_DISABLE_HEALTHCHECK"] == nil { baseEnv["LAUNCHER_DISABLE_HEALTHCHECK"] = "1" }
     let supervisor = Supervisor(environment: baseEnv, launcherSignature: selectedSignature)
-    let monitor = HealthMonitor(supervisor: supervisor)
+    let disableHC = (baseEnv["LAUNCHER_DISABLE_HEALTHCHECK"] ?? "0") == "1"
+    let monitor = HealthMonitor(supervisor: supervisor, restartOnFailure: !disableHC)
     let controlPlane = ControlPlane(supervisor: supervisor, services: servicesToLaunch)
 
     if options.mode != .precompile {

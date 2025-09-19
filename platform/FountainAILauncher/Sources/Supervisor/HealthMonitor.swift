@@ -18,14 +18,16 @@ public final class HealthMonitor {
     private let stateQueue = DispatchQueue(label: "health-monitor.state")
     private var failureReasons: [String: String] = [:]
     private var restartCounts: [String: Int] = [:]
+    private let restartOnFailure: Bool
 
     /// Creates a new health monitor.
     /// - Parameters:
     ///   - supervisor: Supervisor used for restarting services.
     ///   - interval: Time between health checks in seconds.
-    public init(supervisor: SupervisorProtocol, interval: TimeInterval = 5) {
+    public init(supervisor: SupervisorProtocol, interval: TimeInterval = 5, restartOnFailure: Bool = true) {
         self.supervisor = supervisor
         self.interval = interval
+        self.restartOnFailure = restartOnFailure
     }
 
     /// Begins monitoring the provided services.
@@ -53,7 +55,9 @@ public final class HealthMonitor {
                     if let detail = Self.evaluate(response: response, error: error) {
                         self.recordFailure(for: service.name, detail: detail)
                         print("Health check failed for \(service.name): \(detail)")
-                        supervisor.restart(service: service)
+                        if self.restartOnFailure {
+                            supervisor.restart(service: service)
+                        }
                     } else {
                         self.clearFailure(for: service.name)
                     }
