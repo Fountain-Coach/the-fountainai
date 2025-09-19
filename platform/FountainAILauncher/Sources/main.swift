@@ -13,8 +13,35 @@ setbuf(stdout, nil)
 setbuf(stderr, nil)
 #endif
 
-let launcherSignature = UUID().uuidString
-let supervisor = Supervisor(launcherSignature: launcherSignature)
+enum LaunchMode {
+    case launch
+    case precompile
+}
+
+struct Options {
+    var mode: LaunchMode = .launch
+    var forceBuild = false
+    var noBuild = false
+}
+
+func parseOptions() -> Options {
+    var opts = Options()
+    for arg in CommandLine.arguments.dropFirst() {
+        switch arg {
+        case "--precompile":
+            opts.mode = .precompile
+        case "--force-build":
+            opts.forceBuild = true
+        case "--no-build":
+            opts.noBuild = true
+        default:
+            break
+        }
+    }
+    return opts
+}
+
+let options = parseOptions()
 let monitor = HealthMonitor(supervisor: supervisor)
 
 let phases = PhaseReporter(total: 7)
@@ -36,72 +63,151 @@ do {
 
     var servicesToLaunch = uniqueServices
 
-    let preflightPhase = phases.begin("Preflight checks")
-    var preflightOutcome = PreflightOutcome.ok
-    let preflightSpinner = Spinner(message: "Validating prerequisites")
-    preflightSpinner.start()
-    do {
-        let note = try Preflight.run()
-        preflightOutcome = note
-        preflightSpinner.stop(success: true)
-        preflightPhase.succeed(note: note.note)
-    } catch {
-        preflightSpinner.stop(success: false)
-        preflightPhase.fail(with: error)
-        throw error
+    func installedArtifactsValid(for services: [Service], manifestURL: URL) -> Bool {
+        let allBinariesExist = services.allSatisfy { FileManager.default.fileExists(atPath: $0.binaryPath) }
+        guard allBinariesExist, FileManager.default.fileExists(atPath: manifestURL.path) else { return false }
+        do {
+            try Supervisor(launcherSignature: "").verify(services: services, manifestURL: manifestURL)
+            return true
+        } catch {
+            return false
+        }
     }
 
-    if preflightOutcome.needsLocalStore, let override = preflightOutcome.localStoreURL {
-        setenv("FOUNTAINSTORE_URL", override.absoluteString, 1)
-        print(Console.apply("Routing FOUNTAINSTORE_URL to \(override.absoluteString) for embedded FountainStore.", .yellow))
-        if let index = servicesToLaunch.firstIndex(where: { URL(fileURLWithPath: $0.binaryPath).lastPathComponent == "persist" }) {
-            let storeService = servicesToLaunch.remove(at: index)
-            servicesToLaunch.insert(storeService, at: 0)
-        } else {
-            print(Console.apply("Warning: could not locate local FountainStore service definition.", .red))
+    if options.mode != .precompile {
+        let preflightPhase = phases.begin("Preflight checks")
+        var preflightOutcome = PreflightOutcome.ok
+        let preflightSpinner = Spinner(message: "Validating prerequisites")
+        preflightSpinner.start()
+        do {
+            let note = try Preflight.run()
+            preflightOutcome = note
+            preflightSpinner.stop(success: true)
+            preflightPhase.succeed(note: note.note)
+        } catch {
+            preflightSpinner.stop(success: false)
+            preflightPhase.fail(with: error)
+            throw error
+        }
+
+        if preflightOutcome.needsLocalStore, let override = preflightOutcome.localStoreURL {
+            setenv("FOUNTAINSTORE_URL", override.absoluteString, 1)
+            print(Console.apply("Routing FOUNTAINSTORE_URL to \(override.absoluteString) for embedded FountainStore.", .yellow))
+            if let index = servicesToLaunch.firstIndex(where: { URL(fileURLWithPath: $0.binaryPath).lastPathComponent == "persist" }) {
+                let storeService = servicesToLaunch.remove(at: index)
+                servicesToLaunch.insert(storeService, at: 0)
+            } else {
+                print(Console.apply("Warning: could not locate local FountainStore service definition.", .red))
+            }
         }
     }
 
     print(Console.apply("Preparing to launch \(servicesToLaunch.count) services…", .bold))
     printServiceList(servicesToLaunch)
 
-    let controlPlane = ControlPlane(supervisor: supervisor, services: servicesToLaunch)
-
-    try phases.begin("Diagnostics").execute(spinnerMessage: "Checking environment") {
-        try Diagnostics.run()
-        return nil
-    }
-
-    try phases.begin("Build service binaries").execute {
-        try Builder.build(services: servicesToLaunch, signature: launcherSignature, repositoryRoot: layout.root) { event in
-            switch event {
-            case let .compile(module, index):
-                print(Console.apply("    [build] #\(index) \(module)", .cyan))
-            case let .link(artifact):
-                print(Console.apply("    [link] \(artifact)", .magenta))
-            case let .warning(message):
-                print(Console.apply("    [warn] \(message)", .yellow))
-            case let .error(message):
-                print(Console.apply("    [error] \(message)", .red))
+    func loadSourceEmbeddedSignature(layout: RepositoryLayout) -> String? {
+        let path = layout.root.appendingPathComponent("libs/LauncherSignature/Signature.swift").path
+        guard let content = try? String(contentsOfFile: path, encoding: .utf8) else { return nil }
+        // Parse the Swift source line: public let embeddedLauncherSignature = "..."
+        if let range = content.range(of: "embeddedLauncherSignature = \"") {
+            let rest = content[range.upperBound...]
+            if let end = rest.firstIndex(of: "\"") {
+                return String(rest[..<end])
             }
         }
-        return servicesToLaunch.isEmpty ? "no targets" : "\(servicesToLaunch.count) targets"
+        return nil
     }
 
-    try phases.begin("Install service binaries").execute(spinnerMessage: "Copying artifacts") {
-        try Installer.install(services: servicesToLaunch, repositoryRoot: layout.root)
-        return nil
+    // Establish or reuse a launcher signature for binary validation
+    let selectedSignature: String = {
+        if let stored = SignatureStore.load(from: layout) {
+            return stored
+        }
+        if let srcSig = loadSourceEmbeddedSignature(layout: layout) {
+            return srcSig
+        }
+        let fresh = UUID().uuidString
+        try? SignatureStore.save(fresh, layout: layout)
+        return fresh
+    }()
+    let supervisor = Supervisor(launcherSignature: selectedSignature)
+    let controlPlane = ControlPlane(supervisor: supervisor, services: servicesToLaunch)
+
+    if options.mode != .precompile {
+        try phases.begin("Diagnostics").execute(spinnerMessage: "Checking environment") {
+            try Diagnostics.run()
+            return nil
+        }
     }
 
     let manifestURL = URL(fileURLWithPath: "service-manifest.json")
-    try phases.begin("Generate manifest").execute(spinnerMessage: "Hashing binaries") {
-        try ManifestGenerator.generate(services: servicesToLaunch, url: manifestURL)
-        return manifestURL.path
+
+    func buildAndInstall() throws {
+        try phases.begin("Build service binaries").execute {
+            try Builder.build(services: servicesToLaunch, signature: selectedSignature, repositoryRoot: layout.root) { event in
+                switch event {
+                case let .compile(module, index):
+                    print(Console.apply("    [build] #\(index) \(module)", .cyan))
+                case let .link(artifact):
+                    print(Console.apply("    [link] \(artifact)", .magenta))
+                case let .warning(message):
+                    print(Console.apply("    [warn] \(message)", .yellow))
+                case let .error(message):
+                    print(Console.apply("    [error] \(message)", .red))
+                }
+            }
+            return servicesToLaunch.isEmpty ? "no targets" : "\(servicesToLaunch.count) targets"
+        }
+
+        try phases.begin("Install service binaries").execute(spinnerMessage: "Copying artifacts") {
+            try Installer.install(services: servicesToLaunch, repositoryRoot: layout.root)
+            return nil
+        }
+
+        try phases.begin("Generate manifest").execute(spinnerMessage: "Hashing binaries") {
+            try ManifestGenerator.generate(services: servicesToLaunch, url: manifestURL)
+            return manifestURL.path
+        }
+
+        try SignatureStore.save(selectedSignature, layout: layout)
+
+        try phases.begin("Verify manifest").execute(spinnerMessage: "Validating signatures") {
+            try supervisor.verify(services: servicesToLaunch, manifestURL: manifestURL)
+            return nil
+        }
     }
 
-    try phases.begin("Verify manifest").execute(spinnerMessage: "Validating signatures") {
-        try supervisor.verify(services: servicesToLaunch, manifestURL: manifestURL)
-        return nil
+    // Precompile-only mode: build and install artifacts, then exit.
+    if options.mode == .precompile {
+        try buildAndInstall()
+        print(Console.apply("Precompile complete. Artifacts installed to dist/bin", .green))
+        exit(0)
+    }
+
+    // Decide whether to build or reuse precompiled artifacts
+    var shouldBuild = !options.noBuild
+    if !options.forceBuild {
+        let valid = installedArtifactsValid(for: servicesToLaunch, manifestURL: manifestURL)
+        if valid { shouldBuild = false }
+    } else {
+        shouldBuild = true
+    }
+
+    if shouldBuild {
+        try buildAndInstall()
+    } else {
+        print(Console.apply("Using precompiled artifacts (skipping build)", .green))
+        if !FileManager.default.fileExists(atPath: manifestURL.path) {
+            // Generate a manifest for verification/display if missing
+            try phases.begin("Generate manifest").execute(spinnerMessage: "Hashing binaries") {
+                try ManifestGenerator.generate(services: servicesToLaunch, url: manifestURL)
+                return manifestURL.path
+            }
+        }
+        try phases.begin("Verify manifest").execute(spinnerMessage: "Validating signatures") {
+            try supervisor.verify(services: servicesToLaunch, manifestURL: manifestURL)
+            return nil
+        }
     }
 
     try phases.begin("Start services").execute(spinnerMessage: "Booting processes") {

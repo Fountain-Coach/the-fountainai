@@ -38,7 +38,7 @@ swift build -c release
 
 # Start the launcher/demo
 echo "==> Starting FountainAI launcher"
-swift run FountainAiLauncher
+swift run --package-path platform/FountainAILauncher FountainAiLauncher
 
 
 # © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.

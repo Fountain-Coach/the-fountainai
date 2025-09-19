@@ -108,5 +108,24 @@ cp .build/release/FountainAiLauncher /usr/local/bin/fountainai-launcher
 fountainai-launcher
 ```
 
+### Precompile Service Binaries for Fast Boot
+
+Build all FountainAI service executables ahead of time and install them into `dist/bin`:
+
+```bash
+bash Scripts/precompile.sh
+```
+
+The launcher detects precompiled artifacts and will skip rebuilding on launch. You can control behavior with flags:
+
+- `--precompile` – build + install binaries and exit
+- `--no-build` – skip building and use existing binaries
+- `--force-build` – always rebuild binaries
+
+Artifacts:
+- Binaries: `dist/bin/<service>`
+- Manifest: `service-manifest.json`
+- Signature: `dist/.launcher_signature`
+
 ---
 © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
