@@ -98,7 +98,17 @@ do {
             }
             print(Console.apply("Routing FOUNTAINSTORE_URL to \(override.absoluteString) for embedded FountainStore.", .yellow))
             if let index = servicesToLaunch.firstIndex(where: { URL(fileURLWithPath: $0.binaryPath).lastPathComponent == "persist" }) {
-                let storeService = servicesToLaunch.remove(at: index)
+                var storeService = servicesToLaunch.remove(at: index)
+                if let newPort = preflightOutcome.localStorePort {
+                    storeService = Service(
+                        name: storeService.name,
+                        binaryPath: storeService.binaryPath,
+                        arguments: storeService.arguments,
+                        port: newPort,
+                        healthPath: storeService.healthPath,
+                        shouldRestart: storeService.shouldRestart
+                    )
+                }
                 servicesToLaunch.insert(storeService, at: 0)
             } else {
                 print(Console.apply("Warning: could not locate local FountainStore service definition.", .red))
