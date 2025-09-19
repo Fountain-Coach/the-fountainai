@@ -70,7 +70,7 @@ public final class FunctionCallerRouter: @unchecked Sendable {
     let persistence: FountainStoreClient
     let client: HTTPClient
 
-    public init(persistence: FountainStoreClient, client: HTTPClient = HTTPClient(eventLoopGroupProvider: .createNew)) {
+    public init(persistence: FountainStoreClient, client: HTTPClient = HTTPClient(eventLoopGroupProvider: .singleton)) {
         self.persistence = persistence
         self.client = client
     }
@@ -117,7 +117,9 @@ public final class FunctionCallerRouter: @unchecked Sendable {
             var headers: [String: String] = [:]
             for (name, value) in resp.headers { headers[name] = value }
             var respBody = Data()
-            if var buf = resp.body { respBody = Data(buffer: buf) }
+            for try await buffer in resp.body {
+                respBody.append(Data(buffer: buffer))
+            }
             return HTTPResponse(status: Int(resp.status.code), headers: headers, body: respBody)
         } catch {
             let err = ErrorResponse(error_code: "invoke_error", message: error.localizedDescription)
@@ -136,17 +138,19 @@ public final class FunctionCallerRouter: @unchecked Sendable {
         let pathOnly = parts.first.map(String.init) ?? request.path
         let query = parts.dropFirst().first.map(String.init) ?? ""
         let segments = pathOnly.split(separator: "/", omittingEmptySubsequences: true)
-        switch (request.method, segments) {
-        case ("GET", ["functions"]):
+        switch request.method {
+        case "GET" where segments == ["functions"]:
             let params = Self.parseQuery(query)
             let page = Int(params["page"] ?? "1") ?? 1
             let pageSize = Int(params["page_size"] ?? "20") ?? 20
             return try await list_functions(page: page, page_size: pageSize)
-        case ("GET", ["functions", let fid]):
-            return try await get_function_details(function_id: String(fid))
-        case ("POST", ["functions", let fid, "invoke"]):
-            return try await invoke_function(function_id: String(fid), body: request.body)
-        case ("GET", ["metrics"]):
+        case "GET" where segments.count == 2 && segments[0] == "functions":
+            let fid = String(segments[1])
+            return try await get_function_details(function_id: fid)
+        case "POST" where segments.count == 3 && segments[0] == "functions" && segments[2] == "invoke":
+            let fid = String(segments[1])
+            return try await invoke_function(function_id: fid, body: request.body)
+        case "GET" where segments == ["metrics"]:
             return await metrics_metrics_get()
         default:
             return HTTPResponse(status: 404)

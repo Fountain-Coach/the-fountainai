@@ -65,4 +65,6 @@ public struct Router {
         }
     }
 }
+
+extension Router: @unchecked Sendable {}
 // © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.

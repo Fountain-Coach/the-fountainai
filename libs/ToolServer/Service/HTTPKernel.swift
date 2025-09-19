@@ -11,4 +11,6 @@ public struct HTTPKernel {
         try await router.route(request)
     }
 }
+
+extension HTTPKernel: @unchecked Sendable {}
 // © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.

@@ -1,6 +1,6 @@
 import Foundation
 
-public struct HTTPResponse {
+public struct HTTPResponse: Sendable {
     public var status: Int
     public var headers: [String: String]
     public var body: Data

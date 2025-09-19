@@ -95,4 +95,6 @@ public struct Handlers {
         return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: data)
     }
 }
+
+extension Handlers: @unchecked Sendable {}
 // © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.

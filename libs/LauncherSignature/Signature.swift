@@ -1,1 +1,1 @@
-public let embeddedLauncherSignature = "2EB9BD47-C6EF-4E2C-A279-935C990873DF"
+public let embeddedLauncherSignature = "B86D7CEE-24C4-4C4C-A107-8D0542D1965B"

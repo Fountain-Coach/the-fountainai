@@ -34,14 +34,38 @@ do {
         }
     }
 
-    let controlPlane = ControlPlane(supervisor: supervisor, services: uniqueServices)
+    var servicesToLaunch = uniqueServices
 
-    print(Console.apply("Preparing to launch \(services.count) services…", .bold))
-    printServiceList(uniqueServices)
-
-    try phases.begin("Preflight checks").execute(spinnerMessage: "Validating prerequisites") {
-        return try Preflight.run()
+    let preflightPhase = phases.begin("Preflight checks")
+    var preflightOutcome = PreflightOutcome.ok
+    let preflightSpinner = Spinner(message: "Validating prerequisites")
+    preflightSpinner.start()
+    do {
+        let note = try Preflight.run()
+        preflightOutcome = note
+        preflightSpinner.stop(success: true)
+        preflightPhase.succeed(note: note.note)
+    } catch {
+        preflightSpinner.stop(success: false)
+        preflightPhase.fail(with: error)
+        throw error
     }
+
+    if preflightOutcome.needsLocalStore, let override = preflightOutcome.localStoreURL {
+        setenv("FOUNTAINSTORE_URL", override.absoluteString, 1)
+        print(Console.apply("Routing FOUNTAINSTORE_URL to \(override.absoluteString) for embedded FountainStore.", .yellow))
+        if let index = servicesToLaunch.firstIndex(where: { URL(fileURLWithPath: $0.binaryPath).lastPathComponent == "persist" }) {
+            let storeService = servicesToLaunch.remove(at: index)
+            servicesToLaunch.insert(storeService, at: 0)
+        } else {
+            print(Console.apply("Warning: could not locate local FountainStore service definition.", .red))
+        }
+    }
+
+    print(Console.apply("Preparing to launch \(servicesToLaunch.count) services…", .bold))
+    printServiceList(servicesToLaunch)
+
+    let controlPlane = ControlPlane(supervisor: supervisor, services: servicesToLaunch)
 
     try phases.begin("Diagnostics").execute(spinnerMessage: "Checking environment") {
         try Diagnostics.run()
@@ -49,7 +73,7 @@ do {
     }
 
     try phases.begin("Build service binaries").execute {
-        try Builder.build(services: uniqueServices, signature: launcherSignature, repositoryRoot: layout.root) { event in
+        try Builder.build(services: servicesToLaunch, signature: launcherSignature, repositoryRoot: layout.root) { event in
             switch event {
             case let .compile(module, index):
                 print(Console.apply("    [build] #\(index) \(module)", .cyan))
@@ -61,40 +85,40 @@ do {
                 print(Console.apply("    [error] \(message)", .red))
             }
         }
-        return uniqueServices.isEmpty ? "no targets" : "\(uniqueServices.count) targets"
+        return servicesToLaunch.isEmpty ? "no targets" : "\(servicesToLaunch.count) targets"
     }
 
     try phases.begin("Install service binaries").execute(spinnerMessage: "Copying artifacts") {
-        try Installer.install(services: uniqueServices, repositoryRoot: layout.root)
+        try Installer.install(services: servicesToLaunch, repositoryRoot: layout.root)
         return nil
     }
 
     let manifestURL = URL(fileURLWithPath: "service-manifest.json")
     try phases.begin("Generate manifest").execute(spinnerMessage: "Hashing binaries") {
-        try ManifestGenerator.generate(services: uniqueServices, url: manifestURL)
+        try ManifestGenerator.generate(services: servicesToLaunch, url: manifestURL)
         return manifestURL.path
     }
 
     try phases.begin("Verify manifest").execute(spinnerMessage: "Validating signatures") {
-        try supervisor.verify(services: uniqueServices, manifestURL: manifestURL)
+        try supervisor.verify(services: servicesToLaunch, manifestURL: manifestURL)
         return nil
     }
 
     try phases.begin("Start services").execute(spinnerMessage: "Booting processes") {
-        try supervisor.start(services: uniqueServices)
+        try supervisor.start(services: servicesToLaunch)
         return "Control plane on :9090"
     }
 
     Thread.sleep(forTimeInterval: 1)
-    let healthSnapshot = HealthMonitor.initialCheck(services: uniqueServices)
+    let healthSnapshot = HealthMonitor.initialCheck(services: servicesToLaunch)
 
-    monitor.startMonitoring(services: uniqueServices)
+    monitor.startMonitoring(services: servicesToLaunch)
     Task {
         try await controlPlane.start(port: 9090)
     }
     print("\n" + Console.apply("All services running", .green))
     print("Control plane: " + Console.apply("http://127.0.0.1:9090/status", .cyan))
-    printServiceSummary(uniqueServices, health: healthSnapshot)
+    printServiceSummary(servicesToLaunch, health: healthSnapshot)
     printHealthIssues(healthSnapshot)
     print("\nPress CTRL+C to stop the launcher.")
     dispatchMain()
