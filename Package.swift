@@ -15,22 +15,35 @@ let fullProducts: [Product] = [
     .library(name: "FlexBridge", targets: ["FlexBridge"]),
     .library(name: "SSEOverMIDI", targets: ["SSEOverMIDI"]),
     .executable(name: "gateway-server", targets: ["gateway-server"]),
+    .executable(name: "fountain-gateway", targets: ["gateway-server"]),
     .executable(name: "clientgen-service", targets: ["clientgen-service"]),
     .executable(name: "publishing-frontend", targets: ["publishing-frontend"]),
     .executable(name: "FountainAIApp", targets: ["FountainAIApp"]),
     .executable(name: "flexctl", targets: ["flexctl"]),
     .executable(name: "tools-factory-server", targets: ["tools-factory-server"]),
+    .executable(name: "tools-factory", targets: ["tools-factory-server"]),
+    .executable(name: "tool-server", targets: ["tool-server"]),
     .executable(name: "sse-client", targets: ["sse-client"]),
     .library(name: "PlannerService", targets: ["PlannerService"]),
     .executable(name: "planner-server", targets: ["planner-server"]),
+    .executable(name: "planner", targets: ["planner-server"]),
     .library(name: "FunctionCallerService", targets: ["FunctionCallerService"]),
     .executable(name: "function-caller-server", targets: ["function-caller-server"]),
+    .executable(name: "function-caller", targets: ["function-caller-server"]),
     .library(name: "ToolsFactoryService", targets: ["ToolsFactoryService"]),
     .executable(name: "openapi-curator-cli", targets: ["openapi-curator-cli"]),
     .executable(name: "openapi-curator-service", targets: ["openapi-curator-service"]),
     .library(name: "GatewayPersonaOrchestrator", targets: ["GatewayPersonaOrchestrator"]),
     .library(name: "CuratorGatewayPlugin", targets: ["CuratorGatewayPlugin"]),
-    .executable(name: "semantic-browser-server", targets: ["semantic-browser-server"])]
+    .executable(name: "semantic-browser-server", targets: ["semantic-browser-server"]),
+    .executable(name: "semantic-browser", targets: ["semantic-browser-server"]),
+    .executable(name: "baseline-awareness-server", targets: ["baseline-awareness-server"]),
+    .executable(name: "baseline-awareness", targets: ["baseline-awareness-server"]),
+    .executable(name: "bootstrap-server", targets: ["bootstrap-server"]),
+    .executable(name: "bootstrap", targets: ["bootstrap-server"]),
+    .executable(name: "persist-server", targets: ["persist-server"]),
+    .executable(name: "persist", targets: ["persist-server"])
+]
 
 let leanProducts: [Product] = [
     .library(name: "ApiClientsCore", targets: ["ApiClientsCore"]),
@@ -303,6 +316,11 @@ let fullTargets: [Target] = [
         dependencies: ["FountainRuntime", "ToolsFactoryService", "FountainStoreClient", "LauncherSignature"],
         path: "services/ToolsFactoryServer",
         exclude: ["README.md"]
+    ),
+    .executableTarget(
+        name: "tool-server",
+        dependencies: ["FountainRuntime", "ToolServerService", "LauncherSignature"],
+        path: "services/ToolServer"
     ),
     .executableTarget(
         name: "planner-server",

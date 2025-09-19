@@ -42,10 +42,11 @@ public struct ControlPlaneDashboardView: View {
         .padding()
     }
 }
-#else
+#endif
 
 /// Minimal renderer producing HTML and Markdown output from a ``DashboardModel``.
-/// This fallback is used in environments without SwiftUI.
+/// This fallback compiles everywhere so tests can exercise the launcher without
+/// the SwiftUI toolchain.
 public struct DashboardView {
     public let model: DashboardModel
 
@@ -72,4 +73,3 @@ public struct DashboardView {
         return "# Dashboard\n\(table)\n\(logs)"
     }
 }
-#endif

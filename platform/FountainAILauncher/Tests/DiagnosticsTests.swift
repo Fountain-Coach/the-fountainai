@@ -38,6 +38,28 @@ final class DiagnosticsTests: XCTestCase {
         }
         for key in Diagnostics.requiredKeys { unsetenv(key) }
     }
+
+    func testRunSkipsMissingEnvFile() throws {
+        let fm = FileManager.default
+        let originalCwd = fm.currentDirectoryPath
+        defer { fm.changeCurrentDirectoryPath(originalCwd) }
+        let repoRoot = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        fm.changeCurrentDirectoryPath(repoRoot.path)
+
+        setenv("OPENAI_API_KEY", "inline", 1)
+        setenv("FOUNTAINSTORE_URL", "http://example", 1)
+        setenv("FOUNTAINSTORE_API_KEY", "inline", 1)
+
+        XCTAssertNoThrow(try Diagnostics.run())
+
+        unsetenv("OPENAI_API_KEY")
+        unsetenv("FOUNTAINSTORE_URL")
+        unsetenv("FOUNTAINSTORE_API_KEY")
+    }
 }
 
 // © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.

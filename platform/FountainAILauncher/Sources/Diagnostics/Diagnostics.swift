@@ -19,6 +19,8 @@ struct Diagnostics {
 
     static func loadEnv() throws {
         let url = URL(fileURLWithPath: ".env")
+        let fm = FileManager.default
+        guard fm.fileExists(atPath: url.path) else { return }
         guard let data = try? Data(contentsOf: url),
               let content = String(data: data, encoding: .utf8) else {
             throw DiagnosticsError.cannotReadEnv

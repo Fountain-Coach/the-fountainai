@@ -31,6 +31,16 @@ public final class HealthMonitor {
         let queue = DispatchQueue(label: "health-monitor")
         let timer = DispatchSource.makeTimerSource(queue: queue)
         timer.schedule(deadline: .now() + interval, repeating: interval)
+        let watchable = services.compactMap { service -> (Service, Int, String)? in
+            guard let port = service.port, let path = service.healthPath else { return nil }
+            return (service, port, path)
+        }
+        if watchable.isEmpty {
+            print("Health monitor ready: no services expose HTTP health checks.")
+        } else {
+            let summary = watchable.map { "\($0.0.name)@\($0.1)\($0.2)" }.joined(separator: ", ")
+            print("Health monitor watching \(watchable.count) services: \(summary)")
+        }
         timer.setEventHandler { [weak supervisor] in
             guard let supervisor = supervisor else { return }
             for service in services {

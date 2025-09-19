@@ -49,11 +49,11 @@ public final class ControlPlaneUIModel: ObservableObject {
         }
     }
 }
-#else
+#endif
 
-/// Lightweight dashboard representation used on platforms
-/// where the full SwiftUI implementation is unavailable.
-/// Encodes supervisor state for HTML/Markdown rendering.
+/// Lightweight dashboard representation that always compiles, regardless of
+/// SwiftUI availability. Encodes supervisor state for HTML/Markdown rendering
+/// and provides a simple surface for tests.
 public struct DashboardModel: Codable, Equatable {
     /// Latest service statuses reported by the control plane.
     public var statuses: [ServiceStatus]
@@ -65,4 +65,3 @@ public struct DashboardModel: Codable, Equatable {
         self.logs = logs
     }
 }
-#endif

@@ -19,7 +19,8 @@ struct Builder {
         let sigContent = "public let embeddedLauncherSignature = \"\(signature)\"\n"
         try sigContent.write(to: sigURL, atomically: true, encoding: .utf8)
 
-        for service in services {
+        let uniqueServices = ServiceDeduplicator.uniquedByBinaryPath(services).unique
+        for service in uniqueServices {
             let product = service.productName
             let process = Process()
             process.executableURL = URL(fileURLWithPath: "/usr/bin/env")

@@ -139,6 +139,17 @@ final class FountainAiLauncherTests: XCTestCase {
         _ = try await cp.start(port: 0)
         try await cp.stop()
     }
+
+    func testServiceDeduplicationByBinaryPath() {
+        let binary = "/bin/echo"
+        let serviceA = Service(name: "Gateway Auth", binaryPath: binary)
+        let serviceB = Service(name: "Gateway Rate Limiter", binaryPath: binary)
+        let result = ServiceDeduplicator.uniquedByBinaryPath([serviceA, serviceB])
+        XCTAssertEqual(result.unique.count, 1)
+        XCTAssertEqual(result.unique.first?.name, serviceA.name)
+        XCTAssertEqual(result.duplicates[binary]?.count, 1)
+        XCTAssertEqual(result.duplicates[binary]?.first?.name, serviceB.name)
+    }
 }
 
 // © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.

@@ -17,7 +17,8 @@ enum InstallerError: Error, CustomStringConvertible {
 struct Installer {
     static func install(services: [Service]) throws {
         let fm = FileManager.default
-        for service in services {
+        let uniqueServices = ServiceDeduplicator.uniquedByBinaryPath(services).unique
+        for service in uniqueServices {
             let product = service.productName
             let sourcePath = ".build/release/\(product)"
             guard fm.fileExists(atPath: sourcePath) else {

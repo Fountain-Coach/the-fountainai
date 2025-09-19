@@ -38,7 +38,8 @@ struct ManifestGenerator {
     static func generate(services: [Service], url: URL) throws {
         let fm = FileManager.default
         var entries: [ServiceManifestEntry] = []
-        for service in services {
+        let uniqueServices = ServiceDeduplicator.uniquedByBinaryPath(services).unique
+        for service in uniqueServices {
             let data = try Data(contentsOf: URL(fileURLWithPath: service.binaryPath))
             let digest = SHA256.hash(data: data)
             let hash = digest.compactMap { String(format: "%02x", $0) }.joined()
@@ -63,7 +64,8 @@ extension Supervisor {
         let entries = try JSONDecoder().decode([ServiceManifestEntry].self, from: data)
         let table = Dictionary(uniqueKeysWithValues: entries.map { ($0.binaryPath, $0) })
         let fm = FileManager.default
-        for service in services {
+        let uniqueServices = ServiceDeduplicator.uniquedByBinaryPath(services).unique
+        for service in uniqueServices {
             guard let entry = table[service.binaryPath] else {
                 throw ManifestError.missingEntry(service.binaryPath)
             }
