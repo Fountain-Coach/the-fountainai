@@ -136,30 +136,43 @@ public final class PlannerRouter: @unchecked Sendable {
     public func route(_ request: HTTPRequest) async throws -> HTTPResponse {
         let pathOnly = request.path.split(separator: "?", maxSplits: 1, omittingEmptySubsequences: false).first.map(String.init) ?? request.path
         let segments = pathOnly.split(separator: "/", omittingEmptySubsequences: true)
-        switch (request.method, segments) {
-        case ("POST", ["planner", "reason"]):
-            guard let obj = try? JSONDecoder().decode(UserObjectiveRequest.self, from: request.body) else {
-                return HTTPResponse(status: 422)
+        switch request.method {
+        case "POST":
+            if segments.count == 2 && segments[0] == "planner" && segments[1] == "reason" {
+                guard let obj = try? JSONDecoder().decode(UserObjectiveRequest.self, from: request.body) else {
+                    return HTTPResponse(status: 422)
+                }
+                return try await planner_reason(obj)
             }
-            return try await planner_reason(obj)
-        case ("POST", ["planner", "execute"]):
-            guard let obj = try? JSONDecoder().decode(PlanExecutionRequest.self, from: request.body) else {
-                return HTTPResponse(status: 422)
+            if segments.count == 2 && segments[0] == "planner" && segments[1] == "execute" {
+                guard let obj = try? JSONDecoder().decode(PlanExecutionRequest.self, from: request.body) else {
+                    return HTTPResponse(status: 422)
+                }
+                return try await planner_execute(obj)
             }
-            return try await planner_execute(obj)
-        case ("GET", ["planner", "corpora"]):
-            return try await planner_list_corpora()
-        case ("GET", ["planner", "reflections", let corpusId]):
-            return try await get_reflection_history(corpusId: String(corpusId))
-        case ("GET", ["planner", "reflections", let corpusId, "semantic-arc"]):
-            return try await get_semantic_arc(corpusId: String(corpusId))
-        case ("POST", ["planner", "reflections"]):
-            guard let incoming = try? JSONDecoder().decode(ChatReflectionRequest.self, from: request.body) else {
-                return HTTPResponse(status: 422)
+            if segments.count == 2 && segments[0] == "planner" && segments[1] == "reflections" {
+                guard let incoming = try? JSONDecoder().decode(ChatReflectionRequest.self, from: request.body) else {
+                    return HTTPResponse(status: 422)
+                }
+                return try await post_reflection(incoming)
             }
-            return try await post_reflection(incoming)
-        case ("GET", ["metrics"]):
-            return try await metrics_metrics_get()
+            return HTTPResponse(status: 404)
+        case "GET":
+            if segments.count == 2 && segments[0] == "planner" && segments[1] == "corpora" {
+                return try await planner_list_corpora()
+            }
+            if segments.count == 3 && segments[0] == "planner" && segments[1] == "reflections" {
+                let corpusId = String(segments[2])
+                return try await get_reflection_history(corpusId: corpusId)
+            }
+            if segments.count == 4 && segments[0] == "planner" && segments[1] == "reflections" && segments[3] == "semantic-arc" {
+                let corpusId = String(segments[2])
+                return try await get_semantic_arc(corpusId: corpusId)
+            }
+            if segments.count == 1 && segments[0] == "metrics" {
+                return try await metrics_metrics_get()
+            }
+            return HTTPResponse(status: 404)
         default:
             return HTTPResponse(status: 404)
         }

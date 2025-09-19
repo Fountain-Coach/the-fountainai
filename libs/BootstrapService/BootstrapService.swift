@@ -89,9 +89,11 @@ public final class BootstrapRouter: @unchecked Sendable {
     /// pattern events when `sse=1` is present in the query string.
     public func bootstrapAddBaseline(_ input: BaselineIn, isSSE: Bool) async throws -> HTTPResponse {
         _ = try await persistence.addBaseline(.init(corpusId: input.corpusId, baselineId: input.baselineId, content: input.content))
-        Task.detached { [persistence] in
-            _ = try? await persistence.addDrift(.init(corpusId: input.corpusId, driftId: "\(input.baselineId)-drift", content: "auto-generated drift"))
-            _ = try? await persistence.addPatterns(.init(corpusId: input.corpusId, patternsId: "\(input.baselineId)-patterns", content: "auto-generated patterns"))
+        let cid = input.corpusId
+        let bid = input.baselineId
+        Task {
+            _ = try? await persistence.addDrift(.init(corpusId: cid, driftId: "\(bid)-drift", content: "auto-generated drift"))
+            _ = try? await persistence.addPatterns(.init(corpusId: cid, patternsId: "\(bid)-patterns", content: "auto-generated patterns"))
         }
         if isSSE {
             let sse = """
@@ -167,9 +169,11 @@ public func makeBootstrapKernel(service svc: FountainStoreClient) -> HTTPKernel 
 public extension BootstrapRouter {
     func prepareBaselineEvents(input: BaselineIn) async throws -> [String] {
         _ = try await self.persistence.addBaseline(.init(corpusId: input.corpusId, baselineId: input.baselineId, content: input.content))
-        Task.detached { [persistence] in
-            _ = try? await persistence.addDrift(.init(corpusId: input.corpusId, driftId: "\(input.baselineId)-drift", content: "auto-generated drift"))
-            _ = try? await persistence.addPatterns(.init(corpusId: input.corpusId, patternsId: "\(input.baselineId)-patterns", content: "auto-generated patterns"))
+        let cid = input.corpusId
+        let bid = input.baselineId
+        Task {
+            _ = try? await persistence.addDrift(.init(corpusId: cid, driftId: "\(bid)-drift", content: "auto-generated drift"))
+            _ = try? await persistence.addPatterns(.init(corpusId: cid, patternsId: "\(bid)-patterns", content: "auto-generated patterns"))
         }
         return [
             "event: drift\ndata: {\"status\":\"started\",\"kind\":\"drift\"}\n\n",
