@@ -63,7 +63,8 @@ let orchestrator = GatewayPersonaOrchestrator(personas: [
 
 let server = GatewayServer(plugins: plugins, zoneManager: nil, routeStoreURL: routesURL, certificatePath: nil, rateLimiter: rateLimiter, roleGuardStore: roleGuardStore, personaOrchestrator: orchestrator)
 Task { @MainActor in
-    try await server.start(port: 8080)
+    let port = Int(env["GATEWAY_PORT"] ?? env["PORT"] ?? "8010") ?? 8010
+    try await server.start(port: port)
 }
 
 if CommandLine.arguments.contains("--dns") {

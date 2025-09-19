@@ -24,8 +24,10 @@ Task {
     let requireKey = (env["SB_REQUIRE_API_KEY"] ?? "true").lowercased() != "false"
     let kernel = makeSemanticKernel(service: service, engine: engine, requireAPIKey: requireKey)
     let server = NIOHTTPServer(kernel: kernel)
-    _ = try? await server.start(port: 8006)
-    print("semantic-browser listening on 8006")
+    let env = ProcessInfo.processInfo.environment
+    let port = Int(env["SEMANTIC_BROWSER_PORT"] ?? env["PORT"] ?? "8007") ?? 8007
+    _ = try? await server.start(port: port)
+    print("semantic-browser listening on \(port)")
 }
 RunLoop.main.run()
 

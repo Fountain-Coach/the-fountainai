@@ -29,8 +29,9 @@ Task {
     let kernel = makeToolsFactoryKernel(service: svc, adapters: adapters, manifest: manifest)
     let server = NIOHTTPServer(kernel: kernel)
     do {
-        _ = try await server.start(port: 8080)
-        print("tools-factory (NIO) listening on :8080")
+        let port = Int(ProcessInfo.processInfo.environment["TOOLS_FACTORY_PORT"] ?? ProcessInfo.processInfo.environment["PORT"] ?? "8011") ?? 8011
+        _ = try await server.start(port: port)
+        print("tools-factory (NIO) listening on :\(port)")
     } catch {
         FileHandle.standardError.write(Data("[tools-factory] Failed to start: \(error)\n".utf8))
     }

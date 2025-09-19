@@ -195,12 +195,6 @@ private extension Service {
 
 private extension Builder {
     static func buildInvocation(for product: String) -> (URL, [String]) {
-        let scriptPath = "/usr/bin/script"
-        if FileManager.default.isExecutableFile(atPath: scriptPath) {
-            let exe = URL(fileURLWithPath: scriptPath)
-            let args = ["-q", "/dev/null", "swift", "build", "--configuration", "release", "--product", product]
-            return (exe, args)
-        }
         let exe = URL(fileURLWithPath: "/usr/bin/env")
         let args = ["swift", "build", "--configuration", "release", "--product", product]
         return (exe, args)
