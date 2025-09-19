@@ -63,6 +63,19 @@ let fullTargets: [Target] = [
         dependencies: [],
         path: "libs/ApiClientsCore/Sources/ApiClientsCore"
     ),
+    .testTarget(
+        name: "SystemSmokeTests",
+        dependencies: [
+            "FountainRuntime",
+            "FountainStoreClient",
+            "PlannerService",
+            "BootstrapService",
+            "ToolsFactoryService",
+            "gateway-server",
+            "openapi-curator-service"
+        ],
+        path: "Tests/SystemSmokeTests"
+    ),
     .target(
         name: "GatewayAPI",
         dependencies: ["ApiClientsCore"],
