@@ -24,6 +24,10 @@ struct Builder {
         let sigContent = "public let embeddedLauncherSignature = \"\(signature)\"\n"
         try sigContent.write(to: sigURL, atomically: true, encoding: .utf8)
 
+        // Ensure local module cache path exists to avoid permission issues
+        let cacheDir = repositoryRoot.appendingPathComponent(".tmp/clang-cache", isDirectory: true)
+        try? FileManager.default.createDirectory(at: cacheDir, withIntermediateDirectories: true)
+
         let uniqueServices = ServiceDeduplicator.uniquedByBinaryPath(services).unique
         for service in uniqueServices {
             let product = service.productName
@@ -34,6 +38,11 @@ struct Builder {
             process.currentDirectoryURL = repositoryRoot
             var environment = ProcessInfo.processInfo.environment
             environment["FULL_TESTS"] = "1"
+            // Avoid SwiftPM sandbox and ensure clang module cache is writable
+            environment["SWIFTPM_DISABLE_SANDBOX"] = environment["SWIFTPM_DISABLE_SANDBOX"] ?? "1"
+            if environment["CLANG_MODULE_CACHE_PATH"] == nil {
+                environment["CLANG_MODULE_CACHE_PATH"] = cacheDir.path
+            }
             process.environment = environment
 
             let pipe = Pipe()

@@ -92,6 +92,9 @@ do {
 
         if preflightOutcome.needsLocalStore, let override = preflightOutcome.localStoreURL {
             setenv("FOUNTAINSTORE_URL", override.absoluteString, 1)
+            if (ProcessInfo.processInfo.environment["FOUNTAINSTORE_API_KEY"] ?? "").isEmpty {
+                setenv("FOUNTAINSTORE_API_KEY", "dev", 1)
+            }
             print(Console.apply("Routing FOUNTAINSTORE_URL to \(override.absoluteString) for embedded FountainStore.", .yellow))
             if let index = servicesToLaunch.firstIndex(where: { URL(fileURLWithPath: $0.binaryPath).lastPathComponent == "persist" }) {
                 let storeService = servicesToLaunch.remove(at: index)
@@ -135,8 +138,13 @@ do {
 
     if options.mode != .precompile {
         try phases.begin("Diagnostics").execute(spinnerMessage: "Checking environment") {
-            try Diagnostics.run()
-            return nil
+            do {
+                try Diagnostics.run()
+                return nil
+            } catch {
+                print(Console.apply("Diagnostics warnings: \(error)", .yellow))
+                return "warnings"
+            }
         }
     }
 

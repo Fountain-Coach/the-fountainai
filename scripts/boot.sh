@@ -38,6 +38,9 @@ swift build -c release
 
 # Start the launcher/demo
 echo "==> Starting FountainAI launcher"
+export SWIFTPM_DISABLE_SANDBOX=${SWIFTPM_DISABLE_SANDBOX:-1}
+export CLANG_MODULE_CACHE_PATH=${CLANG_MODULE_CACHE_PATH:-"$REPO_ROOT/.tmp/clang-cache"}
+mkdir -p "$CLANG_MODULE_CACHE_PATH"
 swift run --package-path platform/FountainAILauncher FountainAiLauncher
 
 

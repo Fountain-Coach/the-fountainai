@@ -20,8 +20,7 @@ struct Installer {
         let uniqueServices = ServiceDeduplicator.uniquedByBinaryPath(services).unique
         for service in uniqueServices {
             let product = service.productName
-            let sourceURL = repositoryRoot.appendingPathComponent(".build/release/\(product)")
-            guard fm.fileExists(atPath: sourceURL.path) else {
+            guard let sourceURL = resolveBuiltProductURL(product: product, repositoryRoot: repositoryRoot) else {
                 throw InstallerError.missingProduct(product)
             }
             let destination = service.binaryPath
@@ -45,4 +44,26 @@ private extension Service {
     var productName: String {
         URL(fileURLWithPath: binaryPath).lastPathComponent
     }
+}
+
+private func resolveBuiltProductURL(product: String, repositoryRoot: URL) -> URL? {
+    let fm = FileManager.default
+    // 1) Try legacy path
+    let legacy = repositoryRoot.appendingPathComponent(".build/release/\(product)")
+    if fm.fileExists(atPath: legacy.path) { return legacy }
+    // 2) Ask SwiftPM for the bin path
+    let proc = Process()
+    proc.currentDirectoryURL = repositoryRoot
+    proc.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+    proc.arguments = ["swift", "build", "--show-bin-path", "--configuration", "release"]
+    let pipe = Pipe()
+    proc.standardOutput = pipe
+    proc.standardError = Pipe()
+    do { try proc.run() } catch { return nil }
+    proc.waitUntilExit()
+    guard proc.terminationStatus == 0 else { return nil }
+    let data = pipe.fileHandleForReading.readDataToEndOfFile()
+    guard let path = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines), !path.isEmpty else { return nil }
+    let candidate = URL(fileURLWithPath: path, isDirectory: true).appendingPathComponent(product)
+    return fm.fileExists(atPath: candidate.path) ? candidate : nil
 }

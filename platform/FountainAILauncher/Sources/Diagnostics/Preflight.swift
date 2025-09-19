@@ -33,9 +33,14 @@ struct Preflight {
     }
 
     private static func checkFountainStore(session: URLSession = .shared) throws -> PreflightOutcome {
+        // If not configured, fall back to local embedded store
         guard let urlString = ProcessInfo.processInfo.environment["FOUNTAINSTORE_URL"],
               let url = URL(string: urlString) else {
-            return .ok
+            return PreflightOutcome(
+                note: "FOUNTAINSTORE_URL not set; routing to embedded local persist service.",
+                needsLocalStore: true,
+                localStoreURL: URL(string: "http://127.0.0.1:8005")
+            )
         }
 
         var request = URLRequest(url: url.appendingPathComponent("/health"))
