@@ -29,7 +29,7 @@ public struct Truth: Codable, Equatable {
     }
 }
 
-public struct Rules {
+public struct Rules: Sendable {
     public let renames: [String: String]
     public let allowlist: [String]
     public let denylist: [String]

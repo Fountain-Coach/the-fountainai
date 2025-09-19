@@ -10,8 +10,8 @@ import FoundationNetworking
 #endif
 private let env = ProcessInfo.processInfo.environment
 private let configStore = ConfigurationStore.fromEnvironment(env)
-private let initialRules: Rules = loadCuratorRules(environment: env, store: configStore)
 private let (curatorRulesStore, curatorRulesReloader): (CuratorRulesStore, CuratorRulesReloader?) = {
+    let initialRules: Rules = loadCuratorRules(environment: env, store: configStore)
     let store = CuratorRulesStore(initialRules: initialRules, configURL: nil)
     var reloader: CuratorRulesReloader?
     if configStore == nil {
