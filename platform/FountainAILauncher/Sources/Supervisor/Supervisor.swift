@@ -36,6 +36,10 @@ public final class Supervisor: @unchecked Sendable {
         process.arguments = service.arguments
         var env = environment
         env["LAUNCHER_SIGNATURE"] = launcherSignature
+        // Ensure services bind to the intended OpenAPI port even if a global PORT is set.
+        if let port = service.port {
+            env["PORT"] = String(port)
+        }
         process.environment = env
 
         let sanitizedName = service.name.replacingOccurrences(of: " ", with: "_")

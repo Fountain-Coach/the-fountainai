@@ -148,6 +148,8 @@ do {
     var baseEnv = ProcessInfo.processInfo.environment
     if baseEnv["SEC_SENTINEL_URL"] == nil { baseEnv["SEC_SENTINEL_URL"] = "http://127.0.0.1:0" }
     if baseEnv["SEC_SENTINEL_API_KEY"] == nil { baseEnv["SEC_SENTINEL_API_KEY"] = "dev" }
+    // Quiet gateway certificate renewal unless explicitly enabled.
+    if baseEnv["GATEWAY_ENABLE_CERT_RENEWAL"] == nil { baseEnv["GATEWAY_ENABLE_CERT_RENEWAL"] = "0" }
     let supervisor = Supervisor(environment: baseEnv, launcherSignature: selectedSignature)
     let monitor = HealthMonitor(supervisor: supervisor)
     let controlPlane = ControlPlane(supervisor: supervisor, services: servicesToLaunch)
