@@ -40,6 +40,7 @@ struct ManifestGenerator {
         var entries: [ServiceManifestEntry] = []
         let uniqueServices = ServiceDeduplicator.uniquedByBinaryPath(services).unique
         for service in uniqueServices {
+            print("  • hashing \(service.name)")
             let data = try Data(contentsOf: URL(fileURLWithPath: service.binaryPath))
             let digest = SHA256.hash(data: data)
             let hash = digest.compactMap { String(format: "%02x", $0) }.joined()
@@ -69,6 +70,7 @@ extension Supervisor {
             guard let entry = table[service.binaryPath] else {
                 throw ManifestError.missingEntry(service.binaryPath)
             }
+            print("  • verifying \(service.name)")
             let fileData = try Data(contentsOf: URL(fileURLWithPath: service.binaryPath))
             let digest = SHA256.hash(data: fileData)
             let hash = digest.compactMap { String(format: "%02x", $0) }.joined()

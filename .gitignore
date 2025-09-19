@@ -40,3 +40,7 @@ third_party/typesense-swift/
 # Local build caches
 .tmp/
 .tmp/clang-cache/
+.swift-modulecache/
+.clangmodulecache/
+**/.swift-modulecache/
+**/.clangmodulecache/

@@ -27,11 +27,13 @@ struct Installer {
             let destination = service.binaryPath
             let destDir = (destination as NSString).deletingLastPathComponent
             try fm.createDirectory(atPath: destDir, withIntermediateDirectories: true)
+            print("  • installing \(product) → \(destination)")
             do {
                 if fm.fileExists(atPath: destination) {
                     try fm.removeItem(atPath: destination)
                 }
                 try fm.copyItem(atPath: sourcePath, toPath: destination)
+                print("    ✓ \(product) installed")
             } catch {
                 throw InstallerError.copyFailed(product)
             }
