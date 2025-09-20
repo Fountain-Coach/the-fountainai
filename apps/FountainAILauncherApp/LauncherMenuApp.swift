@@ -10,15 +10,19 @@ struct LauncherMenuApp: App {
 
     var body: some Scene {
         MenuBarExtra("FountainAI", systemImage: "gearshape.2") {
-            Group {
-                if controller.launcherRunning {
-                    Button("Stop Launcher") { controller.stopLauncher() }
-                    Button("Open Dashboard") { controller.openDashboard() }
-                } else {
-                    Button("Start Launcher") { controller.startLauncher() }
-                }
+            // Primary actions
+            if controller.launcherRunning {
+                Button("Stop Launcher") { controller.stopLauncher() }
+                Button("Open Dashboard") { controller.openDashboard() }
+            } else {
+                Button("Start Launcher") { controller.startLauncher() }
             }
+            Button("Show Status…") { openWindow(id: "status") }
+            Button("Set Repo Root…") { controller.chooseRepoRoot() }
+            Button("Open Logs Folder") { controller.openLogsFolder() }
+            Button("Run Diagnostics") { controller.runDiagnostics() }
             Divider()
+            // Services
             Section("Services") {
                 if controller.launcherRunning, !controller.services.isEmpty {
                     ForEach(controller.services, id: \.name) { svc in
@@ -41,13 +45,6 @@ struct LauncherMenuApp: App {
                 }
             }
             Divider()
-            Section("Tools") {
-                Button("Set Repo Root…") { controller.chooseRepoRoot() }
-                Button("Open Logs Folder") { controller.openLogsFolder() }
-                Button("Show Status…") { openWindow(id: "status") }
-            }
-            Divider()
-            Button("Run Diagnostics") { controller.runDiagnostics() }
             Button("Quit") { NSApplication.shared.terminate(nil) }
         }
         WindowGroup(id: "status") {
