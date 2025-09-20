@@ -42,7 +42,8 @@ let fullProducts: [Product] = [
     .executable(name: "bootstrap-server", targets: ["bootstrap-server"]),
     .executable(name: "bootstrap", targets: ["bootstrap-server"]),
     .executable(name: "persist-server", targets: ["persist-server"]),
-    .executable(name: "persist", targets: ["persist-server"])
+    .executable(name: "persist", targets: ["persist-server"]),
+    .executable(name: "FountainLauncherUI", targets: ["FountainLauncherUI"])
 ]
 
 let leanProducts: [Product] = [
@@ -52,7 +53,7 @@ let leanProducts: [Product] = [
     .library(name: "SemanticBrowserAPI", targets: ["SemanticBrowserAPI"]),
     .library(name: "LLMGatewayAPI", targets: ["LLMGatewayAPI"]),
     .executable(name: "publishing-frontend", targets: ["publishing-frontend"]),
-     
+    .executable(name: "FountainLauncherUI", targets: ["FountainLauncherUI"])
 ]
 
 var products: [Product] = LEAN ? leanProducts : fullProducts
@@ -105,6 +106,11 @@ let fullTargets: [Target] = [
         name: "FountainAIAdapters",
         dependencies: ["FountainAICore", "LLMGatewayAPI", "SemanticBrowserAPI", "PersistAPI"],
         path: "libs/FountainAIAdapters/Sources/FountainAIAdapters"
+    ),
+    .executableTarget(
+        name: "FountainLauncherUI",
+        dependencies: [],
+        path: "apps/FountainLauncherUI"
     ),
     
     .target(
@@ -698,6 +704,11 @@ let leanTargets: [Target] = [
         path: "libs/FountainStoreClient"
     ),
     .executableTarget(
+        name: "FountainLauncherUI",
+        dependencies: [],
+        path: "apps/FountainLauncherUI"
+    ),
+    .executableTarget(
         name: "semantic-browser-server",
         dependencies: [
             .product(name: "SemanticBrowser", package: "semantic-browser"),
@@ -975,6 +986,11 @@ let uiLeanTargets: [Target] = [
     .testTarget(name: "PersistAPITests", dependencies: ["PersistAPI", "ApiClientsCore"], path: "Tests/PersistAPITests"),
     .testTarget(name: "SemanticBrowserAPITests", dependencies: ["SemanticBrowserAPI", "ApiClientsCore"], path: "Tests/SemanticBrowserAPITests"),
     .testTarget(name: "FountainAICoreTests", dependencies: ["FountainAICore"], path: "Tests/FountainAICoreTests"),
+    .executableTarget(
+        name: "FountainLauncherUI",
+        dependencies: [],
+        path: "apps/FountainLauncherUI"
+    ),
 ]
 
 var targets: [Target] = LEAN ? uiLeanTargets : fullTargets

@@ -30,7 +30,11 @@ if [[ ! -x "$BIN_PATH" ]]; then
   exit 1
 fi
 
-APP_BUNDLE="$DIST_DIR/$APP_NAME.app"
+mkdir -p "$DIST_DIR"
+
+# Create versioned app bundle and update symlink for stable path
+APP_BUNDLE="$DIST_DIR/$APP_NAME-$VERSION.app"
+rm -rf "$APP_BUNDLE" "$DIST_DIR/$APP_NAME.app"
 mkdir -p "$APP_BUNDLE/Contents/MacOS"
 cat > "$APP_BUNDLE/Contents/Info.plist" <<'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>
@@ -58,5 +62,14 @@ sed -i '' "s/__VERSION__/$VERSION/g" "$APP_BUNDLE/Contents/Info.plist"
 cp "$BIN_PATH" "$APP_BUNDLE/Contents/MacOS/$APP_NAME"
 chmod +x "$APP_BUNDLE/Contents/MacOS/$APP_NAME"
 
+# Stable symlink path
+ln -s "$(basename "$APP_BUNDLE")" "$DIST_DIR/$APP_NAME.app"
+
+# Remove quarantine to avoid app translocation in dev builds
+if command -v xattr >/dev/null 2>&1; then
+  xattr -dr com.apple.quarantine "$APP_BUNDLE" "$DIST_DIR/$APP_NAME.app" || true
+fi
+
 echo "Created: $APP_BUNDLE"
-echo "Launch with: open '$APP_BUNDLE'"
+echo "Symlink: $DIST_DIR/$APP_NAME.app -> $(basename "$APP_BUNDLE")"
+echo "Launch with: open '$DIST_DIR/$APP_NAME.app'"

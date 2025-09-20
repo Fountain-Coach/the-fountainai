@@ -1,0 +1,37 @@
+name: Build Launcher UI (macOS)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Xcode version
+        run: xcodebuild -version
+
+      - name: Build UI product
+        run: |
+          export SWIFTPM_DISABLE_SANDBOX=1
+          swift build -c release --product FountainLauncherUI
+
+      - name: Bundle .app
+        run: |
+          bash Scripts/make_app.sh FountainLauncherUI
+
+      - name: Zip app
+        run: |
+          ditto -ck --rsrc --sequesterRsrc --keepParent dist/FountainLauncherUI.app FountainLauncherUI.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: FountainLauncherUI-macos-app
+          path: FountainLauncherUI.zip
+          if-no-files-found: error
+

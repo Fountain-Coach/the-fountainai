@@ -48,7 +48,8 @@ func loadServices() throws -> [Service] {
             title = line.split(separator: ":", maxSplits: 1)[1].trimmingCharacters(in: .whitespaces)
         }
         let binaryName = dashed == "gateway" ? "fountain-gateway" : dashed
-        let binaryPath = "/usr/local/bin/\(binaryName)"
+        let servicesDir = ProcessInfo.processInfo.environment["FOUNTAINAI_SERVICES_DIR"] ?? "/usr/local/bin"
+        let binaryPath = (servicesDir as NSString).appendingPathComponent(binaryName)
         services.append(Service(name: title, binaryPath: binaryPath))
     }
     return services
@@ -91,4 +92,3 @@ if allChecksPassed {
 exit(allChecksPassed ? 0 : 1)
 
 // © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
-
