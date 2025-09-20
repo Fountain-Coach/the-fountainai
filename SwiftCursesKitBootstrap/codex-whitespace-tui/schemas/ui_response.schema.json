@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ui_response.schema.json",
+  "type": "object",
+  "required": [
+    "status",
+    "components"
+  ],
+  "properties": {
+    "request_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "invalid",
+        "error"
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "maxLength": 240
+    },
+    "components": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "$ref": "ui_component.schema.json"
+      }
+    },
+    "explanation": {
+      "type": "string",
+      "maxLength": 200
+    }
+  },
+  "additionalProperties": false
+}

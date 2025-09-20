@@ -1,0 +1,8 @@
+Task: layout_suggestion
+Context: {TERMINAL: {rows, cols}, CONTENT: {type + data}}
+Rules:
+- Gutters: left=2, label=6, content=10
+- Spacing scale default=2
+- Right rail allowed only if cols>=120, width<=38
+- Color pairs limited to 1..4; monochrome fallback allowed
+Return: JSON with components[] following schema

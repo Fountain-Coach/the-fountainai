@@ -1,0 +1,345 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ui_component.schema.json",
+  "type": "object",
+  "required": [
+    "id",
+    "type",
+    "x",
+    "y",
+    "width",
+    "height"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "Heading",
+        "Card",
+        "List",
+        "Timeline",
+        "Rule",
+        "Inspector",
+        "Command"
+      ]
+    },
+    "x": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "y": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "width": {
+      "type": "integer",
+      "minimum": 10,
+      "maximum": 240
+    },
+    "height": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 120
+    },
+    "props": {
+      "type": "object"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "Heading"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "props"
+        ],
+        "properties": {
+          "props": {
+            "type": "object",
+            "required": [
+              "text"
+            ],
+            "properties": {
+              "text": {
+                "type": "string",
+                "maxLength": 180
+              },
+              "style": {
+                "type": "object",
+                "properties": {
+                  "bold": {
+                    "type": "boolean"
+                  },
+                  "color_pair": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 4
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "Card"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "props"
+        ],
+        "properties": {
+          "props": {
+            "type": "object",
+            "required": [
+              "title"
+            ],
+            "properties": {
+              "title": {
+                "type": "string",
+                "maxLength": 80
+              },
+              "items": {
+                "type": "array",
+                "maxItems": 12,
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "label",
+                    "value"
+                  ],
+                  "properties": {
+                    "label": {
+                      "type": "string",
+                      "maxLength": 24
+                    },
+                    "value": {
+                      "type": "string",
+                      "maxLength": 120
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "List"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "props"
+        ],
+        "properties": {
+          "props": {
+            "type": "object",
+            "properties": {
+              "items": {
+                "type": "array",
+                "maxItems": 200,
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "text"
+                  ],
+                  "properties": {
+                    "text": {
+                      "type": "string",
+                      "maxLength": 140
+                    },
+                    "meta": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "selected": {
+                      "type": "boolean"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "Timeline"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "props"
+        ],
+        "properties": {
+          "props": {
+            "type": "object",
+            "properties": {
+              "events": {
+                "type": "array",
+                "maxItems": 50,
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "ts",
+                    "text"
+                  ],
+                  "properties": {
+                    "ts": {
+                      "type": "string",
+                      "maxLength": 16
+                    },
+                    "text": {
+                      "type": "string",
+                      "maxLength": 160
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "Rule"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "props": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "Inspector"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "props"
+        ],
+        "properties": {
+          "props": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "maxLength": 48
+              },
+              "items": {
+                "type": "array",
+                "maxItems": 24,
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "label",
+                    "value"
+                  ],
+                  "properties": {
+                    "label": {
+                      "type": "string",
+                      "maxLength": 20
+                    },
+                    "value": {
+                      "type": "string",
+                      "maxLength": 120
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "Command"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "props"
+        ],
+        "properties": {
+          "props": {
+            "type": "object",
+            "properties": {
+              "input_placeholder": {
+                "type": "string",
+                "maxLength": 60
+              },
+              "suggestions": {
+                "type": "array",
+                "maxItems": 8,
+                "items": {
+                  "type": "string",
+                  "maxLength": 80
+                }
+              },
+              "hints": {
+                "type": "array",
+                "maxItems": 5,
+                "items": {
+                  "type": "string",
+                  "maxLength": 40
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

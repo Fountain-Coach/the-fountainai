@@ -1,0 +1,75 @@
+{
+  "status": "ok",
+  "components": [
+    {
+      "id": "heading",
+      "type": "Heading",
+      "x": 2,
+      "y": 1,
+      "width": 116,
+      "height": 1,
+      "props": {
+        "text": "demo \u2014 dashboard",
+        "style": {
+          "bold": true,
+          "color_pair": 2
+        }
+      }
+    },
+    {
+      "id": "overview",
+      "type": "Card",
+      "x": 2,
+      "y": 3,
+      "width": 56,
+      "height": 6,
+      "props": {
+        "title": "Overview",
+        "items": [
+          {
+            "label": "status",
+            "value": "active"
+          },
+          {
+            "label": "coverage",
+            "value": "92%"
+          }
+        ]
+      }
+    },
+    {
+      "id": "timeline",
+      "type": "Timeline",
+      "x": 2,
+      "y": 10,
+      "width": 116,
+      "height": 6,
+      "props": {
+        "events": [
+          {
+            "ts": "12:14",
+            "text": "release v0.12"
+          }
+        ]
+      }
+    },
+    {
+      "id": "inspector",
+      "type": "Inspector",
+      "x": 120,
+      "y": 3,
+      "width": 18,
+      "height": 20,
+      "props": {
+        "title": "Info",
+        "items": [
+          {
+            "label": "repo",
+            "value": "fountain-coach/demo"
+          }
+        ]
+      }
+    }
+  ],
+  "explanation": "Rail fits at cols>=120."
+}

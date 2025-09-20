@@ -1,0 +1,4 @@
+Task: command_suggester
+Input: current context (view, selection, history)
+Output: up to 8 suggestions (short, verb-first), plus up to 5 hints
+Rules: prioritize relevant, safe actions; no external links; concise labels

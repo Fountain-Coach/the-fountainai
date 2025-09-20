@@ -1,0 +1,15 @@
+{
+  "role": "formatter",
+  "task": "fountain",
+  "context": {
+    "terminal": {
+      "rows": 40,
+      "cols": 120
+    },
+    "active_content": {
+      "type": "editor",
+      "data": {}
+    }
+  },
+  "instructions": "Format as valid .fountain"
+}

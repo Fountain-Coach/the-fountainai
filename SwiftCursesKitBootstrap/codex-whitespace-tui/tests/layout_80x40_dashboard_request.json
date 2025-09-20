@@ -1,0 +1,20 @@
+{
+  "role": "designer-assistant",
+  "task": "layout_suggestion",
+  "context": {
+    "terminal": {
+      "rows": 40,
+      "cols": 80
+    },
+    "active_content": {
+      "type": "dashboard",
+      "data": {
+        "metrics": {
+          "status": "active",
+          "coverage": "92%"
+        }
+      }
+    }
+  },
+  "instructions": "Whitespace-forward; no right rail under 120 cols"
+}

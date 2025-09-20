@@ -1,0 +1,8 @@
+Task: formatter (fountain)
+Input: raw screenplay text or selection
+Output: valid .fountain text (no extra commentary)
+Rules:
+- Scene headings: INT./EXT. LOCATION – TIME
+- Character: UPPERCASE standalone line
+- Parentheticals in ( )
+- Transitions right-aligned (if requested) or simple at line end
