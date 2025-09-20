@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # make_app.sh — wrap a SwiftPM-built executable into a macOS .app bundle
-# Usage: Scripts/make_app.sh FountainAIApp [dist_dir]
+# Usage: Scripts/make_app.sh <ProductName> [dist_dir]
 
 APP_NAME=${1:-}
 DIST_DIR=${2:-dist}
@@ -51,4 +51,3 @@ chmod +x "$APP_BUNDLE/Contents/MacOS/$APP_NAME"
 
 echo "Created: $APP_BUNDLE"
 echo "Launch with: open '$APP_BUNDLE'"
-

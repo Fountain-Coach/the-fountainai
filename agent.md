@@ -76,17 +76,15 @@ You may run, limit, or skip tests to keep iterations fast.
 - Run targeted tests via `swift test --filter <Pattern>` when needed.  
 - Full suite only when `FULL_TESTS=1` or contract changes demand it.
 
-## 4.1) GUI Quickstart (No Xcode)
-The GUI is a SwiftUI app target named `FountainAIApp`. SwiftPM builds a binary; we provide a bundler to produce a clickable `.app`.
+## 4.1) Launcher App Quickstart (No Xcode)
+The macOS menubar app is `FountainAILauncherApp`. SwiftPM builds a binary; we provide a bundler to produce a clickable `.app`.
 
 - Build (binary):
-  - `swift build --product FountainAIApp`
+  - `swift build --product FountainAILauncherApp`
 - Bundle (.app):
-  - `bash Scripts/make_app.sh FountainAIApp`
-- Launch (GUI):
-  - `open dist/FountainAIApp.app`
-
-On first launch, the onboarding screen asks only for an OpenAI API key. Paste → Continue → Ask a question. Advanced settings remain hidden unless opened later.
+  - `bash Scripts/make_app.sh FountainAILauncherApp`
+- Launch:
+  - `open dist/FountainAILauncherApp.app`
 
 ## 5) Configuration & Security
 Required environment variables for services:
@@ -110,12 +108,11 @@ GUI specific:
 - [ ] Capability negotiation implemented and logged.  
 - [ ] Lean CI (your chosen tier) green.  
 - [ ] `FOUNTAINSTORE_*` environment variables documented in Launcher/Ops.
- - [ ] `FountainAIApp` builds, bundles, and launches via Build · Bundle · Launch sequence.  
- - [ ] Onboarding requires only OpenAI API key; no additional config needed for first answer.
+- [ ] `FountainAILauncherApp` builds, bundles, and launches via Build · Bundle · Launch sequence.
 
 ## 7) Tooling & Permissions
 - Scripts are provided under `Scripts/` and are executable. When in doubt, run via bash:
-  - `bash Scripts/make_app.sh FountainAIApp`
+- `bash Scripts/make_app.sh FountainAILauncherApp`
   - `bash Scripts/quickstart.sh` (optional local Persist demo)
 - The agent may perform any Swift build/test/run steps necessary to guide users to the Build · Bundle · Launch path.
 
@@ -139,4 +136,3 @@ This file lives at the repository root as agent.md and is your canonical contrac
 ```
 © 2025 Contexter alias Benedikt Eickhoff 🛡️ All rights reserved.
 ```
-

@@ -3,13 +3,13 @@
 This repository ships a repeatable pattern for SwiftUI GUI apps that launch without Xcode.
 
 - Build (binary):
-  - `swift build --product FountainAIApp`
+  - `swift build --product <Product>`
 - Bundle (.app):
-  - `bash Scripts/make_app.sh FountainAIApp`
+  - `bash Scripts/make_app.sh <Product>`
 - Launch (GUI):
-  - `open dist/FountainAIApp.app`
+  - `open dist/<Product>.app`
 
-On first launch the app shows an onboarding screen with a single field for the OpenAI API key. Paste → Continue → Ask a question. Advanced settings are hidden by default and can be opened later.
+On first launch your app can present onboarding if needed. The bundling flow works the same for any SwiftPM executable that uses SwiftUI.
 
 ### Why this works
 - SwiftPM produces an executable binary for SwiftUI apps. `Scripts/make_app.sh` wraps any product into a proper macOS `.app` bundle with an Info.plist so you can open it via Finder or `open`.
@@ -71,4 +71,3 @@ Switching providers
 - One pattern for every GUI app: Build · Bundle · Launch
 - Onboarding asks for a single credential; advanced settings are optional
 - Scaffolder generates new app targets that conform to this pattern
-

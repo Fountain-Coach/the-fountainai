@@ -5,9 +5,9 @@ A: SwiftPM executable targets appear as “Command Line Tool” even for SwiftUI
 
 **Q: How do I launch a GUI app without Xcode?**  
 A: Build → Bundle → Launch:
-- `swift build --product FountainAIApp`
-- `bash Scripts/make_app.sh FountainAIApp`
-- `open dist/FountainAIApp.app`
+- `swift build --product <Product>`
+- `bash Scripts/make_app.sh <Product>`
+- `open dist/<Product>.app`
 
 **Q: What does onboarding ask for?**  
 A: Exactly one field: the OpenAI API key. Paste and continue. The app stores it in Keychain and selects the OpenAI adapter automatically.
@@ -27,4 +27,3 @@ A: Implement `LLMService` and select it in the app factory. The scaffolder alrea
 
 **Q: Where is the full guide?**  
 A: See `docs/GUI_App_Quickstart_and_Scaffolding.md` for the end‑to‑end workflow.
-
