@@ -29,7 +29,7 @@ https://github.com/your-org/swiftcurseskits (replace with the final repository U
 Add SwiftCursesKit to your `Package.swift`:
 
 ```swift
-// swift-tools-version: 5.9
+// swift-tools-version: 6.1
 
 import PackageDescription
 
