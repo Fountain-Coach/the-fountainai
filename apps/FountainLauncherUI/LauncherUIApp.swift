@@ -22,6 +22,7 @@ final class LauncherViewModel: ObservableObject {
     @Published var controlPlaneOK: Bool = false
     @Published var logText: String = ""
     @Published var errorMessage: String? = nil
+    @Published var services: [CPServiceStatus] = []
 
     private var tailProc: Process?
     private var statusTimer: Timer?
@@ -190,11 +191,16 @@ final class LauncherViewModel: ObservableObject {
             guard let self else { return }
             Task {
                 do {
-                    let (_, resp) = try await URLSession.shared.data(from: self.ctrlURL)
+                    let (data, resp) = try await URLSession.shared.data(from: self.ctrlURL)
                     let ok = (resp as? HTTPURLResponse)?.statusCode == 200
+                    if ok {
+                        if let decoded = try? JSONDecoder().decode([CPServiceStatus].self, from: data) {
+                            await MainActor.run { self.services = decoded }
+                        }
+                    }
                     await MainActor.run { self.controlPlaneOK = ok }
                 } catch {
-                    await MainActor.run { self.controlPlaneOK = false }
+                    await MainActor.run { self.controlPlaneOK = false; self.services = [] }
                 }
             }
         }
@@ -258,7 +264,7 @@ struct ControlTab: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Circle().fill(vm.controlPlaneOK ? Color.green : Color.red).frame(width: 12, height: 12)
-                Text(vm.controlPlaneOK ? "Control plane: reachable" : "Control plane: not reachable")
+                Text(vm.controlPlaneOK ? "Control plane: reachable" : (vm.starting ? "Booting control plane…" : "Control plane: not reachable"))
                 Spacer()
             }
             HStack {
@@ -284,11 +290,32 @@ struct ControlTab: View {
                     .disabled(vm.repoPath == nil || vm.starting)
                 Button("Stop") { vm.stop() }
                 Button("Diagnostics") { vm.diagnostics() }
-                Button("Open Dashboard") { vm.openDashboard() }
                 Spacer()
                 Button("Copy Logs") { NSPasteboard.general.clearContents(); NSPasteboard.general.setString(vm.logText, forType: .string) }
             }
             Divider()
+            GroupBox(label: Text("Services")) {
+                if vm.controlPlaneOK && !vm.services.isEmpty {
+                    VStack(alignment: .leading, spacing: 6) {
+                        ForEach(vm.services, id: \.name) { s in
+                            HStack {
+                                Circle().fill(s.healthy ? Color.green : (s.running ? Color.yellow : Color.gray)).frame(width: 8, height: 8)
+                                Text(s.name)
+                                Spacer()
+                                if s.running {
+                                    Button("Restart") { vm.serviceAction(name: s.name, action: .restart) }
+                                    Button("Stop") { vm.serviceAction(name: s.name, action: .stop) }
+                                } else {
+                                    Button("Start") { vm.serviceAction(name: s.name, action: .start) }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    Text(vm.starting ? "Waiting for services…" : "No services yet.")
+                        .foregroundColor(.secondary)
+                }
+            }
             GroupBox(label: Text("Logs")) {
                 TextEditor(text: Binding(get: { vm.logText }, set: { _ in }))
                     .font(.system(.footnote, design: .monospaced))
@@ -326,5 +353,20 @@ struct EnvTab: View {
             Spacer()
         }
         .padding(16)
+    }
+}
+
+// MARK: - Models & Actions
+struct CPServiceStatus: Codable, Hashable { let name: String; let running: Bool; let healthy: Bool }
+
+extension LauncherViewModel {
+    enum ServiceAction { case start, stop, restart }
+    func serviceAction(name: String, action: ServiceAction) {
+        guard controlPlaneOK else { return }
+        let path: String
+        switch action { case .start: path = "/start/"+name; case .stop: path = "/stop/"+name; case .restart: path = "/restart/"+name }
+        var req = URLRequest(url: URL(string: "http://127.0.0.1:9090\(path)")!)
+        req.httpMethod = "POST"
+        URLSession.shared.dataTask(with: req) { _, _, _ in }.resume()
     }
 }
