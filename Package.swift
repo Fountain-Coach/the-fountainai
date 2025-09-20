@@ -43,7 +43,8 @@ let fullProducts: [Product] = [
     .executable(name: "bootstrap", targets: ["bootstrap-server"]),
     .executable(name: "persist-server", targets: ["persist-server"]),
     .executable(name: "persist", targets: ["persist-server"]),
-    .executable(name: "FountainLauncherUI", targets: ["FountainLauncherUI"])
+    .executable(name: "FountainLauncherUI", targets: ["FountainLauncherUI"]),
+    .executable(name: "FountainDashboard", targets: ["FountainLauncherUI"])
 ]
 
 let leanProducts: [Product] = [
@@ -53,7 +54,8 @@ let leanProducts: [Product] = [
     .library(name: "SemanticBrowserAPI", targets: ["SemanticBrowserAPI"]),
     .library(name: "LLMGatewayAPI", targets: ["LLMGatewayAPI"]),
     .executable(name: "publishing-frontend", targets: ["publishing-frontend"]),
-    .executable(name: "FountainLauncherUI", targets: ["FountainLauncherUI"])
+    .executable(name: "FountainLauncherUI", targets: ["FountainLauncherUI"]),
+    .executable(name: "FountainDashboard", targets: ["FountainLauncherUI"])
 ]
 
 var products: [Product] = LEAN ? leanProducts : fullProducts

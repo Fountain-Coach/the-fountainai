@@ -9,6 +9,12 @@ struct LauncherUIApp: App {
         WindowGroup {
             ContentView(vm: vm)
         }
+        .commands {
+            CommandMenu("View") {
+                Button("Control") { vm.tab = .control }.keyboardShortcut("1")
+                Button("Environment") { vm.tab = .environment }.keyboardShortcut("2")
+            }
+        }
     }
 }
 
@@ -23,6 +29,8 @@ final class LauncherViewModel: ObservableObject {
     @Published var logText: String = ""
     @Published var errorMessage: String? = nil
     @Published var services: [CPServiceStatus] = []
+    enum Tab { case control, environment }
+    @Published var tab: Tab = .control
 
     private var tailProc: Process?
     private var statusTimer: Timer?
@@ -240,16 +248,27 @@ final class LauncherViewModel: ObservableObject {
         alert.informativeText = message
         alert.runModal()
     }
+
+    func presentDebugInfo() {
+        let id = Bundle.main.bundleIdentifier ?? "(nil)"
+        let ver = (Bundle.main.infoDictionary?["CFBundleVersion"] as? String) ?? "(nil)"
+        let name = (Bundle.main.infoDictionary?["CFBundleName"] as? String) ?? "(nil)"
+        let path = Bundle.main.bundleURL.path
+        let exec = Bundle.main.executableURL?.path ?? "(nil)"
+        presentAlert(title: "Debug Info", message: "BundleID: \(id)\nName: \(name)\nVersion: \(ver)\nBundle: \(path)\nExecutable: \(exec)")
+    }
 }
 
 struct ContentView: View {
     @ObservedObject var vm: LauncherViewModel
     var body: some View {
-        TabView {
+        TabView(selection: $vm.tab) {
             ControlTab(vm: vm)
                 .tabItem { Label("Control", systemImage: "switch.2") }
+                .tag(LauncherViewModel.Tab.control)
             EnvTab(vm: vm)
                 .tabItem { Label("Environment", systemImage: "key.fill") }
+                .tag(LauncherViewModel.Tab.environment)
         }
         .frame(minWidth: 760, minHeight: 480)
     }
@@ -260,8 +279,19 @@ struct Msg: Identifiable { let id = UUID(); let text: String }
 // MARK: - Tabs
 struct ControlTab: View {
     @ObservedObject var vm: LauncherViewModel
+    private var buildVersion: String { (Bundle.main.infoDictionary?["CFBundleVersion"] as? String) ?? "dev" }
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("Fountain Launcher Dashboard • build \(buildVersion)")
+                    .font(.headline)
+                Spacer()
+                Button("Debug Info") { vm.presentDebugInfo() }
+            }
+            HStack {
+                Button("Environment…") { vm.tab = .environment }
+                Spacer()
+            }
             HStack {
                 Circle().fill(vm.controlPlaneOK ? Color.green : Color.red).frame(width: 12, height: 12)
                 Text(vm.controlPlaneOK ? "Control plane: reachable" : (vm.starting ? "Booting control plane…" : "Control plane: not reachable"))
@@ -331,6 +361,7 @@ struct EnvTab: View {
     @ObservedObject var vm: LauncherViewModel
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
+            HStack { Button("Back to Control") { vm.tab = .control }; Spacer() }
             GroupBox(label: Text("Environment")) {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack { SecureField("OPENAI_API_KEY", text: $vm.openAIKeyInput); Button("Clear") { vm.clearOpenAIKey() } }

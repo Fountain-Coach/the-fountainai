@@ -41,7 +41,7 @@ cat > "$APP_BUNDLE/Contents/Info.plist" <<'PLIST'
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <key>CFBundleName</key><string>FountainAI</string>
+  <key>CFBundleName</key><string>__APPNAME__</string>
   <key>CFBundleIdentifier</key><string>__BUNDLE_ID__</string>
   <key>CFBundleExecutable</key><string>__EXEC__</string>
   <key>CFBundleShortVersionString</key><string>__VERSION__</string>
@@ -58,6 +58,7 @@ PLIST
 sed -i '' "s/__EXEC__/$APP_NAME/g" "$APP_BUNDLE/Contents/Info.plist"
 sed -i '' "s#__BUNDLE_ID__#$BUNDLE_ID#g" "$APP_BUNDLE/Contents/Info.plist"
 sed -i '' "s/__VERSION__/$VERSION/g" "$APP_BUNDLE/Contents/Info.plist"
+sed -i '' "s/__APPNAME__/$APP_NAME/g" "$APP_BUNDLE/Contents/Info.plist"
 
 cp "$BIN_PATH" "$APP_BUNDLE/Contents/MacOS/$APP_NAME"
 chmod +x "$APP_BUNDLE/Contents/MacOS/$APP_NAME"
