@@ -6,6 +6,7 @@ import AppKit
 @main
 struct LauncherMenuApp: App {
     @StateObject private var controller = LauncherController()
+    @Environment(\.openWindow) private var openWindow
 
     var body: some Scene {
         MenuBarExtra("FountainAI", systemImage: "gearshape.2") {
@@ -43,10 +44,14 @@ struct LauncherMenuApp: App {
             Section("Tools") {
                 Button("Set Repo Root…") { controller.chooseRepoRoot() }
                 Button("Open Logs Folder") { controller.openLogsFolder() }
+                Button("Show Status…") { openWindow(id: "status") }
             }
             Divider()
             Button("Run Diagnostics") { controller.runDiagnostics() }
             Button("Quit") { NSApplication.shared.terminate(nil) }
+        }
+        WindowGroup(id: "status") {
+            StatusView(controller: controller)
         }
     }
 }
@@ -221,6 +226,7 @@ final class LauncherController: ObservableObject {
 
     private func presentAlert(title: String, message: String) {
         DispatchQueue.main.async {
+            NSApp.activate(ignoringOtherApps: true)
             let alert = NSAlert()
             alert.alertStyle = .informational
             alert.messageText = title
@@ -254,6 +260,7 @@ final class LauncherController: ObservableObject {
         panel.canChooseFiles = false
         panel.canChooseDirectories = true
         panel.allowsMultipleSelection = false
+        NSApp.activate(ignoringOtherApps: true)
         if panel.runModal() == .OK, let url = panel.url {
             if validateRepo(url) {
                 UserDefaults.standard.set(url.path, forKey: repoKey)
@@ -286,6 +293,49 @@ final class LauncherController: ObservableObject {
         let pkg = url.appendingPathComponent("Package.swift")
         let openapi = url.appendingPathComponent("openapi")
         return FileManager.default.fileExists(atPath: pkg.path) && FileManager.default.fileExists(atPath: openapi.path)
+    }
+}
+
+// MARK: - Status Window
+
+struct StatusView: View {
+    @ObservedObject var controller: LauncherController
+    @State private var now = Date()
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Circle().fill(controller.launcherRunning ? Color.green : Color.red).frame(width: 10, height: 10)
+                Text(controller.launcherRunning ? "Launcher: Running" : "Launcher: Stopped")
+                Spacer()
+                Button(controller.launcherRunning ? "Stop" : "Start") {
+                    controller.launcherRunning ? controller.stopLauncher() : controller.startLauncher()
+                }
+            }
+            Divider()
+            Text("Services:").bold()
+            if controller.services.isEmpty {
+                Text("No services reported yet.").foregroundColor(.secondary)
+            } else {
+                ForEach(controller.services, id: \.name) { svc in
+                    HStack {
+                        Circle().fill(svc.healthy ? Color.green : (svc.running ? Color.yellow : Color.gray)).frame(width: 8, height: 8)
+                        Text(svc.name)
+                        Spacer()
+                        if svc.running { Button("Restart") { controller.restart(service: svc.name) }; Button("Stop") { controller.stop(service: svc.name) } }
+                        else { Button("Start") { controller.start(service: svc.name) } }
+                    }
+                }
+            }
+            Divider()
+            HStack { Button("Diagnostics") { controller.runDiagnostics() }; Spacer(); Button("Open Dashboard") { controller.openDashboard() } }
+        }
+        .padding(16)
+        .frame(minWidth: 420, minHeight: 320)
+        .onAppear {
+            Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
+                Task { @MainActor in now = Date() }
+            }
+        }
     }
 }
 
