@@ -16,13 +16,13 @@ Even the supporting cast has roles: the Bootstrap service seeds characters like 
 
 When the curtain falls, the response is handed back to the audience as the final line, completing the journey from script to stage and back again. FountainAI’s theatre turns technical requests into performances, with each persona playing its part, guided by OpenAPI scripts and Swift code that keep the show running smoothly.
 
-## GUI Apps (Build · Bundle · Launch)
+## macOS Launcher App (Build · Bundle · Launch)
 
-Run the SwiftUI GUI without Xcode:
+Run the menubar Launcher app without Xcode:
 
-- Build: `swift build --product FountainAIApp`
-- Bundle: `bash Scripts/make_app.sh FountainAIApp`
-- Launch: `open dist/FountainAIApp.app`
+- Build: `swift build --product FountainAILauncherApp`
+- Bundle: `bash Scripts/make_app.sh FountainAILauncherApp`
+- Launch: `open dist/FountainAILauncherApp.app`
 
 Create new GUI apps with the same pattern:
 

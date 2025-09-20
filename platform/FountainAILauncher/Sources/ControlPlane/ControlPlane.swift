@@ -44,19 +44,39 @@ public final class ControlPlane: @unchecked Sendable {
         HTTPKernel { [weak self] req in
             guard let self else { return HTTPResponse(status: 500) }
             switch (req.method, req.path) {
-            case ("GET", "/status"):
-                return try await self.statusHandler()
-            case ("POST", "/shutdown"):
-                Task.detached { [supervisor] in
-                    supervisor.terminateAll()
-                    exit(0)
-                }
-                return HTTPResponse(status: 200)
-            case ("POST", let path) where path.hasPrefix("/restart/"):
-                let name = String(path.dropFirst("/restart/".count))
-                guard let service = self.services[name] else {
-                    return HTTPResponse(status: 404)
-                }
+                case ("GET", "/status"):
+                    return try await self.statusHandler()
+                case ("POST", "/shutdown"):
+                    Task.detached { [supervisor] in
+                        supervisor.terminateAll()
+                        exit(0)
+                    }
+                    return HTTPResponse(status: 200)
+                case ("POST", let path) where path.hasPrefix("/start/"):
+                    do {
+                        let name = String(path.dropFirst("/start/".count))
+                        guard let service = self.services[name] else {
+                            return HTTPResponse(status: 404)
+                        }
+                        if !self.supervisor.isRunning(serviceName: name) {
+                            try self.supervisor.start(service: service)
+                        }
+                        return HTTPResponse(status: 200)
+                    } catch {
+                        return HTTPResponse(status: 500, body: Data(("failed to start: \(error)").utf8))
+                    }
+                case ("POST", let path) where path.hasPrefix("/stop/"):
+                    let name = String(path.dropFirst("/stop/".count))
+                    guard self.services[name] != nil else {
+                        return HTTPResponse(status: 404)
+                    }
+                    self.supervisor.terminate(serviceName: name)
+                    return HTTPResponse(status: 200)
+                case ("POST", let path) where path.hasPrefix("/restart/"):
+                    let name = String(path.dropFirst("/restart/".count))
+                    guard let service = self.services[name] else {
+                        return HTTPResponse(status: 404)
+                    }
                 self.supervisor.restart(service: service)
                 return HTTPResponse(status: 200)
             default:

@@ -18,7 +18,7 @@ let fullProducts: [Product] = [
     .executable(name: "fountain-gateway", targets: ["gateway-server"]),
     .executable(name: "clientgen-service", targets: ["clientgen-service"]),
     .executable(name: "publishing-frontend", targets: ["publishing-frontend"]),
-    .executable(name: "FountainAIApp", targets: ["FountainAIApp"]),
+    .executable(name: "FountainAILauncherApp", targets: ["FountainAILauncherApp"]),
     .executable(name: "flexctl", targets: ["flexctl"]),
     .executable(name: "tools-factory-server", targets: ["tools-factory-server"]),
     .executable(name: "tools-factory", targets: ["tools-factory-server"]),
@@ -52,7 +52,7 @@ let leanProducts: [Product] = [
     .library(name: "SemanticBrowserAPI", targets: ["SemanticBrowserAPI"]),
     .library(name: "LLMGatewayAPI", targets: ["LLMGatewayAPI"]),
     .executable(name: "publishing-frontend", targets: ["publishing-frontend"]),
-    .executable(name: "FountainAIApp", targets: ["FountainAIApp"]) 
+    .executable(name: "FountainAILauncherApp", targets: ["FountainAILauncherApp"]) 
 ]
 
 var products: [Product] = LEAN ? leanProducts : fullProducts
@@ -107,9 +107,9 @@ let fullTargets: [Target] = [
         path: "libs/FountainAIAdapters/Sources/FountainAIAdapters"
     ),
     .executableTarget(
-        name: "FountainAIApp",
-        dependencies: ["FountainAICore", "FountainAIAdapters", "LLMGatewayAPI", "SemanticBrowserAPI", "PersistAPI"],
-        path: "apps/FountainAIApp"
+        name: "FountainAILauncherApp",
+        dependencies: [],
+        path: "apps/FountainAILauncherApp"
     ),
     .target(
         name: "FountainCodex",

@@ -13,8 +13,7 @@ swift build --target FountainAICore -c debug
 echo "[2/3] Running core tests"
 swift test --filter FountainAICoreTests
 
-echo "[3/3] Building app (FountainAIApp)"
-swift build --product FountainAIApp -c debug
+echo "[3/3] Building app (FountainAILauncherApp)"
+swift build --product FountainAILauncherApp -c debug
 
-echo "Build succeeded. Run with: \n  CLANG_MODULE_CACHE_PATH=$CLANG_MODULE_CACHE_PATH SWIFTPM_DISABLE_SANDBOX=1 swift run FountainAIApp\n"
-
+echo "Build succeeded. Run with: \n  CLANG_MODULE_CACHE_PATH=$CLANG_MODULE_CACHE_PATH SWIFTPM_DISABLE_SANDBOX=1 swift run FountainAILauncherApp\n"
