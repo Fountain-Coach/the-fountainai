@@ -21,6 +21,7 @@ https://github.com/your-org/swiftcurseskits (replace with the final repository U
 ### Prerequisites
 
 - Swift 6.1 or newer
+
 - `ncurses` development headers installed (`sudo apt install libncursesw5-dev` on Debian/Ubuntu, `brew install ncurses` on macOS)
 
 ### Installation
