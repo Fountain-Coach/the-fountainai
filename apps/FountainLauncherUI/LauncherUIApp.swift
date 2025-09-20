@@ -158,6 +158,10 @@ final class LauncherViewModel: ObservableObject {
         }
         if let openai = KeychainHelper.read(service: "FountainAI", account: "OPENAI_API_KEY") { env["OPENAI_API_KEY"] = openai }
         if let storeKey = KeychainHelper.read(service: "FountainAI", account: "FOUNTAINSTORE_API_KEY") { env["FOUNTAINSTORE_API_KEY"] = storeKey }
+        if let repo = repoPath {
+            env["FOUNTAINAI_ROOT"] = repo
+            env["FOUNTAINAI_SERVICES_DIR"] = URL(fileURLWithPath: repo).appendingPathComponent("dist/bin").path
+        }
         return env
     }
 

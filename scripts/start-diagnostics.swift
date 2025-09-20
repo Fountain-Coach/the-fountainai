@@ -48,8 +48,10 @@ func loadServices() throws -> [Service] {
             title = line.split(separator: ":", maxSplits: 1)[1].trimmingCharacters(in: .whitespaces)
         }
         let binaryName = dashed == "gateway" ? "fountain-gateway" : dashed
-        let servicesDir = ProcessInfo.processInfo.environment["FOUNTAINAI_SERVICES_DIR"] ?? "/usr/local/bin"
-        let binaryPath = (servicesDir as NSString).appendingPathComponent(binaryName)
+        // Prefer FOUNTAINAI_SERVICES_DIR if set; otherwise default to <repo>/dist/bin
+        let binRoot = ProcessInfo.processInfo.environment["FOUNTAINAI_SERVICES_DIR"]
+            ?? root.appendingPathComponent("dist/bin").path
+        let binaryPath = (binRoot as NSString).appendingPathComponent(binaryName)
         services.append(Service(name: title, binaryPath: binaryPath))
     }
     return services
