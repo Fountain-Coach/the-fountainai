@@ -18,7 +18,7 @@ let fullProducts: [Product] = [
     .executable(name: "fountain-gateway", targets: ["gateway-server"]),
     .executable(name: "clientgen-service", targets: ["clientgen-service"]),
     .executable(name: "publishing-frontend", targets: ["publishing-frontend"]),
-    .executable(name: "FountainAILauncherApp", targets: ["FountainAILauncherApp"]),
+    
     .executable(name: "flexctl", targets: ["flexctl"]),
     .executable(name: "tools-factory-server", targets: ["tools-factory-server"]),
     .executable(name: "tools-factory", targets: ["tools-factory-server"]),
@@ -52,7 +52,7 @@ let leanProducts: [Product] = [
     .library(name: "SemanticBrowserAPI", targets: ["SemanticBrowserAPI"]),
     .library(name: "LLMGatewayAPI", targets: ["LLMGatewayAPI"]),
     .executable(name: "publishing-frontend", targets: ["publishing-frontend"]),
-    .executable(name: "FountainAILauncherApp", targets: ["FountainAILauncherApp"]) 
+     
 ]
 
 var products: [Product] = LEAN ? leanProducts : fullProducts
@@ -106,12 +106,7 @@ let fullTargets: [Target] = [
         dependencies: ["FountainAICore", "LLMGatewayAPI", "SemanticBrowserAPI", "PersistAPI"],
         path: "libs/FountainAIAdapters/Sources/FountainAIAdapters"
     ),
-    .executableTarget(
-        name: "FountainAILauncherApp",
-        dependencies: [],
-        path: "apps/FountainAILauncherApp",
-        exclude: ["README.md"]
-    ),
+    
     .target(
         name: "FountainCodex",
         dependencies: ["FountainRuntime"],
@@ -936,12 +931,7 @@ let uiLeanTargets: [Target] = [
     .target(name: "LLMGatewayAPI", dependencies: ["ApiClientsCore"], path: "libs/LLMGatewayAPI/Sources/LLMGatewayAPI"),
     .target(name: "FountainAICore", dependencies: [], path: "libs/FountainAICore/Sources/FountainAICore"),
     .target(name: "FountainAIAdapters", dependencies: ["FountainAICore", "LLMGatewayAPI", "SemanticBrowserAPI", "PersistAPI"], path: "libs/FountainAIAdapters/Sources/FountainAIAdapters"),
-    .executableTarget(
-        name: "FountainAILauncherApp",
-        dependencies: [],
-        path: "apps/FountainAILauncherApp",
-        exclude: ["README.md"]
-    ),
+    
     // Minimal server to host static GUI files
     .target(
         name: "PublishingFrontend",

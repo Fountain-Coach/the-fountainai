@@ -3,9 +3,14 @@ set -euo pipefail
 
 # make_app.sh — wrap a SwiftPM-built executable into a macOS .app bundle
 # Usage: Scripts/make_app.sh <ProductName> [dist_dir]
+# Env overrides:
+#   BUNDLE_ID   (default: co.fountain.ai.launcherapp.dev)
+#   VERSION     (default: current timestamp)
 
 APP_NAME=${1:-}
 DIST_DIR=${2:-dist}
+BUNDLE_ID=${BUNDLE_ID:-co.fountain.ai.launcherapp.dev}
+VERSION=${VERSION:-$(date +%Y.%m.%d.%H%M%S)}
 
 if [[ -z "$APP_NAME" ]]; then
   echo "Usage: Scripts/make_app.sh <ProductName> [dist_dir]" >&2
@@ -33,8 +38,10 @@ cat > "$APP_BUNDLE/Contents/Info.plist" <<'PLIST'
 <plist version="1.0">
 <dict>
   <key>CFBundleName</key><string>FountainAI</string>
-  <key>CFBundleIdentifier</key><string>co.fountain.ai.app</string>
+  <key>CFBundleIdentifier</key><string>__BUNDLE_ID__</string>
   <key>CFBundleExecutable</key><string>__EXEC__</string>
+  <key>CFBundleShortVersionString</key><string>__VERSION__</string>
+  <key>CFBundleVersion</key><string>__VERSION__</string>
   <key>CFBundlePackageType</key><string>APPL</string>
   <key>LSMinimumSystemVersion</key><string>14.0</string>
   <key>NSHighResolutionCapable</key><true/>
@@ -45,6 +52,8 @@ PLIST
 
 # Replace placeholder with actual executable name
 sed -i '' "s/__EXEC__/$APP_NAME/g" "$APP_BUNDLE/Contents/Info.plist"
+sed -i '' "s#__BUNDLE_ID__#$BUNDLE_ID#g" "$APP_BUNDLE/Contents/Info.plist"
+sed -i '' "s/__VERSION__/$VERSION/g" "$APP_BUNDLE/Contents/Info.plist"
 
 cp "$BIN_PATH" "$APP_BUNDLE/Contents/MacOS/$APP_NAME"
 chmod +x "$APP_BUNDLE/Contents/MacOS/$APP_NAME"

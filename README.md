@@ -16,13 +16,23 @@ Even the supporting cast has roles: the Bootstrap service seeds characters like 
 
 When the curtain falls, the response is handed back to the audience as the final line, completing the journey from script to stage and back again. FountainAI’s theatre turns technical requests into performances, with each persona playing its part, guided by OpenAPI scripts and Swift code that keep the show running smoothly.
 
-## macOS Launcher App (Build · Bundle · Launch)
+## macOS Apps
 
-Run the menubar Launcher app without Xcode:
+A macOS GUI is not currently included. If/when we add one, we will document build and packaging here.
 
-- Build: `swift build --product FountainAILauncherApp`
-- Bundle: `bash Scripts/make_app.sh FountainAILauncherApp`
-- Launch: `open dist/FountainAILauncherApp.app`
+### Launcher CLI wrapper (Phase 1)
+
+Use the helper to start/stop the FountainAiLauncher and check status/logs without Xcode:
+
+- Start: `bash Scripts/launcher start` (waits for control plane)
+- Stop: `bash Scripts/launcher stop`
+- Status: `bash Scripts/launcher status`
+- Logs: `bash Scripts/launcher logs [-f]`
+
+Notes:
+- The wrapper sets `FOUNTAINAI_ROOT` to the repository root automatically.
+- First start builds the launcher (release). It may take a few minutes on initial run.
+- Control plane URL: `http://127.0.0.1:9090/status`.
 
 Create new GUI apps with the same pattern:
 

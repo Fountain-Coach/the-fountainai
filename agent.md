@@ -77,14 +77,7 @@ You may run, limit, or skip tests to keep iterations fast.
 - Full suite only when `FULL_TESTS=1` or contract changes demand it.
 
 ## 4.1) Launcher App Quickstart (No Xcode)
-The macOS menubar app is `FountainAILauncherApp`. SwiftPM builds a binary; we provide a bundler to produce a clickable `.app`.
-
-- Build (binary):
-  - `swift build --product FountainAILauncherApp`
-- Bundle (.app):
-  - `bash Scripts/make_app.sh FountainAILauncherApp`
-- Launch:
-  - `open dist/FountainAILauncherApp.app`
+No macOS GUI is currently included. If a GUI app is added in the future, this section will provide the Build · Bundle · Launch steps.
 
 ## 5) Configuration & Security
 Required environment variables for services:
@@ -108,11 +101,11 @@ GUI specific:
 - [ ] Capability negotiation implemented and logged.  
 - [ ] Lean CI (your chosen tier) green.  
 - [ ] `FOUNTAINSTORE_*` environment variables documented in Launcher/Ops.
-- [ ] `FountainAILauncherApp` builds, bundles, and launches via Build · Bundle · Launch sequence.
+// GUI acceptance checklist is not applicable at this time.
 
 ## 7) Tooling & Permissions
 - Scripts are provided under `Scripts/` and are executable. When in doubt, run via bash:
-- `bash Scripts/make_app.sh FountainAILauncherApp`
+// GUI bundling command will be documented with the future app.
   - `bash Scripts/quickstart.sh` (optional local Persist demo)
 - The agent may perform any Swift build/test/run steps necessary to guide users to the Build · Bundle · Launch path.
 

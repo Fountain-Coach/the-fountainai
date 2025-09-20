@@ -1,0 +1,166 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Scripts/launcher — simple wrapper to start/stop/status/logs for FountainAiLauncher
+# Usage:
+#   bash Scripts/launcher start [--no-build|--force-build]
+#   bash Scripts/launcher stop
+#   bash Scripts/launcher status
+#   bash Scripts/launcher logs [-f]
+
+ROOT_DIR="$(cd "$(dirname "$0")"/.. && pwd)"
+PID_FILE="$ROOT_DIR/.tmp/launcher.pid"
+LOG_DIR="$ROOT_DIR/logs"
+LOG_FILE="$LOG_DIR/launcher.out"
+CTRL_URL="http://127.0.0.1:9090/status"
+
+mkdir -p "$ROOT_DIR/.tmp" "$LOG_DIR"
+
+export FOUNTAINAI_ROOT="$ROOT_DIR"
+export FOUNTAINAI_SERVICES_DIR="${FOUNTAINAI_SERVICES_DIR:-$ROOT_DIR/dist/bin}"
+export NSUnbufferedIO=YES
+
+running_pid() {
+  if [[ -f "$PID_FILE" ]]; then
+    local pid; pid=$(cat "$PID_FILE" 2>/dev/null || true)
+    if [[ -n "${pid:-}" ]] && kill -0 "$pid" 2>/dev/null; then
+      echo "$pid"; return 0
+    fi
+  fi
+  return 1
+}
+
+find_launcher_bin() {
+  local bin_dir
+  bin_dir=$(swift build --package-path "$ROOT_DIR/platform/FountainAILauncher" --show-bin-path -c release)
+  echo "$bin_dir/FountainAiLauncher"
+}
+
+build_launcher() {
+  echo "[launcher] building FountainAiLauncher (release)"
+  swift build --package-path "$ROOT_DIR/platform/FountainAILauncher" -c release >/dev/null
+}
+
+probe_control_plane() {
+  local timeout=${1:-30}
+  local start ts now
+  start=$(date +%s)
+  while :; do
+    if curl -sS "$CTRL_URL" -o /dev/null -w '%{http_code}' | grep -q '^200$'; then
+      return 0
+    fi
+    ts=$(date +%s); now=$((ts-start))
+    if (( now >= timeout )); then
+      return 1
+    fi
+    sleep 1
+  done
+}
+
+cmd_start() {
+  if pid=$(running_pid); then
+    echo "[launcher] already running (pid=$pid)"
+    exit 0
+  fi
+
+  local arg="${1:-}"
+  case "$arg" in
+    --no-build|--force-build|"") ;;
+    *) echo "[error] unknown flag: $arg" >&2; exit 2;;
+  esac
+
+  build_launcher
+  local bin; bin=$(find_launcher_bin)
+  if [[ ! -x "$bin" ]]; then
+    echo "[error] Launcher binary not found at $bin" >&2
+    exit 1
+  fi
+
+  echo "[launcher] starting $bin $arg"
+  # shellcheck disable=SC2086
+  nohup "$bin" ${arg} >>"$LOG_FILE" 2>&1 &
+  echo $! > "$PID_FILE"
+  sleep 1
+
+  echo "[launcher] waiting for control plane $CTRL_URL"
+  if probe_control_plane 45; then
+    echo "[launcher] control plane is reachable"
+    exit 0
+  else
+    echo "[error] control plane not reachable; see $LOG_FILE" >&2
+    exit 1
+  fi
+}
+
+cmd_stop() {
+  local ok=1
+  if curl -sS -X POST "http://127.0.0.1:9090/shutdown" -o /dev/null -w '%{http_code}' | grep -q '^200$'; then
+    ok=0
+  fi
+  if pid=$(running_pid); then
+    echo "[launcher] stopping pid=$pid"
+    kill "$pid" 2>/dev/null || true
+    for i in {1..10}; do
+      if ! kill -0 "$pid" 2>/dev/null; then ok=0; break; fi
+      sleep 1
+    done
+    if kill -0 "$pid" 2>/dev/null; then
+      echo "[launcher] force killing pid=$pid"
+      kill -9 "$pid" 2>/dev/null || true
+    fi
+    rm -f "$PID_FILE"
+  fi
+  exit $ok
+}
+
+cmd_status() {
+  if pid=$(running_pid); then
+    echo "running (pid=$pid)"
+  else
+    echo "stopped"
+  fi
+  if curl -sS "$CTRL_URL" -o /dev/null -w '%{http_code}' | grep -q '^200$'; then
+    echo "control plane: reachable"
+    exit 0
+  else
+    echo "control plane: not reachable"
+    exit 1
+  fi
+}
+
+cmd_logs() {
+  local mode=${1:-}
+  if [[ ! -f "$LOG_FILE" ]]; then
+    echo "[launcher] no log yet at $LOG_FILE"; exit 0
+  fi
+  if [[ "$mode" == "-f" ]]; then
+    tail -n 200 -f "$LOG_FILE"
+  else
+    tail -n 200 "$LOG_FILE"
+  fi
+}
+
+usage() {
+  cat <<USAGE
+Usage: Scripts/launcher <start|stop|status|logs> [options]
+  start [--no-build|--force-build]  Build CLI and start in background, wait for control plane
+  stop                               Stop via control plane or kill pid
+  status                             Show process and control plane status
+  logs [-f]                          Show or follow launcher logs ($LOG_FILE)
+USAGE
+}
+
+main() {
+  local cmd=${1:-}
+  shift || true
+  case "$cmd" in
+    start) cmd_start "$@" ;;
+    stop) cmd_stop ;;
+    status) cmd_status ;;
+    logs) cmd_logs "$@" ;;
+    *) usage; exit 2 ;;
+  esac
+}
+
+main "$@"
+
