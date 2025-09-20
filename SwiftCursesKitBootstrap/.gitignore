@@ -1,0 +1,29 @@
+# Swift Package Manager
+.build/
+.swiftpm/
+Packages/
+Package.pins
+
+# Xcode / Apple platforms
+DerivedData/
+*.xcodeproj/
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+
+# Swift tooling
+.swift-format
+.swiftformat
+*.swiftpm
+
+# Editors / OS artifacts
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs & diagnostics
+*.log
+*.trace
