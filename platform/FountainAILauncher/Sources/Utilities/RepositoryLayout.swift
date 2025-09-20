@@ -6,6 +6,18 @@ struct RepositoryLayout {
     let servicesDirectory: URL
 
     static func detect(fileManager fm: FileManager = .default) throws -> RepositoryLayout {
+        if let override = ProcessInfo.processInfo.environment["FOUNTAINAI_ROOT"], !override.isEmpty {
+            let rootURL = URL(fileURLWithPath: override, isDirectory: true)
+            let openapiURL = rootURL.appendingPathComponent("openapi")
+            guard fm.fileExists(atPath: openapiURL.path) else {
+                throw LayoutError.openapiNotFound(openapiURL.path)
+            }
+            let servicesDirPath = ProcessInfo.processInfo.environment["FOUNTAINAI_SERVICES_DIR"] ?? rootURL.appendingPathComponent("dist/bin").path
+            let servicesDir = URL(fileURLWithPath: servicesDirPath, isDirectory: true)
+            try fm.createDirectory(at: servicesDir, withIntermediateDirectories: true)
+            return RepositoryLayout(root: rootURL, openAPIRoot: openapiURL, servicesDirectory: servicesDir)
+        }
+
         let cwd = URL(fileURLWithPath: fm.currentDirectoryPath)
         guard let root = findRepositoryRoot(startingAt: cwd, fileManager: fm) else {
             throw LayoutError.repositoryRootNotFound

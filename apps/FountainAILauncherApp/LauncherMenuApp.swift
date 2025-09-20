@@ -71,7 +71,15 @@ final class LauncherController: ObservableObject {
                 let p = Process()
                 p.executableURL = url
                 p.arguments = ["--no-build"]
-                p.environment = ProcessInfo.processInfo.environment
+                var env = ProcessInfo.processInfo.environment
+                // If running from a packaged .app inside <repo>/dist/, set CWD to <repo>
+                if let repo = self.locateRepoRootFromBundle() {
+                    p.currentDirectoryURL = repo
+                    let servicesDir = repo.appendingPathComponent("dist/bin", isDirectory: true)
+                    env["FOUNTAINAI_SERVICES_DIR"] = servicesDir.path
+                    env["FOUNTAINAI_ROOT"] = repo.path
+                }
+                p.environment = env
                 try p.run()
                 self.process = p
                 self.launcherRunning = true
@@ -189,6 +197,20 @@ final class LauncherController: ObservableObject {
         let cwd = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
         let path = cwd.appendingPathComponent("Scripts/start-diagnostics.swift")
         return FileManager.default.fileExists(atPath: path.path) ? path : nil
+    }
+
+    private func locateRepoRootFromBundle() -> URL? {
+        // App bundle path: <repo>/dist/FountainAILauncherApp.app
+        // We want <repo>
+        let bundle = Bundle.main.bundleURL
+        let dist = bundle.deletingLastPathComponent()
+        let repo = dist.deletingLastPathComponent()
+        let pkg = repo.appendingPathComponent("Package.swift")
+        let openapi = repo.appendingPathComponent("openapi")
+        if FileManager.default.fileExists(atPath: pkg.path) && FileManager.default.fileExists(atPath: openapi.path) {
+            return repo
+        }
+        return nil
     }
 
     private func presentAlert(title: String, message: String) {
