@@ -280,6 +280,7 @@ struct Msg: Identifiable { let id = UUID(); let text: String }
 struct ControlTab: View {
     @ObservedObject var vm: LauncherViewModel
     private var buildVersion: String { (Bundle.main.infoDictionary?["CFBundleVersion"] as? String) ?? "dev" }
+    @State private var copied: Bool = false
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
@@ -321,7 +322,12 @@ struct ControlTab: View {
                 Button("Stop") { vm.stop() }
                 Button("Diagnostics") { vm.diagnostics() }
                 Spacer()
-                Button("Copy Logs") { NSPasteboard.general.clearContents(); NSPasteboard.general.setString(vm.logText, forType: .string) }
+                Button("Copy Logs") {
+                    NSPasteboard.general.clearContents();
+                    NSPasteboard.general.setString(vm.logText, forType: .string)
+                    copied = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { copied = false }
+                }
             }
             Divider()
             GroupBox(label: Text("Services")) {
@@ -332,6 +338,7 @@ struct ControlTab: View {
                                 Circle().fill(s.healthy ? Color.green : (s.running ? Color.yellow : Color.gray)).frame(width: 8, height: 8)
                                 Text(s.name)
                                 Spacer()
+                                Button("View Log") { vm.openServiceLog(name: s.name) }
                                 if s.running {
                                     Button("Restart") { vm.serviceAction(name: s.name, action: .restart) }
                                     Button("Stop") { vm.serviceAction(name: s.name, action: .stop) }
@@ -354,11 +361,15 @@ struct ControlTab: View {
             }
         }
         .padding(16)
+        .overlay(alignment: .topTrailing) {
+            if copied { Text("Copied").padding(6).background(Color.black.opacity(0.7)).foregroundColor(.white).cornerRadius(6).padding() }
+        }
     }
 }
 
 struct EnvTab: View {
     @ObservedObject var vm: LauncherViewModel
+    @State private var copied: Bool = false
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack { Button("Back to Control") { vm.tab = .control }; Spacer() }
@@ -377,6 +388,8 @@ struct EnvTab: View {
                             let url = UserDefaults.standard.string(forKey: "FountainAI.FOUNTAINSTORE_URL") ?? ""
                             let report = "Env Report\nOPENAI_API_KEY=\(hasOA ? "***" : "(missing)")\nFOUNTAINSTORE_URL=\(url.isEmpty ? "(missing)" : url)\nFOUNTAINSTORE_API_KEY=\(hasFS ? "***" : "(missing)")\n"
                             NSPasteboard.general.clearContents(); NSPasteboard.general.setString(report, forType: .string)
+                            copied = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { copied = false }
                         }
                     }
                 }
@@ -384,6 +397,9 @@ struct EnvTab: View {
             Spacer()
         }
         .padding(16)
+        .overlay(alignment: .topTrailing) {
+            if copied { Text("Copied").padding(6).background(Color.black.opacity(0.7)).foregroundColor(.white).cornerRadius(6).padding() }
+        }
     }
 }
 
@@ -399,5 +415,16 @@ extension LauncherViewModel {
         var req = URLRequest(url: URL(string: "http://127.0.0.1:9090\(path)")!)
         req.httpMethod = "POST"
         URLSession.shared.dataTask(with: req) { _, _, _ in }.resume()
+    }
+
+    func openServiceLog(name: String) {
+        guard let repo = repoPath else { return }
+        let sanitized = name.replacingOccurrences(of: " ", with: "_")
+        let url = URL(fileURLWithPath: repo).appendingPathComponent("logs/\(sanitized).log")
+        if FileManager.default.fileExists(atPath: url.path) {
+            NSWorkspace.shared.open(url)
+        } else {
+            presentAlert(title: "No log yet", message: url.path)
+        }
     }
 }
