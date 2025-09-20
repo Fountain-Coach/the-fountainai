@@ -74,24 +74,52 @@ final class LauncherController: ObservableObject {
                 }
                 return
             }
+            // Ensure we know the repo root; if not, force the picker.
+            var repo = self.repoRoot()
+            if repo == nil { repo = self.locateRepoRootFromBundle() }
+            if repo == nil {
+                Task { @MainActor in
+                    self.presentAlert(title: "Set Repo Root", message: "Please select the FountainAI repo folder first.")
+                    self.chooseRepoRoot()
+                }
+                return
+            }
             do {
                 let url = try self.locateLauncherBinary()
                 let p = Process()
                 p.executableURL = url
                 p.arguments = ["--no-build"]
                 var env = ProcessInfo.processInfo.environment
-                // Prefer user-configured repo root; otherwise, try to infer from bundle
-                if let repo = self.repoRoot() ?? self.locateRepoRootFromBundle() {
-                    p.currentDirectoryURL = repo
-                    let servicesDir = repo.appendingPathComponent("dist/bin", isDirectory: true)
-                    env["FOUNTAINAI_SERVICES_DIR"] = servicesDir.path
-                    env["FOUNTAINAI_ROOT"] = repo.path
-                }
+                // Use the repo root we resolved
+                let repoURL = repo!
+                p.currentDirectoryURL = repoURL
+                let servicesDir = repoURL.appendingPathComponent("dist/bin", isDirectory: true)
+                env["FOUNTAINAI_SERVICES_DIR"] = servicesDir.path
+                env["FOUNTAINAI_ROOT"] = repoURL.path
+                // Capture launcher stdout/stderr to a log file for debugging
+                let logsDir = repoURL.appendingPathComponent("logs", isDirectory: true)
+                try? FileManager.default.createDirectory(at: logsDir, withIntermediateDirectories: true)
+                let logURL = logsDir.appendingPathComponent("launcher-app.log")
+                if !FileManager.default.fileExists(atPath: logURL.path) { FileManager.default.createFile(atPath: logURL.path, contents: nil) }
+                let logHandle = try? FileHandle(forWritingTo: logURL)
+                logHandle?.seekToEndOfFile()
+                p.standardOutput = logHandle
+                p.standardError = logHandle
                 p.environment = env
                 try p.run()
                 self.process = p
                 self.launcherRunning = true
                 self.beginPolling(delayed: true)
+                // After a short delay, verify control plane is live; if not, show log hint
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                    self.probeStatus { ok in
+                        if !ok {
+                            Task { @MainActor in
+                                self.presentAlert(title: "Launcher did not start", message: "Control plane not reachable. Check logs at \(logURL.path)")
+                            }
+                        }
+                    }
+                }
             } catch {
                 self.presentAlert(title: "Failed to start launcher", message: String(describing: error))
             }
@@ -270,12 +298,19 @@ final class LauncherController: ObservableObject {
 
     func openLogsFolder() {
         let base = repoRoot() ?? locateRepoRootFromBundle()
-        guard let repo = base else { presentAlert(title: "No Repo", message: "Set the repo root first."); return }
-        let logs = repo.appendingPathComponent("logs", isDirectory: true)
-        if !FileManager.default.fileExists(atPath: logs.path) {
+        if let repo = base {
+            let logs = repo.appendingPathComponent("logs", isDirectory: true)
+            if !FileManager.default.fileExists(atPath: logs.path) {
+                try? FileManager.default.createDirectory(at: logs, withIntermediateDirectories: true)
+            }
+            NSWorkspace.shared.open(logs)
+        } else {
+            // Fallback to user logs directory
+            let logs = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first!
+                .appendingPathComponent("Logs/FountainAI", isDirectory: true)
             try? FileManager.default.createDirectory(at: logs, withIntermediateDirectories: true)
+            NSWorkspace.shared.open(logs)
         }
-        NSWorkspace.shared.open(logs)
     }
 
     private func repoRoot() -> URL? {
