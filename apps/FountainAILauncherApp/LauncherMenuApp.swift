@@ -40,6 +40,11 @@ struct LauncherMenuApp: App {
                 }
             }
             Divider()
+            Section("Tools") {
+                Button("Set Repo Root…") { controller.chooseRepoRoot() }
+                Button("Open Logs Folder") { controller.openLogsFolder() }
+            }
+            Divider()
             Button("Run Diagnostics") { controller.runDiagnostics() }
             Button("Quit") { NSApplication.shared.terminate(nil) }
         }
@@ -53,6 +58,7 @@ final class LauncherController: ObservableObject {
 
     private var process: Process?
     private var pollTimer: Timer?
+    private let repoKey = "FountainAI.RootPath"
 
     // MARK: Public actions
     func startLauncher() {
@@ -72,8 +78,8 @@ final class LauncherController: ObservableObject {
                 p.executableURL = url
                 p.arguments = ["--no-build"]
                 var env = ProcessInfo.processInfo.environment
-                // If running from a packaged .app inside <repo>/dist/, set CWD to <repo>
-                if let repo = self.locateRepoRootFromBundle() {
+                // Prefer user-configured repo root; otherwise, try to infer from bundle
+                if let repo = self.repoRoot() ?? self.locateRepoRootFromBundle() {
                     p.currentDirectoryURL = repo
                     let servicesDir = repo.appendingPathComponent("dist/bin", isDirectory: true)
                     env["FOUNTAINAI_SERVICES_DIR"] = servicesDir.path
@@ -183,7 +189,7 @@ final class LauncherController: ObservableObject {
             return res
         }
         // 2) Prebuilt in repo (developer mode)
-        let cwd = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+        let cwd = repoRoot() ?? URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
         let devPath = cwd.appendingPathComponent("platform/FountainAILauncher/.build/release/FountainAiLauncher")
         if FileManager.default.isExecutableFile(atPath: devPath.path) {
             return devPath
@@ -194,7 +200,7 @@ final class LauncherController: ObservableObject {
     }
 
     private func locateDiagnosticsScript() -> URL? {
-        let cwd = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+        let cwd = repoRoot() ?? URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
         let path = cwd.appendingPathComponent("Scripts/start-diagnostics.swift")
         return FileManager.default.fileExists(atPath: path.path) ? path : nil
     }
@@ -239,6 +245,47 @@ final class LauncherController: ObservableObject {
             let ok = (resp as? HTTPURLResponse)?.statusCode == 200
             completion(ok)
         }.resume()
+    }
+
+    // MARK: Preferences & Logs
+    func chooseRepoRoot() {
+        let panel = NSOpenPanel()
+        panel.message = "Select the repository root (folder containing Package.swift and openapi/)"
+        panel.canChooseFiles = false
+        panel.canChooseDirectories = true
+        panel.allowsMultipleSelection = false
+        if panel.runModal() == .OK, let url = panel.url {
+            if validateRepo(url) {
+                UserDefaults.standard.set(url.path, forKey: repoKey)
+                presentAlert(title: "Saved", message: "Repo root set to:\n\(url.path)")
+            } else {
+                presentAlert(title: "Invalid Repo", message: "Selected folder doesn't look like a FountainAI repo.")
+            }
+        }
+    }
+
+    func openLogsFolder() {
+        let base = repoRoot() ?? locateRepoRootFromBundle()
+        guard let repo = base else { presentAlert(title: "No Repo", message: "Set the repo root first."); return }
+        let logs = repo.appendingPathComponent("logs", isDirectory: true)
+        if !FileManager.default.fileExists(atPath: logs.path) {
+            try? FileManager.default.createDirectory(at: logs, withIntermediateDirectories: true)
+        }
+        NSWorkspace.shared.open(logs)
+    }
+
+    private func repoRoot() -> URL? {
+        if let stored = UserDefaults.standard.string(forKey: repoKey), !stored.isEmpty {
+            let url = URL(fileURLWithPath: stored, isDirectory: true)
+            if validateRepo(url) { return url }
+        }
+        return nil
+    }
+
+    private func validateRepo(_ url: URL) -> Bool {
+        let pkg = url.appendingPathComponent("Package.swift")
+        let openapi = url.appendingPathComponent("openapi")
+        return FileManager.default.fileExists(atPath: pkg.path) && FileManager.default.fileExists(atPath: openapi.path)
     }
 }
 
