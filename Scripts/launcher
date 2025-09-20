@@ -20,6 +20,14 @@ export FOUNTAINAI_ROOT="$ROOT_DIR"
 export FOUNTAINAI_SERVICES_DIR="${FOUNTAINAI_SERVICES_DIR:-$ROOT_DIR/dist/bin}"
 export NSUnbufferedIO=YES
 
+# Load environment from .env if present (opt-in). Secrets are still best kept in Keychain
+if [[ -f "$ROOT_DIR/.env" ]]; then
+  set -a
+  # shellcheck disable=SC1090
+  source "$ROOT_DIR/.env"
+  set +a
+fi
+
 running_pid() {
   if [[ -f "$PID_FILE" ]]; then
     local pid; pid=$(cat "$PID_FILE" 2>/dev/null || true)
@@ -92,6 +100,17 @@ cmd_start() {
   fi
 }
 
+cmd_precompile() {
+  build_launcher
+  local bin; bin=$(find_launcher_bin)
+  if [[ ! -x "$bin" ]]; then
+    echo "[error] Launcher binary not found at $bin" >&2
+    exit 1
+  fi
+  echo "[launcher] precompiling services via --precompile"
+  "$bin" --precompile 2>&1 | tee -a "$LOG_FILE"
+}
+
 cmd_stop() {
   local ok=1
   if curl -sS -X POST "http://127.0.0.1:9090/shutdown" -o /dev/null -w '%{http_code}' | grep -q '^200$'; then
@@ -158,9 +177,9 @@ main() {
     stop) cmd_stop ;;
     status) cmd_status ;;
     logs) cmd_logs "$@" ;;
+    precompile) cmd_precompile ;;
     *) usage; exit 2 ;;
   esac
 }
 
 main "$@"
-
