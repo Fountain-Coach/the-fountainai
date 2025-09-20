@@ -46,6 +46,7 @@ struct LauncherMenuApp: App {
     }
 }
 
+@MainActor
 final class LauncherController: ObservableObject {
     @Published var launcherRunning = false
     @Published var services: [ServiceStatus] = []
@@ -59,7 +60,10 @@ final class LauncherController: ObservableObject {
         probeStatus { [weak self] ok in
             guard let self else { return }
             if ok {
-                DispatchQueue.main.async { self.launcherRunning = true; self.beginPolling() }
+                Task { @MainActor in
+                    self.launcherRunning = true
+                    self.beginPolling()
+                }
                 return
             }
             do {
@@ -114,17 +118,15 @@ final class LauncherController: ObservableObject {
                     task.waitUntilExit()
                     let data = pipe.fileHandleForReading.readDataToEndOfFile()
                     let out = String(data: data, encoding: .utf8) ?? ""
-                    self.presentAlert(title: "Diagnostics", message: out)
+                    Task { @MainActor in self.presentAlert(title: "Diagnostics", message: out) }
                 } catch {
-                    self.presentAlert(title: "Diagnostics failed", message: String(describing: error))
+                    Task { @MainActor in self.presentAlert(title: "Diagnostics failed", message: String(describing: error)) }
                 }
             }
             return
         }
         // Otherwise, try a quick status probe
-        probeStatus { ok in
-            self.presentAlert(title: "Diagnostics", message: ok ? "Control plane reachable." : "Control plane not reachable.")
-        }
+        probeStatus { ok in Task { @MainActor in self.presentAlert(title: "Diagnostics", message: ok ? "Control plane reachable." : "Control plane not reachable.") } }
     }
 
     // MARK: Internal helpers
@@ -136,16 +138,32 @@ final class LauncherController: ObservableObject {
         poll()
     }
 
+    private func probeStatus(completion: @escaping (Bool) -> Void) {
+        get("http://127.0.0.1:9090/status") { result in
+            switch result {
+            case .success(let data):
+                // Expecting JSON array; treat any valid JSON payload as success
+                let ok = (try? JSONSerialization.jsonObject(with: data)) != nil
+                completion(ok)
+            case .failure:
+                completion(false)
+            }
+        }
+    }
+
     @objc private func poll() {
         guard launcherRunning else { return }
         get("http://127.0.0.1:9090/status") { result in
             switch result {
             case .success(let data):
                 if let decoded = try? JSONDecoder().decode([ServiceStatus].self, from: data) {
-                    DispatchQueue.main.async { self.services = decoded }
+                    Task { @MainActor in self.services = decoded }
                 }
             case .failure:
-                DispatchQueue.main.async { self.launcherRunning = false; self.services = [] }
+                Task { @MainActor in
+                    self.launcherRunning = false
+                    self.services = []
+                }
             }
         }
     }

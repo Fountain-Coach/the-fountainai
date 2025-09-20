@@ -109,7 +109,8 @@ let fullTargets: [Target] = [
     .executableTarget(
         name: "FountainAILauncherApp",
         dependencies: [],
-        path: "apps/FountainAILauncherApp"
+        path: "apps/FountainAILauncherApp",
+        exclude: ["README.md"]
     ),
     .target(
         name: "FountainCodex",
@@ -935,7 +936,12 @@ let uiLeanTargets: [Target] = [
     .target(name: "LLMGatewayAPI", dependencies: ["ApiClientsCore"], path: "libs/LLMGatewayAPI/Sources/LLMGatewayAPI"),
     .target(name: "FountainAICore", dependencies: [], path: "libs/FountainAICore/Sources/FountainAICore"),
     .target(name: "FountainAIAdapters", dependencies: ["FountainAICore", "LLMGatewayAPI", "SemanticBrowserAPI", "PersistAPI"], path: "libs/FountainAIAdapters/Sources/FountainAIAdapters"),
-    .executableTarget(name: "FountainAILauncherApp", dependencies: [], path: "apps/FountainAILauncherApp"),
+    .executableTarget(
+        name: "FountainAILauncherApp",
+        dependencies: [],
+        path: "apps/FountainAILauncherApp",
+        exclude: ["README.md"]
+    ),
     // Minimal server to host static GUI files
     .target(
         name: "PublishingFrontend",
