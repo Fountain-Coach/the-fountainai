@@ -62,6 +62,7 @@ final class ServiceStatusPollerTests: XCTestCase {
         XCTAssertEqual(status.capabilities.first?.path, "/capabilities")
         XCTAssertTrue(status.capabilities.first?.ok ?? false)
         XCTAssertEqual(status.capabilities.first?.capabilities, ["corpus", "documents"])
+        XCTAssertEqual(status.capabilities.first?.missingCapabilities, ["empty", "flag"])
     }
 
     func testFetchStatusCapturesFailures() async {
