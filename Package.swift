@@ -15,6 +15,7 @@ var fullProducts: [Product] = [
     .library(name: "FlexBridge", targets: ["FlexBridge"]),
     .library(name: "SSEOverMIDI", targets: ["SSEOverMIDI"]),
     .library(name: "TutorDashboard", targets: ["TutorDashboard"]),
+    .executable(name: "tutor-dashboard", targets: ["tutor-dashboard"]),
     .executable(name: "gateway-server", targets: ["gateway-server"]),
     .executable(name: "fountain-gateway", targets: ["gateway-server"]),
     .executable(name: "clientgen-service", targets: ["clientgen-service"]),
@@ -53,6 +54,7 @@ var leanProducts: [Product] = [
     .library(name: "SemanticBrowserAPI", targets: ["SemanticBrowserAPI"]),
     .library(name: "LLMGatewayAPI", targets: ["LLMGatewayAPI"]),
     .library(name: "TutorDashboard", targets: ["TutorDashboard"]),
+    .executable(name: "tutor-dashboard", targets: ["tutor-dashboard"]),
     .executable(name: "publishing-frontend", targets: ["publishing-frontend"])
 ]
 
@@ -123,6 +125,14 @@ var fullTargets: [Target] = [
             .product(name: "Yams", package: "Yams")
         ],
         path: "libs/TutorDashboard/Sources"
+    ),
+    .executableTarget(
+        name: "tutor-dashboard",
+        dependencies: [
+            "TutorDashboard",
+            .product(name: "SwiftCursesKit", package: "swiftcurseskit")
+        ],
+        path: "apps/TutorDashboardApp"
     ),
     .target(
         name: "FountainAICore",
@@ -989,6 +999,14 @@ var uiLeanTargets: [Target] = [
             .product(name: "Yams", package: "Yams")
         ],
         path: "libs/TutorDashboard/Sources"
+    ),
+    .executableTarget(
+        name: "tutor-dashboard",
+        dependencies: [
+            "TutorDashboard",
+            .product(name: "SwiftCursesKit", package: "swiftcurseskit")
+        ],
+        path: "apps/TutorDashboardApp"
     ),
     .target(name: "FountainAICore", dependencies: [], path: "libs/FountainAICore/Sources/FountainAICore"),
     .target(name: "FountainAIAdapters", dependencies: ["FountainAICore", "LLMGatewayAPI", "SemanticBrowserAPI", "PersistAPI"], path: "libs/FountainAIAdapters/Sources/FountainAIAdapters"),
