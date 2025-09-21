@@ -14,6 +14,7 @@ var fullProducts: [Product] = [
     .library(name: "MIDI2Core", targets: ["MIDI2Core"]),
     .library(name: "FlexBridge", targets: ["FlexBridge"]),
     .library(name: "SSEOverMIDI", targets: ["SSEOverMIDI"]),
+    .library(name: "TutorDashboard", targets: ["TutorDashboard"]),
     .executable(name: "gateway-server", targets: ["gateway-server"]),
     .executable(name: "fountain-gateway", targets: ["gateway-server"]),
     .executable(name: "clientgen-service", targets: ["clientgen-service"]),
@@ -51,6 +52,7 @@ var leanProducts: [Product] = [
     .library(name: "PersistAPI", targets: ["PersistAPI"]),
     .library(name: "SemanticBrowserAPI", targets: ["SemanticBrowserAPI"]),
     .library(name: "LLMGatewayAPI", targets: ["LLMGatewayAPI"]),
+    .library(name: "TutorDashboard", targets: ["TutorDashboard"]),
     .executable(name: "publishing-frontend", targets: ["publishing-frontend"])
 ]
 
@@ -89,6 +91,7 @@ var fullTargets: [Target] = [
     .testTarget(
         name: "TutorPathModule1Tests",
         dependencies: [
+            "TutorDashboard",
             .product(name: "Yams", package: "Yams")
         ],
         path: "Tests/TutorPathModule1Tests"
@@ -112,6 +115,14 @@ var fullTargets: [Target] = [
         name: "LLMGatewayAPI",
         dependencies: ["ApiClientsCore"],
         path: "libs/LLMGatewayAPI/Sources/LLMGatewayAPI"
+    ),
+    .target(
+        name: "TutorDashboard",
+        dependencies: [
+            "ApiClientsCore",
+            .product(name: "Yams", package: "Yams")
+        ],
+        path: "libs/TutorDashboard/Sources"
     ),
     .target(
         name: "FountainAICore",
@@ -663,6 +674,14 @@ let leanTargets: [Target] = [
         dependencies: ["ApiClientsCore"],
         path: "libs/LLMGatewayAPI/Sources/LLMGatewayAPI"
     ),
+    .target(
+        name: "TutorDashboard",
+        dependencies: [
+            "ApiClientsCore",
+            .product(name: "Yams", package: "Yams")
+        ],
+        path: "libs/TutorDashboard/Sources"
+    ),
     .testTarget(
         name: "ApiClientsCoreTests",
         dependencies: ["ApiClientsCore"],
@@ -963,6 +982,14 @@ var uiLeanTargets: [Target] = [
     .target(name: "PersistAPI", dependencies: ["ApiClientsCore"], path: "libs/PersistAPI/Sources/PersistAPI"),
     .target(name: "SemanticBrowserAPI", dependencies: ["ApiClientsCore"], path: "libs/SemanticBrowserAPI/Sources/SemanticBrowserAPI"),
     .target(name: "LLMGatewayAPI", dependencies: ["ApiClientsCore"], path: "libs/LLMGatewayAPI/Sources/LLMGatewayAPI"),
+    .target(
+        name: "TutorDashboard",
+        dependencies: [
+            "ApiClientsCore",
+            .product(name: "Yams", package: "Yams")
+        ],
+        path: "libs/TutorDashboard/Sources"
+    ),
     .target(name: "FountainAICore", dependencies: [], path: "libs/FountainAICore/Sources/FountainAICore"),
     .target(name: "FountainAIAdapters", dependencies: ["FountainAICore", "LLMGatewayAPI", "SemanticBrowserAPI", "PersistAPI"], path: "libs/FountainAIAdapters/Sources/FountainAIAdapters"),
     
@@ -1015,6 +1042,7 @@ var uiLeanTargets: [Target] = [
     .testTarget(
         name: "TutorPathModule1Tests",
         dependencies: [
+            "TutorDashboard",
             .product(name: "Yams", package: "Yams")
         ],
         path: "Tests/TutorPathModule1Tests"

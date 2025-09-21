@@ -1,5 +1,6 @@
 import XCTest
-import Yams
+
+@testable import TutorDashboard
 
 final class ServiceDiscoveryTests: XCTestCase {
     func testEnumeratesServicesAndFlagsMissingEndpoints() throws {
@@ -35,64 +36,50 @@ final class ServiceDiscoveryTests: XCTestCase {
             XCTAssertEqual(!descriptor.capabilityPaths.isEmpty, expectation.hasCapabilities, "Capabilities path mismatch for \(fileName)")
         }
     }
-}
+  
+    func testResolveBaseURLPrefersEnvironmentAndFallsBack() {
+        let descriptor = ServiceDescriptor(
+            fileName: "persist.yml",
+            title: "FountainStore Persistence Service",
+            binaryName: "persist",
+            port: 8005,
+            servers: [],
+            healthPaths: [],
+            capabilityPaths: []
+        )
 
-struct ServiceDescriptor {
-    let fileName: String
-    let title: String
-    let port: Int
-    let healthPaths: [String]
-    let capabilityPaths: [String]
-}
+        let envURL = "https://store.example.com"
+        XCTAssertEqual(
+            descriptor.resolveBaseURL(environment: ["FOUNTAINSTORE_URL": envURL])?.absoluteString,
+            envURL
+        )
 
-struct ServiceDiscovery {
-    let openAPIRoot: URL
+        let serverURL = URL(string: "http://persist.local")!
+        let serverBacked = ServiceDescriptor(
+            fileName: "persist.yml",
+            title: "FountainStore Persistence Service",
+            binaryName: "persist",
+            port: 8005,
+            servers: [serverURL],
+            healthPaths: [],
+            capabilityPaths: []
+        )
 
-    func loadServices() throws -> [ServiceDescriptor] {
-        let manager = FileManager.default
-        let files = try manager.contentsOfDirectory(at: openAPIRoot, includingPropertiesForKeys: nil)
-            .filter { $0.pathExtension.lowercased() == "yml" }
-            .sorted { $0.lastPathComponent < $1.lastPathComponent }
+        XCTAssertEqual(serverBacked.resolveBaseURL(environment: [:]), serverURL)
 
-        return try files.compactMap { url in
-            let yamlString = try String(contentsOf: url, encoding: .utf8)
-            guard let root = try Yams.load(yaml: yamlString) as? [String: Any] else { return nil }
+        let portFallback = ServiceDescriptor(
+            fileName: "bootstrap.yml",
+            title: "FountainAI Bootstrap Service",
+            binaryName: "bootstrap",
+            port: 9000,
+            servers: [],
+            healthPaths: [],
+            capabilityPaths: []
+        )
 
-            let info = root["info"] as? [String: Any] ?? [:]
-            let title = (info["title"] as? String) ?? url.deletingPathExtension().lastPathComponent
-            guard let port = ServiceDiscovery.parsePort(info["x-fountain.port"]) else { return nil }
-            let paths = root["paths"] as? [String: Any] ?? [:]
-
-            let health = ServiceDiscovery.extractPaths(paths, containing: "health")
-            let capabilities = ServiceDiscovery.extractPaths(paths, containing: "capabilities")
-
-            return ServiceDescriptor(
-                fileName: url.lastPathComponent,
-                title: title,
-                port: port,
-                healthPaths: health,
-                capabilityPaths: capabilities
-            )
-        }
-    }
-
-    private static func parsePort(_ value: Any?) -> Int? {
-        switch value {
-        case let intValue as Int:
-            return intValue
-        case let stringValue as String:
-            return Int(stringValue)
-        case let doubleValue as Double:
-            return Int(doubleValue)
-        default:
-            return nil
-        }
-    }
-
-    private static func extractPaths(_ paths: [String: Any], containing substring: String) -> [String] {
-        let lowercased = substring.lowercased()
-        return paths.keys
-            .filter { $0.lowercased().contains(lowercased) }
-            .sorted()
+        XCTAssertEqual(
+            portFallback.resolveBaseURL(environment: [:])?.absoluteString,
+            "http://127.0.0.1:9000"
+        )
     }
 }
