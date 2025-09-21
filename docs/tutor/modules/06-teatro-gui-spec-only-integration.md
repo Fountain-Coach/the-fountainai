@@ -7,7 +7,7 @@ A curses workspace built with `swiftcurseskit` that renders corpora, baseline li
 
 ## Setup
 - Reuse the curses dashboard shell from prior modules and register a Teatro workspace entry in the router.
-- Load FountainStore, Awareness, Planner, and Function Caller URLs from **_includes/env.md** to keep the panes spec-only.
+- Run FountainAiLauncher so FountainStore, Awareness, Planner, and Function Caller URLs from **_includes/env.md** are injected, keeping the panes spec-only.
 - Prepare fixture JSON responses for each pane to validate parsing before pointing at live services.
 
 ## Specs to read
@@ -26,13 +26,13 @@ A curses workspace built with `swiftcurseskit` that renders corpora, baseline li
 - Snapshot the curses output against canned API fixtures to prevent regression drift
 
 ## Runbook
-1. Source your `.env` so all service URLs are available in the shell.
+1. Start FountainAiLauncher with `bash Scripts/launcher start` (or the GUI) so every service URL is available before you open the dashboard.
 2. Build the dashboard: `swift build`.
 3. Launch the Teatro workspace: `swift run tutor-dashboard --panel teatro` (or the menu shortcut you registered).
 4. Cycle between the corpora, baseline lineage, and planner history panes using the documented hotkeys; confirm each pane fetches data exclusively via HTTP (watch logs for matching endpoints).
 5. Attempt to edit a record and verify the UI stays read-only—no extra requests should fire beyond the documented GET calls.
 6. Leave the dashboard running through two refresh intervals to observe the spec responses refreshing without hidden GUI shortcuts.
-7. Exit with `q` and review console output to confirm only documented endpoints were invoked.
+7. Exit with `q`, follow `bash Scripts/launcher logs -f` to confirm only documented endpoints were invoked, then stop the launcher (`bash Scripts/launcher stop`).
 
 ## Hand-off to Codex
 > Surface the HTTP responses from the documented APIs in the `swiftcurseskit` panes and keep capability guidance visible inside the terminal experience. No direct file or DB access.

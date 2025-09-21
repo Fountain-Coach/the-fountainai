@@ -11,7 +11,7 @@ An end-to-end tool management workflow inside `swiftcurseskit`:
 
 ## Setup
 - Import Tools Factory and Function Caller client libraries into the dashboard target; update `Package.swift` dependencies if missing.
-- Load service credentials via **_includes/env.md** so registration/invocation calls succeed in local runs.
+- Run FountainAiLauncher so the Tools Factory, Function Caller, and FountainStore credentials from **_includes/env.md** are available without exporting them manually.
 - Seed a test corpus/tool scenario (can reuse Module 02 data) to validate result persistence when you exercise the workflow.
 
 ## Specs to read
@@ -34,13 +34,13 @@ An end-to-end tool management workflow inside `swiftcurseskit`:
 - Confirm results history refresh cadence matches the configured poll interval and reflects new corpus entries
 
 ## Runbook
-1. Export your `.env` file so Tools Factory, Function Caller, and FountainStore URLs are available.
+1. Start FountainAiLauncher with `bash Scripts/launcher start` (or via the GUI) and wait for the control plane to report HTTP 200.
 2. Build the dashboard target: `swift build` (or the executable name you registered for the workflow).
 3. Start the curses workflow: `swift run tutor-dashboard --panel tools`.
 4. Register a tool from the catalog pane (select by `operationId`, submit with `Enter`); confirm the registration success banner appears and the tool surfaces in the invocation list.
 5. Move focus to the invocation pane, press the rerun binding (`r` by default) to invoke the highlighted tool, and watch the streaming output buffer populate.
 6. Leave the dashboard open for two poll cycles to verify the results history refreshes automatically and persists the new record to the corpus.
-7. Exit (`q`) and inspect logs to ensure the Tools Factory registration, Function Caller invocation, and FountainStore persistence calls all completed.
+7. Exit (`q`), follow `bash Scripts/launcher logs -f` to ensure the Tools Factory registration, Function Caller invocation, and FountainStore persistence calls all completed, then stop the launcher when finished (`bash Scripts/launcher stop`).
 
 ## Hand-off to Codex
 > Wire Tools Factory and Function Caller endpoints into the shared `swiftcurseskit` view models, implement the curses panes for registration/invocation, and persist invocation outputs to the on-screen history and corpus.
