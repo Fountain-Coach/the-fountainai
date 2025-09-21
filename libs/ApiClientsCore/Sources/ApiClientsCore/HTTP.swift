@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 public enum HTTPMethod: String, Sendable {
     case GET, POST, PUT, PATCH, DELETE

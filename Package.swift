@@ -6,7 +6,7 @@ import Foundation
 // Set FULL_TESTS=1 to build and test all targets.
 let LEAN = (ProcessInfo.processInfo.environment["FULL_TESTS"] != "1")
 
-let fullProducts: [Product] = [
+var fullProducts: [Product] = [
     .library(name: "FountainCodex", targets: ["FountainCodex"]),
     .library(name: "FountainRuntime", targets: ["FountainRuntime"]),
     .library(name: "FountainStoreClient", targets: ["FountainStoreClient"]),
@@ -14,6 +14,7 @@ let fullProducts: [Product] = [
     .library(name: "MIDI2Core", targets: ["MIDI2Core"]),
     .library(name: "FlexBridge", targets: ["FlexBridge"]),
     .library(name: "SSEOverMIDI", targets: ["SSEOverMIDI"]),
+    .library(name: "TutorDashboard", targets: ["TutorDashboard"]),
     .executable(name: "gateway-server", targets: ["gateway-server"]),
     .executable(name: "fountain-gateway", targets: ["gateway-server"]),
     .executable(name: "clientgen-service", targets: ["clientgen-service"]),
@@ -42,25 +43,33 @@ let fullProducts: [Product] = [
     .executable(name: "bootstrap-server", targets: ["bootstrap-server"]),
     .executable(name: "bootstrap", targets: ["bootstrap-server"]),
     .executable(name: "persist-server", targets: ["persist-server"]),
-    .executable(name: "persist", targets: ["persist-server"]),
-    .executable(name: "FountainLauncherUI", targets: ["FountainLauncherUI"]),
-    .executable(name: "FountainDashboard", targets: ["FountainLauncherUI"])
+    .executable(name: "persist", targets: ["persist-server"])
 ]
 
-let leanProducts: [Product] = [
+var leanProducts: [Product] = [
     .library(name: "ApiClientsCore", targets: ["ApiClientsCore"]),
     .library(name: "GatewayAPI", targets: ["GatewayAPI"]),
     .library(name: "PersistAPI", targets: ["PersistAPI"]),
     .library(name: "SemanticBrowserAPI", targets: ["SemanticBrowserAPI"]),
     .library(name: "LLMGatewayAPI", targets: ["LLMGatewayAPI"]),
-    .executable(name: "publishing-frontend", targets: ["publishing-frontend"]),
+    .library(name: "TutorDashboard", targets: ["TutorDashboard"]),
+    .executable(name: "publishing-frontend", targets: ["publishing-frontend"])
+]
+
+#if os(macOS)
+fullProducts.append(contentsOf: [
     .executable(name: "FountainLauncherUI", targets: ["FountainLauncherUI"]),
     .executable(name: "FountainDashboard", targets: ["FountainLauncherUI"])
-]
+])
+leanProducts.append(contentsOf: [
+    .executable(name: "FountainLauncherUI", targets: ["FountainLauncherUI"]),
+    .executable(name: "FountainDashboard", targets: ["FountainLauncherUI"])
+])
+#endif
 
 var products: [Product] = LEAN ? leanProducts : fullProducts
 
-let fullTargets: [Target] = [
+var fullTargets: [Target] = [
     .target(
         name: "ApiClientsCore",
         dependencies: [],
@@ -78,6 +87,14 @@ let fullTargets: [Target] = [
             "openapi-curator-service"
         ],
         path: "Tests/SystemSmokeTests"
+    ),
+    .testTarget(
+        name: "TutorPathModule1Tests",
+        dependencies: [
+            "TutorDashboard",
+            .product(name: "Yams", package: "Yams")
+        ],
+        path: "Tests/TutorPathModule1Tests"
     ),
     .target(
         name: "GatewayAPI",
@@ -100,6 +117,14 @@ let fullTargets: [Target] = [
         path: "libs/LLMGatewayAPI/Sources/LLMGatewayAPI"
     ),
     .target(
+        name: "TutorDashboard",
+        dependencies: [
+            "ApiClientsCore",
+            .product(name: "Yams", package: "Yams")
+        ],
+        path: "libs/TutorDashboard/Sources"
+    ),
+    .target(
         name: "FountainAICore",
         dependencies: [],
         path: "libs/FountainAICore/Sources/FountainAICore"
@@ -108,11 +133,6 @@ let fullTargets: [Target] = [
         name: "FountainAIAdapters",
         dependencies: ["FountainAICore", "LLMGatewayAPI", "SemanticBrowserAPI", "PersistAPI"],
         path: "libs/FountainAIAdapters/Sources/FountainAIAdapters"
-    ),
-    .executableTarget(
-        name: "FountainLauncherUI",
-        dependencies: [],
-        path: "apps/FountainLauncherUI"
     ),
     
     .target(
@@ -654,6 +674,14 @@ let leanTargets: [Target] = [
         dependencies: ["ApiClientsCore"],
         path: "libs/LLMGatewayAPI/Sources/LLMGatewayAPI"
     ),
+    .target(
+        name: "TutorDashboard",
+        dependencies: [
+            "ApiClientsCore",
+            .product(name: "Yams", package: "Yams")
+        ],
+        path: "libs/TutorDashboard/Sources"
+    ),
     .testTarget(
         name: "ApiClientsCoreTests",
         dependencies: ["ApiClientsCore"],
@@ -711,11 +739,6 @@ let leanTargets: [Target] = [
         name: "FountainStoreClient",
         dependencies: [.product(name: "FountainStore", package: "fountain-store")],
         path: "libs/FountainStoreClient"
-    ),
-    .executableTarget(
-        name: "FountainLauncherUI",
-        dependencies: [],
-        path: "apps/FountainLauncherUI"
     ),
     .executableTarget(
         name: "semantic-browser-server",
@@ -942,13 +965,31 @@ let leanTargets: [Target] = [
     ),
 ]
 
+#if os(macOS)
+fullTargets.append(
+    .executableTarget(
+        name: "FountainLauncherUI",
+        dependencies: [],
+        path: "apps/FountainLauncherUI"
+    )
+)
+#endif
+
 // Minimal lean target set focused on API clients + tests to avoid linking heavy executables during local runs.
-let uiLeanTargets: [Target] = [
+var uiLeanTargets: [Target] = [
     .target(name: "ApiClientsCore", dependencies: [], path: "libs/ApiClientsCore/Sources/ApiClientsCore"),
     .target(name: "GatewayAPI", dependencies: ["ApiClientsCore"], path: "libs/GatewayAPI/Sources/GatewayAPI"),
     .target(name: "PersistAPI", dependencies: ["ApiClientsCore"], path: "libs/PersistAPI/Sources/PersistAPI"),
     .target(name: "SemanticBrowserAPI", dependencies: ["ApiClientsCore"], path: "libs/SemanticBrowserAPI/Sources/SemanticBrowserAPI"),
     .target(name: "LLMGatewayAPI", dependencies: ["ApiClientsCore"], path: "libs/LLMGatewayAPI/Sources/LLMGatewayAPI"),
+    .target(
+        name: "TutorDashboard",
+        dependencies: [
+            "ApiClientsCore",
+            .product(name: "Yams", package: "Yams")
+        ],
+        path: "libs/TutorDashboard/Sources"
+    ),
     .target(name: "FountainAICore", dependencies: [], path: "libs/FountainAICore/Sources/FountainAICore"),
     .target(name: "FountainAIAdapters", dependencies: ["FountainAICore", "LLMGatewayAPI", "SemanticBrowserAPI", "PersistAPI"], path: "libs/FountainAIAdapters/Sources/FountainAIAdapters"),
     
@@ -986,10 +1027,6 @@ let uiLeanTargets: [Target] = [
         dependencies: [.product(name: "FountainStore", package: "fountain-store")],
         path: "libs/FountainStoreClient"
     ),
-    .executableTarget(name: "gui-diagnostics", dependencies: ["ApiClientsCore", "GatewayAPI", "PersistAPI", "SemanticBrowserAPI", "LLMGatewayAPI"], path: "tools/GuiDiagnostics"),
-    .executableTarget(name: "gui-seed", dependencies: ["ApiClientsCore", "PersistAPI"], path: "tools/GuiSeed"),
-    .executableTarget(name: "gui-browse", dependencies: ["ApiClientsCore", "PersistAPI", "SemanticBrowserAPI"], path: "tools/GuiBrowse"),
-    .executableTarget(name: "gui-capabilities", dependencies: ["ApiClientsCore", "PersistAPI"], path: "tools/GuiCapabilities"),
     .testTarget(name: "ApiClientsCoreTests", dependencies: ["ApiClientsCore", "LLMGatewayAPI"], path: "Tests/ApiClientsCoreTests"),
     .testTarget(name: "GatewayAPITests2", dependencies: ["GatewayAPI", "ApiClientsCore"], path: "Tests/GatewayAPITests2"),
     .testTarget(name: "PersistAPITests", dependencies: ["PersistAPI", "ApiClientsCore"], path: "Tests/PersistAPITests"),
@@ -1002,12 +1039,29 @@ let uiLeanTargets: [Target] = [
         ],
         path: "Tests/SwiftCursesKitIntegrationTests"
     ),
+    .testTarget(
+        name: "TutorPathModule1Tests",
+        dependencies: [
+            "TutorDashboard",
+            .product(name: "Yams", package: "Yams")
+        ],
+        path: "Tests/TutorPathModule1Tests"
+    ),
+]
+
+#if os(macOS)
+uiLeanTargets.append(contentsOf: [
     .executableTarget(
         name: "FountainLauncherUI",
         dependencies: [],
         path: "apps/FountainLauncherUI"
     ),
-]
+    .executableTarget(name: "gui-diagnostics", dependencies: ["ApiClientsCore", "GatewayAPI", "PersistAPI", "SemanticBrowserAPI", "LLMGatewayAPI"], path: "tools/GuiDiagnostics"),
+    .executableTarget(name: "gui-seed", dependencies: ["ApiClientsCore", "PersistAPI"], path: "tools/GuiSeed"),
+    .executableTarget(name: "gui-browse", dependencies: ["ApiClientsCore", "PersistAPI", "SemanticBrowserAPI"], path: "tools/GuiBrowse"),
+    .executableTarget(name: "gui-capabilities", dependencies: ["ApiClientsCore", "PersistAPI"], path: "tools/GuiCapabilities")
+])
+#endif
 
 var targets: [Target] = LEAN ? uiLeanTargets : fullTargets
 

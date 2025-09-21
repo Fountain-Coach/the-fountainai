@@ -1,7 +1,10 @@
 import Foundation
+#if canImport(Security)
 import Security
+#endif
 
 enum KeychainHelper {
+#if canImport(Security)
     static func save(service: String, account: String, secret: String) -> Bool {
         let data = Data(secret.utf8)
         let query: [String: Any] = [
@@ -39,5 +42,18 @@ enum KeychainHelper {
         let status = SecItemDelete(query as CFDictionary)
         return status == errSecSuccess || status == errSecItemNotFound
     }
+#else
+    static func save(service: String, account: String, secret: String) -> Bool {
+        return false
+    }
+
+    static func read(service: String, account: String) -> String? {
+        return nil
+    }
+
+    static func delete(service: String, account: String) -> Bool {
+        return false
+    }
+#endif
 }
 
