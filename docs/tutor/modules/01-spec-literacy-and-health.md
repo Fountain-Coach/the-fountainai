@@ -49,6 +49,7 @@ A terminal dashboard built with `swiftcurseskit` that renders documented service
 - Configure base URLs and keys from **_includes/env.md**
 - Wire `/v1/health` responses into the `swiftcurseskit` view model that feeds service row status indicators
 - Map `/v1/capabilities` payloads into `swiftcurseskit` list/detail components so operators can drill into capability explanations
+- Launch the dashboard with `swift run tutor-dashboard` (or `--preview` for a headless snapshot) to verify the table renders with live status data
 
 ## Hand-off to Codex
 > Build a service table that reads from the listed specs and queries `/v1/health` and `/v1/capabilities`. No hardcoded endpoints. Ensure Codex implementers connect those endpoints to the `swiftcurseskit` views described above, preserving the refresh cadence and keyboard navigation affordances.

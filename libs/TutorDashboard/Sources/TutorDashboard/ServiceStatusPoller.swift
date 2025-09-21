@@ -11,13 +11,22 @@ public struct ServiceStatus: Sendable, Equatable {
         public let statusCode: Int?
         public let message: String?
         public let capabilities: [String]
+        public let missingCapabilities: [String]
 
-        public init(path: String, ok: Bool, statusCode: Int?, message: String?, capabilities: [String] = []) {
+        public init(
+            path: String,
+            ok: Bool,
+            statusCode: Int?,
+            message: String?,
+            capabilities: [String] = [],
+            missingCapabilities: [String] = []
+        ) {
             self.path = path
             self.ok = ok
             self.statusCode = statusCode
             self.message = message
             self.capabilities = capabilities
+            self.missingCapabilities = missingCapabilities
         }
     }
 
@@ -38,7 +47,7 @@ public struct ServiceStatus: Sendable, Equatable {
     }
 }
 
-public struct ServiceStatusPoller: Sendable {
+public struct ServiceStatusPoller: @unchecked Sendable {
     private let session: URLSession
 
     public init(session: URLSession = .shared) {
@@ -91,13 +100,19 @@ public struct ServiceStatusPoller: Sendable {
 
         do {
             let response = try await client.send(APIRequest(method: .GET, url: url))
-            let capabilities = isCapabilities ? Self.parseCapabilities(from: response.data) : []
+            let capabilities: ([String], [String])
+            if isCapabilities {
+                capabilities = Self.parseCapabilities(from: response.data)
+            } else {
+                capabilities = ([], [])
+            }
             return ServiceStatus.EndpointStatus(
                 path: path,
                 ok: true,
                 statusCode: response.status,
                 message: nil,
-                capabilities: capabilities
+                capabilities: capabilities.0,
+                missingCapabilities: capabilities.1
             )
         } catch let APIError.httpStatus(code, body) {
             let message = body.isEmpty ? nil : body
@@ -119,27 +134,38 @@ public struct ServiceStatusPoller: Sendable {
         }
     }
 
-    private static func parseCapabilities(from data: Data) -> [String] {
+    private static func parseCapabilities(from data: Data) -> ([String], [String]) {
         guard !data.isEmpty,
               let object = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
-        else { return [] }
+        else { return ([], []) }
 
         var available: [String] = []
+        var missing: [String] = []
         for (key, value) in object {
-            switch value {
-            case let bool as Bool where bool:
+            if isCapabilitySatisfied(value) {
                 available.append(key)
-            case let array as [Any] where !array.isEmpty:
-                available.append(key)
-            case let dict as [String: Any] where !dict.isEmpty:
-                available.append(key)
-            case let string as String where !string.isEmpty:
-                available.append(key)
-            default:
-                continue
+            } else {
+                missing.append(key)
             }
         }
 
-        return available.sorted()
+        return (available.sorted(), missing.sorted())
+    }
+
+    private static func isCapabilitySatisfied(_ value: Any) -> Bool {
+        switch value {
+        case let bool as Bool:
+            return bool
+        case let string as String:
+            return !string.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        case let array as [Any]:
+            return !array.isEmpty
+        case let dict as [String: Any]:
+            return !dict.isEmpty
+        case let number as NSNumber:
+            return number.doubleValue != 0
+        default:
+            return false
+        }
     }
 }
