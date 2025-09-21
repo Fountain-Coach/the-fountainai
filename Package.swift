@@ -619,6 +619,13 @@ let fullTargets: [Target] = [
         path: "Tests/OpenAPICuratorTests",
         resources: [.copy("Fixtures")]
     ),
+    .testTarget(
+        name: "SwiftCursesKitIntegrationTests",
+        dependencies: [
+            .product(name: "SwiftCursesKit", package: "swiftcurseskit")
+        ],
+        path: "Tests/SwiftCursesKitIntegrationTests"
+    ),
 ]
 
 let leanTargets: [Target] = [
@@ -988,6 +995,13 @@ let uiLeanTargets: [Target] = [
     .testTarget(name: "PersistAPITests", dependencies: ["PersistAPI", "ApiClientsCore"], path: "Tests/PersistAPITests"),
     .testTarget(name: "SemanticBrowserAPITests", dependencies: ["SemanticBrowserAPI", "ApiClientsCore"], path: "Tests/SemanticBrowserAPITests"),
     .testTarget(name: "FountainAICoreTests", dependencies: ["FountainAICore"], path: "Tests/FountainAICoreTests"),
+    .testTarget(
+        name: "SwiftCursesKitIntegrationTests",
+        dependencies: [
+            .product(name: "SwiftCursesKit", package: "swiftcurseskit")
+        ],
+        path: "Tests/SwiftCursesKitIntegrationTests"
+    ),
     .executableTarget(
         name: "FountainLauncherUI",
         dependencies: [],
@@ -1012,6 +1026,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-certificates.git", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.5.0"),
         .package(url: "https://github.com/Fountain-Coach/midi2.git", from: "0.3.1"),
+        .package(url: "https://github.com/Fountain-Coach/swiftcurseskit.git", exact: "0.2.0"),
         .package(url: "https://github.com/apple/swift-numerics.git", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.3.0"),
         .package(url: "https://github.com/Fountain-Coach/Fountain-Store.git", from: "0.1.0"),
