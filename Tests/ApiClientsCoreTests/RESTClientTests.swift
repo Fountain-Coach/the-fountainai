@@ -1,5 +1,8 @@
 import XCTest
 @testable import ApiClientsCore
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 @MainActor
 final class RESTClientTests: XCTestCase {

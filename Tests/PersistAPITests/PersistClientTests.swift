@@ -1,6 +1,9 @@
 import XCTest
 @testable import PersistAPI
 import ApiClientsCore
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 @MainActor
 final class PersistClientTests: XCTestCase {

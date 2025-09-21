@@ -1,6 +1,9 @@
 import XCTest
 @testable import SemanticBrowserAPI
 import ApiClientsCore
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 @MainActor
 final class SemanticBrowserClientTests: XCTestCase {
