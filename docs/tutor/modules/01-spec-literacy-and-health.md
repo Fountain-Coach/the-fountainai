@@ -46,10 +46,12 @@ A terminal dashboard built with `swiftcurseskit` that renders documented service
 - Simulate navigation keystrokes to verify focus handling and status updates remain in sync
 
 ## Runbook
-- Configure base URLs and keys from **_includes/env.md**
-- Wire `/v1/health` responses into the `swiftcurseskit` view model that feeds service row status indicators
-- Map `/v1/capabilities` payloads into `swiftcurseskit` list/detail components so operators can drill into capability explanations
-- Launch the dashboard with `swift run tutor-dashboard` (or `--preview` for a headless snapshot) to verify the table renders with live status data
+1. Configure base URLs and keys from **_includes/env.md** (`cp .env.example .env` if needed, then export with `source .env`).
+2. Build the dashboard target to ensure dependencies resolve: `swift build`.
+3. Launch the curses UI with `swift run tutor-dashboard` (append `--preview` to capture a headless snapshot) and wait for the services table to populate.
+4. Use the arrow keys or `Tab` to move focus between rows; verify the health column flips to green once `/v1/health` returns `200` and that the capabilities column lists `/v1/capabilities` responses with "Needs: <capability>" for gaps.
+5. Press the manual refresh binding (configured per `swiftcurseskit` defaults) and confirm the poll timer still re-runs every ~5 s without breaking keyboard navigation.
+6. Exit with `q`; review the terminal log output to confirm both `/v1/health` and `/v1/capabilities` calls succeeded before handing off.
 
 ## Hand-off to Codex
 > Build a service table that reads from the listed specs and queries `/v1/health` and `/v1/capabilities`. No hardcoded endpoints. Ensure Codex implementers connect those endpoints to the `swiftcurseskit` views described above, preserving the refresh cadence and keyboard navigation affordances.
