@@ -1,6 +1,9 @@
 import XCTest
 @testable import GatewayAPI
 import ApiClientsCore
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 @MainActor
 final class GatewayClientTests2: XCTestCase {
