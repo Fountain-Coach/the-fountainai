@@ -1,4 +1,5 @@
 import XCTest
+
 @testable import TutorDashboard
 
 final class ServiceDiscoveryTests: XCTestCase {
@@ -35,6 +36,7 @@ final class ServiceDiscoveryTests: XCTestCase {
             XCTAssertEqual(!descriptor.capabilityPaths.isEmpty, expectation.hasCapabilities, "Capabilities path mismatch for \(fileName)")
         }
     }
+  
     func testResolveBaseURLPrefersEnvironmentAndFallsBack() {
         let descriptor = ServiceDescriptor(
             fileName: "persist.yml",
