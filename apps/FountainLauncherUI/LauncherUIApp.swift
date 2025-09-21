@@ -109,7 +109,7 @@ final class LauncherViewModel: ObservableObject {
         NSWorkspace.shared.open(ctrlURL)
     }
 
-    private func run(command: [String], cwd: String, env: [String: String]? = nil, completion: @escaping (Int32, String) -> Void) {
+    private func run(command: [String], cwd: String, env: [String: String]? = nil, completion: @Sendable @escaping (Int32, String) -> Void) {
         DispatchQueue.global().async {
             let proc = Process()
             proc.currentDirectoryURL = URL(fileURLWithPath: cwd)
