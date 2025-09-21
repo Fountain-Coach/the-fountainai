@@ -5,6 +5,11 @@
 ## What you’ll ship
 A Swift `swiftcurseskit` dashboard that renders the SSE-over-MIDI stream viewer in the left pane with event metadata on the right, anchored by a status bar showing transport state and connection health. The dashboard must map keyboard controls (`space` toggles play/pause, `r` rewinds to the first event, `n` steps to the next event) and surface on-screen hints so terminal users discover the bindings.
 
+## Setup
+- Ensure the MIDI2 client adapter target links against the platform MIDI libraries and is referenced from `Package.swift`.
+- Start FountainAiLauncher so planner/awareness streaming URLs and `MIDI_CLIENT_NAME` from **_includes/env.md** stay scoped to the supervisor.
+- Prepare fixture SSE event logs so you can replay deterministic sequences during tests.
+
 ## Specs to read
 - Planner/Awareness streaming endpoints
 - MIDI2 transport interfaces (consumer side)
@@ -20,10 +25,13 @@ A Swift `swiftcurseskit` dashboard that renders the SSE-over-MIDI stream viewer 
 - Integration test that exercises redraw cadence (e.g., 250 ms ticker) and verifies layout recovery after simulated `SIGWINCH`
 
 ## Runbook
-- Bind planner and awareness SSE endpoints to `swiftcurseskit` stream widgets via the MIDI2 client adapter; confirm the MIDI client identifier matches the terminal session and is discoverable to the OS MIDI stack.
-- Export `MIDI_CLIENT_NAME` (or platform equivalent) before launching the curses dashboard so the MIDI2 bridge registers correctly, then `swift run` the module with terminal colors enabled.
-- Validate the dashboard by connecting to staging endpoints first, watching the transport status bar for latency/backpressure indicators, and only then switch to production URLs.
-- Document the expected keyboard shortcuts in the deployment notes so on-call engineers can triage from an SSH session without a pointing device.
+1. Start FountainAiLauncher (`bash Scripts/launcher start` or the GUI) so planner/awareness streaming URLs and `MIDI_CLIENT_NAME` are ready for the session.
+2. Build the dashboard with MIDI support: `swift build`.
+3. Launch the MIDI workspace: `swift run tutor-dashboard --panel midi-stream --color` (append `--fixtures <path>` if you support replay files).
+4. Observe the connection banner to confirm the MIDI bridge announces the configured client name and the SSE stream begins populating the left pane.
+5. Exercise transport controls—`space` (play/pause), `r` (rewind), `n` (next event)—and ensure the status bar updates to reflect the current state while the right pane shows matching metadata.
+6. Resize the terminal to simulate `SIGWINCH` and verify the curses layout recovers without tearing or dropping events.
+7. Exit with `q`, capture `bash Scripts/launcher logs -f` proving the stream consumed planner/awareness events successfully, then shut the launcher down (`bash Scripts/launcher stop`).
 
 ## Hand-off to Codex
 > Implement a curses-native event stream viewer that wires planner/awareness SSE endpoints into `swiftcurseskit` components, includes keyboard transport controls, and configures the MIDI client for terminal execution.

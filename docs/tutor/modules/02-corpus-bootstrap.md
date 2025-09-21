@@ -8,7 +8,7 @@ A new panel in the existing `swiftcurseskit` app that routes to the bootstrap AP
 ## Setup
 - Wire the bootstrap client dependency into `swiftcurseskit` alongside the existing FountainStore bindings.
 - Ensure the terminal environment has ncurses available (`swift build` should link against `libncursesw`).
-- Configure environment variables for Bootstrap, Awareness, and FountainStore endpoints (see **_includes/env.md**) so the panel can submit and refresh data.
+- Run FountainAiLauncher (CLI or GUI) so the Bootstrap, Awareness, and FountainStore URLs from **_includes/env.md** are provided automatically—no manual exports.
 
 ## Specs to read
 - `openapi/bootstrap.yml`
@@ -28,9 +28,12 @@ A new panel in the existing `swiftcurseskit` app that routes to the bootstrap AP
 - Validate that the panel repolls Awareness on an interval after corpus creation and stops once the baseline is shown
 
 ## Runbook
-- Ensure FountainStore, Bootstrap, and Awareness URLs are configured (see **_includes/env.md**) and routed through the `swiftcurseskit` configuration layer.
-- Register the new panel in the router so `/bootstrap` commands or menu entries open the curses view instead of a placeholder.
-- Keep the Awareness poller scoped to the panel view and reuse existing module logging so refresh cadence issues surface in the standard terminal status area.
+1. Start the supervisor with `bash Scripts/launcher start` (or the GUI) and wait for the control plane to report HTTP 200.
+2. Build the dashboard to validate the new panel target compiles: `swift build`.
+3. Run the terminal app: `swift run tutor-dashboard --panel bootstrap` (use the router shortcut you wired if different) and confirm the Bootstrap pane appears.
+4. Navigate the curses form with `Tab`/arrow keys, submit a corpus seed, and watch the status area for the `POST /bootstrap` confirmation (corpus id + version).
+5. After submission, leave the pane open for two refresh cycles; confirm Awareness data streams into the adjacent widgets without freezing keyboard focus.
+6. Exit with `q`, tail `bash Scripts/launcher logs -f` to ensure FountainStore received the created corpus and Awareness polling completed without errors, then shut the stack down with `bash Scripts/launcher stop` when finished.
 
 ## Hand-off to Codex
 > Implement the curses bootstrap flow end-to-end: route `/bootstrap` into the new `swiftcurseskit` panel, submit the form to `POST /bootstrap`, and wire the existing Awareness polling utilities so baseline updates hydrate the curses widgets without breaking module style conventions.
