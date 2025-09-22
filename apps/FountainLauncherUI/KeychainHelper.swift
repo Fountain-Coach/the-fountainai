@@ -1,58 +1,54 @@
 import Foundation
-#if canImport(Security)
-import Security
-#endif
+import SecretStore
 
 enum KeychainHelper {
-#if canImport(Security)
     static func save(service: String, account: String, secret: String) -> Bool {
-        let data = Data(secret.utf8)
-        let query: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: service,
-            kSecAttrAccount as String: account
-        ]
-        SecItemDelete(query as CFDictionary)
-        var add = query
-        add[kSecValueData as String] = data
-        add[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlock
-        return SecItemAdd(add as CFDictionary, nil) == errSecSuccess
+        do {
+            let store = makeStore(for: service)
+            try store.storeSecret(Data(secret.utf8), for: account)
+            return true
+        } catch {
+            return false
+        }
     }
 
     static func read(service: String, account: String) -> String? {
-        let query: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: service,
-            kSecAttrAccount as String: account,
-            kSecReturnData as String: kCFBooleanTrue as Any,
-            kSecMatchLimit as String: kSecMatchLimitOne
-        ]
-        var item: CFTypeRef?
-        let status = SecItemCopyMatching(query as CFDictionary, &item)
-        guard status == errSecSuccess, let data = item as? Data else { return nil }
-        return String(data: data, encoding: .utf8)
+        do {
+            let store = makeStore(for: service)
+            guard let data = try store.retrieveSecret(for: account) else { return nil }
+            return String(data: data, encoding: .utf8)
+        } catch {
+            return nil
+        }
     }
 
     static func delete(service: String, account: String) -> Bool {
-        let query: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: service,
-            kSecAttrAccount as String: account
-        ]
-        let status = SecItemDelete(query as CFDictionary)
-        return status == errSecSuccess || status == errSecItemNotFound
+        do {
+            let store = makeStore(for: service)
+            try store.deleteSecret(for: account)
+            return true
+        } catch {
+#if !canImport(Security)
+            if let error = error as? SecretServiceError {
+                switch error {
+                case .commandFailed(let code, _) where code == 1:
+                    return true
+                default:
+                    break
+                }
+            }
+#endif
+            return false
+        }
+    }
+
+#if canImport(Security)
+    private static func makeStore(for service: String) -> KeychainStore {
+        KeychainStore(service: service)
     }
 #else
-    static func save(service: String, account: String, secret: String) -> Bool {
-        return false
-    }
-
-    static func read(service: String, account: String) -> String? {
-        return nil
-    }
-
-    static func delete(service: String, account: String) -> Bool {
-        return false
+    private static func makeStore(for service: String) -> SecretServiceStore {
+        SecretServiceStore(service: service)
     }
 #endif
 }

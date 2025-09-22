@@ -14,8 +14,7 @@ final class SettingsTests: XCTestCase {
     func testSaveAndLoadRoundtrip() throws {
         let defaults = UserDefaults(suiteName: "SettingsTests")!
         defaults.removePersistentDomain(forName: "SettingsTests")
-        let kc = MockKeychain()
-        let store = DefaultSettingsStore(defaults: defaults, keychain: kc)
+        let store = DefaultSettingsStore(defaults: defaults)
         var s = AppSettings()
         s.provider = .openai
         s.modelName = "gpt-4o-mini"
@@ -26,18 +25,4 @@ final class SettingsTests: XCTestCase {
         let loaded = try store.load()
         XCTAssertEqual(loaded, s)
     }
-
-    func testKeychainSetGet() throws {
-        let kc = MockKeychain()
-        let store = DefaultSettingsStore(defaults: .standard, keychain: kc)
-        try store.setSecret(Data("abc".utf8), for: "openai-key")
-        let out = try store.getSecret(for: "openai-key")
-        XCTAssertEqual(out, Data("abc".utf8))
-    }
-}
-
-final class MockKeychain: KeychainClient, @unchecked Sendable {
-    private var map: [String: Data] = [:]
-    func set(secret: Data, account: String) throws { map[account] = secret }
-    func get(account: String) throws -> Data? { map[account] }
 }

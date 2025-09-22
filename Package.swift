@@ -979,7 +979,9 @@ let leanTargets: [Target] = [
 fullTargets.append(
     .executableTarget(
         name: "FountainLauncherUI",
-        dependencies: [],
+        dependencies: [
+            .product(name: "SecretStore", package: "swift-secretstore")
+        ],
         path: "apps/FountainLauncherUI"
     )
 )
@@ -1071,7 +1073,9 @@ var uiLeanTargets: [Target] = [
 uiLeanTargets.append(contentsOf: [
     .executableTarget(
         name: "FountainLauncherUI",
-        dependencies: [],
+        dependencies: [
+            .product(name: "SecretStore", package: "swift-secretstore")
+        ],
         path: "apps/FountainLauncherUI"
     ),
     .executableTarget(name: "gui-diagnostics", dependencies: ["ApiClientsCore", "GatewayAPI", "PersistAPI", "SemanticBrowserAPI", "LLMGatewayAPI"], path: "tools/GuiDiagnostics"),
@@ -1104,6 +1108,7 @@ let package = Package(
         .package(url: "https://github.com/Fountain-Coach/Fountain-Store.git", from: "0.1.0"),
         .package(url: "https://github.com/Fountain-Coach/semantic-browser.git", exact: "0.0.2"),
         .package(url: "https://github.com/Fountain-Coach/Teatro.git", branch: "main"),
+        .package(url: "https://github.com/Fountain-Coach/swift-secretstore.git", exact: "0.1.0"),
         .package(path: "libs/OpenAPICurator"),
     ],
     targets: targets
