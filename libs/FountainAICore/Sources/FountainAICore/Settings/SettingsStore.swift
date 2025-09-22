@@ -3,18 +3,14 @@ import Foundation
 public protocol SettingsStore {
     func load() throws -> AppSettings
     func save(_ settings: AppSettings) throws
-    func setSecret(_ data: Data, for account: String) throws
-    func getSecret(for account: String) throws -> Data?
 }
 
 public struct DefaultSettingsStore: SettingsStore {
     private let defaults: UserDefaults
-    private let keychain: KeychainClient
     private let defaultsKey = "FountainAI.AppSettings"
 
-    public init(defaults: UserDefaults = .standard, keychain: KeychainClient) {
+    public init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
-        self.keychain = keychain
     }
 
     public func load() throws -> AppSettings {
@@ -33,14 +29,6 @@ public struct DefaultSettingsStore: SettingsStore {
         let dto = AppSettingsDTO.fromDomain(settings)
         let data = try JSONEncoder().encode(dto)
         defaults.set(data, forKey: defaultsKey)
-    }
-
-    public func setSecret(_ data: Data, for account: String) throws {
-        try keychain.set(secret: data, account: account)
-    }
-
-    public func getSecret(for account: String) throws -> Data? {
-        try keychain.get(account: account)
     }
 }
 

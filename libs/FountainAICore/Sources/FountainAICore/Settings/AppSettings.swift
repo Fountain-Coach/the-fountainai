@@ -47,9 +47,3 @@ public struct AppSettings: Sendable, Equatable {
         return issues
     }
 }
-
-public protocol KeychainClient: Sendable {
-    func set(secret: Data, account: String) throws
-    func get(account: String) throws -> Data?
-}
-
